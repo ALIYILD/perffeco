@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perffeco — Intelligence Economics Platform</title>
+    <meta name="description" content="Perffeco is the Bloomberg Terminal for AI costs. Compare LLM API pricing, GPU cloud economics, AI agent ROI, and FinOps strategies across 60+ models and 15+ providers.">
+    <link rel="canonical" href="https://perffeco.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Perffeco — Intelligence Economics Platform">
+    <meta property="og:description" content="Compare LLM API pricing, GPU cloud economics, AI agent ROI, and FinOps strategies. Real-time data across 60+ models and 15+ providers.">
+    <meta property="og:url" content="https://perffeco.com/">
+    <meta property="og:image" content="https://perffeco.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Perffeco — Intelligence Economics Platform">
+    <meta name="twitter:description" content="The Bloomberg Terminal for AI costs. Compare LLM, GPU, and agent economics in real time.">
+    <meta name="twitter:image" content="https://perffeco.com/og-image.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d0f14'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='bold' fill='%23f5a623'>P</text></svg>">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Perffeco","url":"https://perffeco.com","description":"Intelligence Economics Platform — compare LLM API pricing, GPU cloud costs, AI agent ROI, and FinOps strategies.","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"AggregateOffer","lowPrice":"0","highPrice":"199","priceCurrency":"USD"}}</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#0d0f14;color:#c8ccd4;min-height:100vh;overflow-x:hidden}
+
+        /* ========== NAV ========== */
+        nav{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:#0d0f14;border-bottom:1px solid #1c1f28;position:sticky;top:0;z-index:1000}
+        .logo{color:#f5a623;font-weight:800;font-size:20px;text-decoration:none;cursor:pointer}
+        .nav-links{display:flex;gap:22px;align-items:center}
+        .nav-links a{color:#6b7280;text-decoration:none;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;transition:color .2s;cursor:pointer}
+        .nav-links a:hover,.nav-links a.active{color:#f5a623}
+        .nav-right{display:flex;align-items:center;gap:14px}
+        .live-badge{color:#4ade80;font-size:10px;font-weight:600;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:1px}
+        .live-badge::before{content:'';width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        .btn-pro{background:#f5a623;color:#0d0f14;padding:7px 18px;border-radius:7px;font-weight:700;font-size:12px;text-decoration:none;cursor:pointer;border:none}
+        .hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;z-index:1001}
+        .hamburger span{display:block;width:22px;height:2px;background:#c8ccd4;margin:5px 0;transition:all .3s ease;border-radius:2px}
+        .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+        .hamburger.open span:nth-child(2){opacity:0}
+        .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+        /* ========== MAIN SECTIONS ========== */
+        .main-section{display:none}
+        .main-section.active{display:block;animation:fadeIn .4s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+        /* Back to top */
+        .back-to-top{position:fixed;bottom:28px;right:28px;width:40px;height:40px;background:#f5a623;color:#0d0f14;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:none;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:opacity .3s}
+        .back-to-top.visible{display:flex;align-items:center;justify-content:center}
+
+        /* Billing toggle */
+        .billing-toggle{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px;font-size:13px}
+        .billing-toggle span{color:#6b7280;cursor:pointer;transition:color .2s}
+        .billing-toggle span.active{color:#f5a623;font-weight:600}
+        .toggle-switch{width:44px;height:24px;background:#2a2d38;border-radius:12px;position:relative;cursor:pointer;transition:background .3s}
+        .toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#6b7280;border-radius:50%;transition:all .3s}
+        .toggle-switch.annual{background:rgba(245,166,35,.2)}
+        .toggle-switch.annual::after{left:23px;background:#f5a623}
+        .billing-save{background:rgba(74,222,128,.1);color:#4ade80;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+
+        /* FAQ accordion */
+        .faq-list{max-width:760px;margin:0 auto;padding:0 20px}
+        .faq-item{border:1px solid #1c1f28;border-radius:10px;margin-bottom:10px;overflow:hidden;background:#12151c}
+        .faq-q{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;color:#e2e8f0;transition:background .2s}
+        .faq-q:hover{background:#161922}
+        .faq-q::after{content:'+';font-size:18px;color:#f5a623;transition:transform .3s}
+        .faq-item.open .faq-q::after{transform:rotate(45deg)}
+        .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 20px}
+        .faq-item.open .faq-a{max-height:300px;padding:0 20px 16px}
+        .faq-a p{color:#9ca3af;font-size:13px;line-height:1.7}
+
+        /* Chart loading */
+        .chart-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#6b7280;font-size:12px;font-family:'IBM Plex Mono',monospace}
+
+        /* Toast notification */
+        .toast{position:fixed;top:20px;right:20px;background:#12151c;border:1px solid #4ade80;color:#4ade80;padding:16px 24px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;animation:fadeIn .4s ease;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+
+        /* ========== HOME / DASHBOARD (Frontier Model Economics) ========== */
+        .dash-header{padding:24px 28px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+        .dash-title{font-family:'IBM Plex Mono',monospace}
+        .dash-title h1{font-size:22px;font-weight:700;color:#e2e8f0;display:flex;align-items:center;gap:8px}
+        .dash-title h1 .icon{color:#f5a623}
+        .dash-title .subtitle{font-size:10px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-top:4px;font-weight:500}
+        .dash-badges{display:flex;gap:10px}
+        .dash-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:6px 14px;border-radius:6px;border:1px solid;font-weight:500}
+        .dash-badge.verified{border-color:#4ade80;color:#4ade80;background:rgba(74,222,128,.08)}
+        .dash-badge.estimated{border-color:#f5a623;color:#f5a623;background:rgba(245,166,35,.08)}
+
+        /* Chart Area */
+        .dash-layout{display:grid;grid-template-columns:1fr 320px;gap:0;padding:0 28px 20px}
+        .chart-area{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:16px;position:relative;min-height:500px}
+        .axis-controls{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+        .axis-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-right:6px}
+        .axis-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 12px;border-radius:5px;border:1px solid #2a2d38;background:transparent;color:#6b7280;cursor:pointer;transition:all .15s}
+        .axis-btn:hover{border-color:#4b5563;color:#9ca3af}
+        .axis-btn.active{border-color:#f5a623;color:#f5a623;background:rgba(245,166,35,.08)}
+        .chart-legend{display:flex;gap:16px;justify-content:center;padding:10px 0;flex-wrap:wrap}
+        .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#9ca3af}
+        .legend-dot{width:10px;height:10px;border-radius:50%}
+
+        /* Sidebar Rankings */
+        .dash-sidebar{display:flex;flex-direction:column;gap:12px;padding-left:16px}
+        .rank-panel{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:14px 16px}
+        .rank-title{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+        .rank-title .dot{width:7px;height:7px;border-radius:50%}
+        .rank-list{list-style:none}
+        .rank-list li{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-family:'IBM Plex Mono',monospace;font-size:11px}
+        .rank-list li .num{color:#6b7280;margin-right:6px;font-size:10px}
+        .rank-list li .model{display:flex;align-items:center;gap:5px}
+        .rank-list li .model .mdot{width:6px;height:6px;border-radius:50%}
+        .rank-list li .val{font-weight:600}
+
+        /* Bottom Metrics Section */
+        .dash-metrics{padding:20px 28px;margin-top:0}
+        .metrics-box{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:20px 24px;font-family:'IBM Plex Mono',monospace}
+        .metrics-title{font-size:12px;font-weight:600;color:#f5a623;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 40px}
+        .metrics-grid .formula{font-size:11px;color:#9ca3af;line-height:1.8}
+        .metrics-grid .formula span{color:#6b7280}
+
+        .sources-box{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:16px 20px;margin-top:12px;font-family:'IBM Plex Mono',monospace}
+        .sources-box h4{font-size:11px;color:#f5a623;margin-bottom:8px}
+        .sources-box p{font-size:10px;color:#6b7280;line-height:1.7}
+
+        /* ========== SUB-SECTION PAGES STYLES ========== */
+        .sec-header{text-align:center;padding:50px 40px 20px}
+        .sec-header h2{font-size:38px;font-weight:800;margin-bottom:12px}
+        .sec-header h2 span{color:#f5a623}
+        .sec-header p{color:#6b7280;font-size:15px;max-width:650px;margin:0 auto;line-height:1.6}
+
+        .stats-row{display:flex;justify-content:center;gap:50px;padding:30px 20px;flex-wrap:wrap}
+        .stat-item{text-align:center}
+        .stat-value{font-size:36px;font-weight:800;color:#f5a623}
+        .stat-label{font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+
+        .sub-tabs{display:flex;justify-content:center;gap:8px;padding:16px 20px;flex-wrap:wrap}
+        .sub-tab{padding:7px 14px;border-radius:14px;border:1px solid #2a2d38;background:transparent;color:#6b7280;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+        .sub-tab:hover{border-color:#f5a623;color:#f5a623}
+        .sub-tab.active{background:rgba(245,166,35,.1);color:#f5a623;border-color:#f5a623;font-weight:600}
+        .sub-content{display:none}
+        .sub-content.active{display:block}
+
+        .container{max-width:1200px;margin:0 auto;padding:24px 20px}
+        .section-title{font-size:22px;font-weight:700;margin-bottom:6px}
+        .section-sub{color:#6b7280;font-size:12px;margin-bottom:24px}
+
+        .table-wrap{overflow-x:auto;border-radius:10px;border:1px solid #1c1f28;background:#12151c}
+        table{width:100%;border-collapse:collapse;font-size:12px}
+        thead th{background:#161922;padding:10px 12px;text-align:left;font-weight:600;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #1c1f28;white-space:nowrap}
+        tbody td{padding:10px 12px;border-bottom:1px solid #1c1f28;white-space:nowrap}
+        tbody tr:hover{background:#161922}
+
+        .price-low{color:#4ade80;font-weight:600}
+        .price-mid{color:#f5a623;font-weight:600}
+        .price-high{color:#ef4444;font-weight:600}
+        .score-top{color:#4ade80;font-weight:700}
+        .score-high{color:#f5a623;font-weight:700}
+        .score-mid{color:#fbbf24;font-weight:700}
+        .badge{padding:3px 8px;border-radius:10px;font-size:9px;font-weight:600;white-space:nowrap}
+        .badge-green{background:rgba(74,222,128,.12);color:#4ade80}
+        .badge-yellow{background:rgba(245,166,35,.12);color:#f5a623}
+        .badge-red{background:rgba(239,68,68,.12);color:#ef4444}
+        .badge-blue{background:rgba(96,165,250,.12);color:#60a5fa}
+
+        .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px}
+        .card{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:20px;transition:border-color .2s}
+        .card:hover{border-color:#2a2d38}
+        .card h3{font-size:15px;font-weight:700;margin-bottom:5px}
+        .card p{color:#6b7280;font-size:11px;line-height:1.6}
+        .card-metric{font-size:26px;font-weight:800;color:#f5a623;margin:8px 0 2px}
+        .card-metric-label{color:#6b7280;font-size:10px}
+
+        .chart-box{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:20px;margin-top:14px}
+        .bar-group{margin-bottom:10px}
+        .bar-label{font-size:11px;color:#9ca3af;margin-bottom:3px;display:flex;justify-content:space-between}
+        .bar-track{background:#1c1f28;border-radius:5px;height:24px;overflow:hidden}
+        .bar-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:600;transition:width .6s ease}
+
+        .provider-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:14px}
+        .prov-card{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:16px;text-align:center;transition:all .2s}
+        .prov-card:hover{border-color:#f5a623;transform:translateY(-2px)}
+        .prov-name{font-size:14px;font-weight:700}
+        .prov-type{color:#6b7280;font-size:9px;text-transform:uppercase;letter-spacing:1px;margin:2px 0 10px}
+        .prov-price{font-size:24px;font-weight:800;color:#f5a623}
+        .prov-unit{color:#6b7280;font-size:10px}
+
+        .tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+        .tier-card{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:22px;text-align:center;transition:all .2s}
+        .tier-card:hover{border-color:#f5a623;transform:translateY(-2px)}
+        .tier-name{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+        .tier-price{font-size:30px;font-weight:800;color:#f5a623}
+        .tier-range{color:#6b7280;font-size:11px;margin-bottom:12px}
+        .tier-features{list-style:none;text-align:left}
+        .tier-features li{color:#9ca3af;font-size:11px;padding:4px 0;border-bottom:1px solid #1c1f28}
+        .tier-features li:last-child{border:none}
+
+        .framework-step{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+        .step-num{min-width:38px;height:38px;background:#f5a623;color:#0d0f14;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+        .step-content h3{font-size:15px;font-weight:700;margin-bottom:3px}
+        .step-content p{color:#6b7280;font-size:11px;line-height:1.6}
+
+        .tool-card{background:#12151c;border:1px solid #1c1f28;border-radius:10px;padding:16px;transition:all .2s}
+        .tool-card:hover{border-color:#f5a623}
+        .tool-name{font-size:14px;font-weight:700}
+        .tool-cat{color:#6b7280;font-size:9px;text-transform:uppercase;letter-spacing:1px;margin:2px 0 8px}
+        .tool-feat{list-style:none}
+        .tool-feat li{color:#9ca3af;font-size:10px;padding:2px 0}
+        .tool-feat li::before{content:'✓ ';color:#4ade80}
+
+        .roi-meter{display:flex;align-items:center;gap:8px;margin:10px 0}
+        .roi-bar{flex:1;background:#1c1f28;border-radius:5px;height:8px;overflow:hidden}
+        .roi-fill{height:100%;border-radius:5px}
+
+        .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:800}
+        .rank-1{background:#f5a623;color:#0d0f14}
+        .rank-2{background:#9ca3af;color:#0d0f14}
+        .rank-3{background:#cd7f32;color:#0d0f14}
+        .rank-other{background:#1c1f28;color:#6b7280}
+
+        .calc-wrap{max-width:640px}
+        .calc-wrap label{color:#6b7280;font-size:11px;display:block;margin-bottom:4px}
+        .calc-wrap select,.calc-wrap input[type=number]{width:100%;padding:10px;background:#1c1f28;border:1px solid #2a2d38;border-radius:7px;color:#e2e8f0;font-size:13px;font-family:inherit;margin-bottom:14px}
+        .calc-btn{padding:12px;background:#f5a623;color:#0d0f14;border:none;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-bottom:14px}
+        .calc-result{display:none;text-align:center;padding:18px;background:#161922;border-radius:8px}
+        .calc-big{font-size:40px;font-weight:800;color:#f5a623;margin:4px 0}
+        .calc-detail{color:#6b7280;font-size:11px}
+
+        .alert-box{background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.15);border-radius:10px;padding:16px;margin-top:16px}
+        .alert-box h4{color:#f5a623;font-size:12px;margin-bottom:5px}
+        .alert-box p{color:#9ca3af;font-size:11px;line-height:1.6}
+
+        .source-note{color:#4b5563;font-size:9px;margin-top:8px;font-style:italic}
+        .filter-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+        .filter-btn{padding:4px 10px;border-radius:12px;border:1px solid #2a2d38;background:transparent;color:#6b7280;cursor:pointer;font-size:10px;font-family:inherit}
+        .filter-btn.active{background:rgba(245,166,35,.1);color:#f5a623;border-color:#f5a623}
+
+        footer{text-align:center;padding:36px;color:#4b5563;font-size:11px;border-top:1px solid #1c1f28;margin-top:50px}
+
+        @media(max-width:900px){
+            .hamburger{display:block}
+            .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#0d0f14;border-bottom:1px solid #1c1f28;flex-direction:column;padding:16px 28px;gap:14px}
+            .nav-links.open{display:flex}
+            .dash-layout{grid-template-columns:1fr}
+            .dash-sidebar{padding-left:0;margin-top:16px}
+            .dash-header{flex-direction:column;gap:12px}
+            .sec-header h2{font-size:28px}
+            .tier-grid{grid-template-columns:1fr}
+            .provider-grid{grid-template-columns:repeat(2,1fr)}
+            .metrics-grid{grid-template-columns:1fr}
+            .stats-row{gap:24px}
+            .sub-tabs{gap:4px}
+            .sub-tab{font-size:11px;padding:6px 10px}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav>
+    <a class="logo" onclick="showMain('home')">Perffeco</a>
+    <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+        <a onclick="showMain('home')" class="active" id="nav-home">DASHBOARD</a>
+        <a onclick="showMain('agents')">AGENTS</a>
+        <a onclick="showMain('benchmarks')">BENCHMARKS</a>
+        <a onclick="showMain('pricing')">PRICING</a>
+        <a onclick="showMain('finops')">FINOPS</a>
+        <a onclick="showMain('gpu')">GPU ECONOMICS</a>
+        <a onclick="showMain('llm')">LLM ECONOMICS</a>
+        <a onclick="showMain('faq')">FAQ</a>
+    </div>
+    <div class="nav-right">
+        <span class="live-badge">LIVE DATA</span>
+        <a class="btn-pro" onclick="showMain('pricing')">Go Pro</a>
+    </div>
+</nav>
+
+<!-- =====================================================
+     SECTION: HOME — FRONTIER MODEL ECONOMICS DASHBOARD
+     ===================================================== -->
+<div id="sec-home" class="main-section active">
+
+    <!-- Header -->
+    <div class="dash-header">
+        <div class="dash-title">
+            <h1><span class="icon">◆</span> Frontier Model Economics</h1>
+            <div class="subtitle">INTELLIGENCE · TRAINING COST · ENERGY · REAL DATA · 2026</div>
+        </div>
+        <div class="dash-badges">
+            <span class="dash-badge verified">✓ disclosed = lab-verified cost</span>
+            <span class="dash-badge estimated">~ estimated = Epoch AI cost model</span>
+        </div>
+    </div>
+
+    <!-- Main Layout: Chart + Sidebar -->
+    <div class="dash-layout">
+        <!-- LEFT: Chart -->
+        <div class="chart-area">
+            <!-- X-Axis Controls -->
+            <div class="axis-controls">
+                <span class="axis-label">X-AXIS</span>
+                <button class="axis-btn active" onclick="changeAxis('x','flops',this)">Train FLOPs (Log₁₀)</button>
+                <button class="axis-btn" onclick="changeAxis('x','cost',this)">Train Cost USD (Log₁₀)</button>
+                <button class="axis-btn" onclick="changeAxis('x','cpt',this)">Cost per Token (Log₁₀)</button>
+            </div>
+            <!-- Y-Axis Controls -->
+            <div class="axis-controls">
+                <span class="axis-label">Y-AXIS</span>
+                <button class="axis-btn active" onclick="changeAxis('y','cis',this)">Composite Intelligence (0-100)</button>
+                <button class="axis-btn" onclick="changeAxis('y','ipd',this)">Intelligence / Dollar (Log₁₀)</button>
+                <button class="axis-btn" onclick="changeAxis('y','ipt',this)">Intelligence / Token-$ (Log₁₀)</button>
+            </div>
+
+            <!-- Chart Canvas -->
+            <div style="position:relative;width:100%;height:420px"><canvas id="modelChart"></canvas></div>
+
+            <!-- Legend -->
+            <div class="chart-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>OpenAI</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#f5a623"></div>Anthropic</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>Google DeepMind</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>DeepSeek</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#34d399"></div>Meta</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#c084fc"></div>Mistral AI</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#fb923c"></div>Alibaba</div>
+            </div>
+            <div style="font-size:9px;color:#4b5563;text-align:center;margin-top:4px">● dot size = log₁₀(total params) · <strong style="color:#9ca3af">white ring</strong> = lab-disclosed training cost · hover any dot for details</div>
+        </div>
+
+        <!-- RIGHT: Sidebar Rankings -->
+        <div class="dash-sidebar">
+            <!-- Best Intelligence / Dollar -->
+            <div class="rank-panel">
+                <div class="rank-title"><div class="dot" style="background:#f5a623"></div> BEST INTELLIGENCE / DOLLAR</div>
+                <ul class="rank-list">
+                    <li><span class="model"><span class="num">1.</span><span class="mdot" style="background:#f87171"></span>DeepSeek V3/R1 ~</span><span class="val" style="color:#f5a623">1.1e-5</span></li>
+                    <li><span class="model"><span class="num">2.</span><span class="mdot" style="background:#fb923c"></span>Qwen2.5 72B</span><span class="val" style="color:#f5a623">5.3e-6</span></li>
+                    <li><span class="model"><span class="num">3.</span><span class="mdot" style="background:#34d399"></span>Llama 4 Scout</span><span class="val" style="color:#f5a623">4.8e-6</span></li>
+                    <li><span class="model"><span class="num">4.</span><span class="mdot" style="background:#c084fc"></span>Mistral Large 2</span><span class="val" style="color:#f5a623">3.2e-6</span></li>
+                </ul>
+            </div>
+
+            <!-- Best Intelligence / Token-$ -->
+            <div class="rank-panel">
+                <div class="rank-title"><div class="dot" style="background:#60a5fa"></div> BEST INTELLIGENCE / TOKEN-$</div>
+                <ul class="rank-list">
+                    <li><span class="model"><span class="num">1.</span><span class="mdot" style="background:#34d399"></span>Llama 4 Scout</span><span class="val" style="color:#60a5fa">1.9e+8</span></li>
+                    <li><span class="model"><span class="num">2.</span><span class="mdot" style="background:#f87171"></span>DeepSeek V3/R1 ~</span><span class="val" style="color:#60a5fa">1.6e+8</span></li>
+                    <li><span class="model"><span class="num">3.</span><span class="mdot" style="background:#fb923c"></span>Qwen2.5 72B</span><span class="val" style="color:#60a5fa">9.6e+7</span></li>
+                    <li><span class="model"><span class="num">4.</span><span class="mdot" style="background:#c084fc"></span>Mistral Large 2</span><span class="val" style="color:#60a5fa">2.3e+7</span></li>
+                </ul>
+            </div>
+
+            <!-- Lowest Energy / Token -->
+            <div class="rank-panel">
+                <div class="rank-title"><div class="dot" style="background:#4ade80"></div> LOWEST ENERGY / TOKEN</div>
+                <ul class="rank-list">
+                    <li><span class="model"><span class="num">1.</span><span class="mdot" style="background:#34d399"></span>Llama 4 Scout</span><span class="val" style="color:#4ade80">5.04e-9 kWh</span></li>
+                    <li><span class="model"><span class="num">2.</span><span class="mdot" style="background:#fb923c"></span>Qwen2.5 72B</span><span class="val" style="color:#4ade80">1.45e-8 kWh</span></li>
+                    <li><span class="model"><span class="num">3.</span><span class="mdot" style="background:#f87171"></span>DeepSeek V3/R1 ~</span><span class="val" style="color:#4ade80">7.48e-8 kWh</span></li>
+                    <li><span class="model"><span class="num">4.</span><span class="mdot" style="background:#c084fc"></span>Mistral Large 2</span><span class="val" style="color:#4ade80">1.44e-7 kWh</span></li>
+                </ul>
+            </div>
+
+            <!-- All Models ranked by CIS -->
+            <div class="rank-panel">
+                <div class="rank-title"><div class="dot" style="background:#f5a623"></div> ALL MODELS · ranked by CIS</div>
+                <ul class="rank-list">
+                    <li><span class="model"><span class="mdot" style="background:#60a5fa"></span>Gemini 2.5 Pro</span><span class="val" style="color:#e2e8f0">71.9</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#4ade80"></span>o1</span><span class="val" style="color:#e2e8f0">66.8</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#f87171"></span>DeepSeek V3/R1 ~</span><span class="val" style="color:#e2e8f0">65.8</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#f5a623"></span>Claude 3.5 Sonnet</span><span class="val" style="color:#e2e8f0">60.4</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#f5a623"></span>Claude 3 Opus</span><span class="val" style="color:#e2e8f0">57.2</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#34d399"></span>Llama 3.1 405B</span><span class="val" style="color:#e2e8f0">55.2</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#4ade80"></span>GPT-4o</span><span class="val" style="color:#e2e8f0">54.1</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#fb923c"></span>Qwen2.5 72B</span><span class="val" style="color:#e2e8f0">53.1</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#60a5fa"></span>Gemini 1.5 Pro</span><span class="val" style="color:#e2e8f0">50.9</span></li>
+                    <li><span class="model"><span class="mdot" style="background:#4ade80"></span>GPT-4</span><span class="val" style="color:#e2e8f0">47.3</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom: Composite Intelligence Score & Derived Metrics -->
+    <div class="dash-metrics">
+        <div class="metrics-box">
+            <div class="metrics-title">◆ COMPOSITE INTELLIGENCE SCORE & DERIVED METRICS</div>
+            <div class="metrics-grid">
+                <div class="formula">
+                    CIS = MMLU×0.15 + MMLU-Pro×0.30 + GPQA×0.35 + HLE×0.20<br>
+                    cost_mid = (low_est + high_est) / 2<br>
+                    cost/token = cost_mid / train_tokens_est<br>
+                    int/$ = CIS / cost_mid · int/tok$ = CIS / cost_per_token
+                </div>
+                <div class="formula">
+                    <span>MMLU near-saturated (91% ceiling); GPQA= best discriminator 2024+</span><br>
+                    <span>H100 SXM5: 1,979 TFLOPS bf16 · MFU 38% = 751.6 TFLOPS eff.</span><br>
+                    <span>Energy: GPU-hrs × 700W TDP × PUE 1.3 (hyperscale DC)</span><br>
+                    <span>CO₂: 0.400 kg/kWh (IEA 2024 global electricity average)</span>
+                </div>
+            </div>
+        </div>
+        <div class="sources-box">
+            <h4>PRIMARY SOURCES</h4>
+            <p>Epoch AI — Rising Costs (Cottier et al. 2024) · DeepSeek V3 Technical Report (2024) · DeepSeek R1 Paper — Nature 2025 · Meta Llama 3 Technical Report · Google Gemini Technical Reports · OpenAI System Cards · Mistral AI Technical Reports</p>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     SECTION: LLM ECONOMICS
+     ===================================================== -->
+<div id="sec-llm" class="main-section">
+    <div class="sec-header"><h2><span>LLM Economics</span> Dashboard</h2><p>Compare API pricing across 60+ models. Prices dropped ~80% YoY.</p></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value">60+</div><div class="stat-label">Models</div></div><div class="stat-item"><div class="stat-value">-80%</div><div class="stat-label">Price Drop YoY</div></div><div class="stat-item"><div class="stat-value">1000x</div><div class="stat-label">Gap</div></div><div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Providers</div></div></div>
+    <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'llm','api')">💰 API Pricing</button><button class="sub-tab" onclick="showSub(event,'llm','costper')">📊 Cost/Task</button><button class="sub-tab" onclick="showSub(event,'llm','trends')">📈 Trends</button><button class="sub-tab" onclick="showSub(event,'llm','calc')">🧮 Calculator</button><button class="sub-tab" onclick="showSub(event,'llm','perf')">⚡ Price/Perf</button></div>
+
+    <div class="sub-content active" id="llm-api"><div class="container"><div class="section-title">LLM API Pricing</div><div class="section-sub">Per 1M tokens. Blended cost (lowest first).</div>
+    <div class="filter-row"><button class="filter-btn active" onclick="filterTable('llm-table','all',this)">All</button><button class="filter-btn" onclick="filterTable('llm-table','openai',this)">OpenAI</button><button class="filter-btn" onclick="filterTable('llm-table','anthropic',this)">Anthropic</button><button class="filter-btn" onclick="filterTable('llm-table','google',this)">Google</button><button class="filter-btn" onclick="filterTable('llm-table','deepseek',this)">DeepSeek</button><button class="filter-btn" onclick="filterTable('llm-table','mistral',this)">Mistral</button><button class="filter-btn" onclick="filterTable('llm-table','xai',this)">xAI</button></div>
+    <div class="table-wrap"><table id="llm-table"><thead><tr><th>Model</th><th>Provider</th><th>Input $/1M</th><th>Output $/1M</th><th>Blended</th><th>Context</th><th>Tier</th></tr></thead><tbody>
+    <tr data-provider="mistral"><td><strong>Mistral Nemo</strong></td><td>Mistral</td><td class="price-low">$0.02</td><td class="price-low">$0.06</td><td class="price-low">$0.04</td><td>128K</td><td><span class="badge badge-green">Budget</span></td></tr>
+    <tr data-provider="deepseek"><td><strong>DeepSeek V3.2</strong></td><td>DeepSeek</td><td class="price-low">$0.14</td><td class="price-low">$0.28</td><td class="price-low">$0.21</td><td>128K</td><td><span class="badge badge-green">Budget</span></td></tr>
+    <tr data-provider="google"><td><strong>Gemini 2.0 Flash</strong></td><td>Google</td><td class="price-low">$0.10</td><td class="price-low">$0.40</td><td class="price-low">$0.25</td><td>1M</td><td><span class="badge badge-green">Budget</span></td></tr>
+    <tr data-provider="openai"><td><strong>GPT-4o Mini</strong></td><td>OpenAI</td><td class="price-low">$0.15</td><td class="price-low">$0.60</td><td class="price-low">$0.38</td><td>128K</td><td><span class="badge badge-green">Budget</span></td></tr>
+    <tr data-provider="anthropic"><td><strong>Claude Haiku 4.5</strong></td><td>Anthropic</td><td class="price-low">$0.80</td><td class="price-mid">$4.00</td><td class="price-mid">$2.40</td><td>200K</td><td><span class="badge badge-yellow">Mid</span></td></tr>
+    <tr data-provider="google"><td><strong>Gemini 2.5 Pro</strong></td><td>Google</td><td class="price-mid">$1.25</td><td class="price-mid">$10.00</td><td class="price-mid">$5.63</td><td>1M</td><td><span class="badge badge-yellow">Mid</span></td></tr>
+    <tr data-provider="openai"><td><strong>GPT-5</strong></td><td>OpenAI</td><td class="price-mid">$1.25</td><td class="price-mid">$10.00</td><td class="price-mid">$5.63</td><td>128K</td><td><span class="badge badge-yellow">Mid</span></td></tr>
+    <tr data-provider="anthropic"><td><strong>Claude Sonnet 4.6</strong></td><td>Anthropic</td><td class="price-mid">$3.00</td><td class="price-mid">$15.00</td><td class="price-mid">$9.00</td><td>200K</td><td><span class="badge badge-yellow">Mid</span></td></tr>
+    <tr data-provider="xai"><td><strong>Grok 3</strong></td><td>xAI</td><td class="price-mid">$3.00</td><td class="price-mid">$15.00</td><td class="price-mid">$9.00</td><td>131K</td><td><span class="badge badge-yellow">Mid</span></td></tr>
+    <tr data-provider="anthropic"><td><strong>Claude Opus 4.6</strong></td><td>Anthropic</td><td class="price-high">$5.00</td><td class="price-high">$25.00</td><td class="price-high">$15.00</td><td>200K</td><td><span class="badge badge-red">Premium</span></td></tr>
+    <tr data-provider="openai"><td><strong>o3 Pro</strong></td><td>OpenAI</td><td class="price-high">$20.00</td><td class="price-high">$80.00</td><td class="price-high">$50.00</td><td>200K</td><td><span class="badge badge-red">Premium</span></td></tr>
+    </tbody></table></div></div></div>
+
+    <div class="sub-content" id="llm-costper"><div class="container"><div class="section-title">Cost Per Task</div><div class="cards-grid">
+    <div class="card"><h3>📧 Email Summary</h3><p>~700 tokens</p><div class="card-metric">$0.0001</div><div class="card-metric-label">GPT-4o Mini</div></div>
+    <div class="card"><h3>📝 Blog Post</h3><p>~2,500 tokens</p><div class="card-metric">$0.001</div><div class="card-metric-label">GPT-4o Mini</div></div>
+    <div class="card"><h3>💻 Code Review</h3><p>~4,500 tokens</p><div class="card-metric">$0.01</div><div class="card-metric-label">Sonnet 4.6</div></div>
+    <div class="card"><h3>📄 10-Page Analysis</h3><p>~17K tokens</p><div class="card-metric">$0.075</div><div class="card-metric-label">Sonnet 4.6</div></div>
+    <div class="card"><h3>🤖 RAG Query</h3><p>~8.5K tokens</p><div class="card-metric">$0.005</div><div class="card-metric-label">DeepSeek V3.2</div></div>
+    <div class="card"><h3>🔄 1M Calls/mo</h3><p>~1K tokens avg</p><div class="card-metric">$20</div><div class="card-metric-label">Mistral Nemo</div></div>
+    </div></div></div>
+
+    <div class="sub-content" id="llm-trends"><div class="container"><div class="section-title">Price Deflation</div><div class="chart-box">
+    <div class="bar-group"><div class="bar-label"><span>GPT-4 (Mar 2023)</span><span class="price-high">$45.00</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#ef4444,#f87171)">$45</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>Claude 3 Opus (2024)</span><span class="price-high">$37.50</span></div><div class="bar-track"><div class="bar-fill" style="width:83%;background:linear-gradient(90deg,#ef4444,#f5a623)">$37.50</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>GPT-4o (May 2024)</span><span class="price-mid">$12.50</span></div><div class="bar-track"><div class="bar-fill" style="width:28%;background:#f5a623">$12.50</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>GPT-5 (2026)</span><span class="price-mid">$5.63</span></div><div class="bar-track"><div class="bar-fill" style="width:13%;background:#4ade80">$5.63</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>DeepSeek V3.2 (2026)</span><span class="price-low">$0.21</span></div><div class="bar-track"><div class="bar-fill" style="width:2%;min-width:40px;background:#4ade80">$0.21</div></div></div>
+    </div></div></div>
+
+    <div class="sub-content" id="llm-calc"><div class="container"><div class="section-title">Token Calculator</div><div class="card calc-wrap"><label>Model</label><select id="lc-m"><option value="0.02|0.06">Mistral Nemo</option><option value="0.14|0.28">DeepSeek V3.2</option><option value="0.15|0.60">GPT-4o Mini</option><option value="1.25|10.00" selected>GPT-5</option><option value="3.00|15.00">Sonnet 4.6</option><option value="5.00|25.00">Opus 4.6</option></select><label>Calls/Day</label><input id="lc-c" type="number" value="10000"><label>Input Tokens</label><input id="lc-i" type="number" value="1000"><label>Output Tokens</label><input id="lc-o" type="number" value="500"><button class="calc-btn" onclick="calcLLM()">Calculate</button><div class="calc-result" id="lc-r"><div style="color:#6b7280;font-size:11px">Monthly</div><div class="calc-big" id="lc-t"></div><div class="calc-detail" id="lc-d"></div></div></div></div></div>
+
+    <div class="sub-content" id="llm-perf"><div class="container"><div class="section-title">Price/Performance</div><div class="chart-box">
+    <div class="bar-group"><div class="bar-label"><span>DeepSeek V3.2</span><span class="price-low">Best</span></div><div class="bar-track"><div class="bar-fill" style="width:95%;background:#4ade80">95</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>Gemini Flash</span><span class="price-low">Excellent</span></div><div class="bar-track"><div class="bar-fill" style="width:90%;background:#4ade80">90</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>GPT-4o Mini</span><span>Excellent</span></div><div class="bar-track"><div class="bar-fill" style="width:85%;background:#4ade80">85</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>Claude Haiku</span><span>Good</span></div><div class="bar-track"><div class="bar-fill" style="width:72%;background:#f5a623">72</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>GPT-5</span><span>Good</span></div><div class="bar-track"><div class="bar-fill" style="width:68%;background:#f5a623">68</div></div></div>
+    <div class="bar-group"><div class="bar-label"><span>Opus 4.6</span><span class="price-high">Premium</span></div><div class="bar-track"><div class="bar-fill" style="width:42%;background:#ef4444">42</div></div></div>
+    </div></div></div>
+</div>
+
+<!-- ===================================================== SECTION: GPU ===================================================== -->
+<div id="sec-gpu" class="main-section">
+    <div class="sec-header"><h2><span>GPU Economics</span> Dashboard</h2><p>Real-time GPU cloud pricing across 15+ providers.</p></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value">15+</div><div class="stat-label">Providers</div></div><div class="stat-item"><div class="stat-value">1,300+</div><div class="stat-label">Prices</div></div><div class="stat-item"><div class="stat-value">-44%</div><div class="stat-label">H100 YoY</div></div><div class="stat-item"><div class="stat-value">4.7x</div><div class="stat-label">Gap</div></div></div>
+    <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'gpu','table')">💰 Pricing</button><button class="sub-tab" onclick="showSub(event,'gpu','compare')">📊 Compare</button><button class="sub-tab" onclick="showSub(event,'gpu','trends')">📈 Trends</button><button class="sub-tab" onclick="showSub(event,'gpu','hidden')">🔍 Hidden Costs</button><button class="sub-tab" onclick="showSub(event,'gpu','calc')">🧮 Calculator</button></div>
+    <div class="sub-content active" id="gpu-table"><div class="container"><div class="section-title">GPU Pricing Table</div><div class="table-wrap"><table><thead><tr><th>GPU</th><th>VRAM</th><th>Provider</th><th>On-Demand</th><th>Spot</th><th>Type</th></tr></thead><tbody>
+    <tr><td><strong>A100 80GB</strong></td><td>80GB</td><td>Vast.ai</td><td class="price-low">$0.50</td><td class="price-low">$0.30</td><td><span class="badge badge-green">Market</span></td></tr>
+    <tr><td><strong>L40S</strong></td><td>48GB</td><td>RunPod</td><td class="price-low">$0.79</td><td class="price-low">$0.49</td><td><span class="badge badge-green">Market</span></td></tr>
+    <tr><td><strong>H100 SXM</strong></td><td>80GB</td><td>Lambda</td><td class="price-low">$1.10</td><td class="price-low">$0.80</td><td><span class="badge badge-green">Market</span></td></tr>
+    <tr><td><strong>H100 SXM</strong></td><td>80GB</td><td>Vast.ai</td><td class="price-mid">$1.49</td><td class="price-low">$0.90</td><td><span class="badge badge-green">Market</span></td></tr>
+    <tr><td><strong>H200 SXM</strong></td><td>141GB</td><td>Lambda</td><td class="price-mid">$2.14</td><td>—</td><td><span class="badge badge-green">Market</span></td></tr>
+    <tr><td><strong>H100 SXM</strong></td><td>80GB</td><td>CoreWeave</td><td class="price-mid">$2.49</td><td>—</td><td><span class="badge badge-blue">Special</span></td></tr>
+    <tr><td><strong>B200</strong></td><td>192GB</td><td>CoreWeave</td><td class="price-high">$3.79</td><td>—</td><td><span class="badge badge-blue">Special</span></td></tr>
+    <tr><td><strong>H100 SXM</strong></td><td>80GB</td><td>GCP</td><td class="price-high">$4.09</td><td class="price-mid">$2.45</td><td><span class="badge badge-yellow">Hyper</span></td></tr>
+    <tr><td><strong>H100 SXM</strong></td><td>80GB</td><td>AWS</td><td class="price-high">$4.10</td><td class="price-mid">$2.46</td><td><span class="badge badge-yellow">Hyper</span></td></tr>
+    <tr><td><strong>H100 SXM</strong></td><td>80GB</td><td>Azure</td><td class="price-high">$4.76</td><td class="price-mid">$2.86</td><td><span class="badge badge-yellow">Hyper</span></td></tr>
+    </tbody></table></div></div></div>
+    <div class="sub-content" id="gpu-compare"><div class="container"><div class="section-title">H100 80GB — Provider Compare</div><div class="provider-grid"><div class="prov-card"><div class="prov-name">Vast.ai</div><div class="prov-type">Marketplace</div><div class="prov-price">$0.90</div><div class="prov-unit">/hr spot</div></div><div class="prov-card"><div class="prov-name">Lambda</div><div class="prov-type">Marketplace</div><div class="prov-price">$1.10</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">RunPod</div><div class="prov-type">Marketplace</div><div class="prov-price">$1.99</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">CoreWeave</div><div class="prov-type">Specialized</div><div class="prov-price">$2.49</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">GCP</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$4.09</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">AWS</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$4.10</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">Azure</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$4.76</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">OCI</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$3.52</div><div class="prov-unit">/hr</div></div></div></div></div>
+    <div class="sub-content" id="gpu-trends"><div class="container"><div class="section-title">H100 Price Trends</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Q1 2023</span><span class="price-high">$6.98</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#ef4444">$6.98</div></div></div><div class="bar-group"><div class="bar-label"><span>Q1 2024</span><span class="price-mid">$4.20</span></div><div class="bar-track"><div class="bar-fill" style="width:60%;background:#f5a623">$4.20</div></div></div><div class="bar-group"><div class="bar-label"><span>Q1 2025</span><span class="price-low">$2.20</span></div><div class="bar-track"><div class="bar-fill" style="width:32%;background:#4ade80">$2.20</div></div></div><div class="bar-group"><div class="bar-label"><span>Q1 2026</span><span class="price-low">$1.49</span></div><div class="bar-track"><div class="bar-fill" style="width:21%;background:#4ade80">$1.49</div></div></div></div></div></div>
+    <div class="sub-content" id="gpu-hidden"><div class="container"><div class="section-title">Hidden Costs</div><div class="cards-grid"><div class="card"><h3>🌐 Egress</h3><div class="card-metric">$0.08-0.12</div><div class="card-metric-label">/GB out</div></div><div class="card"><h3>💾 Storage</h3><div class="card-metric">$0.02-0.08</div><div class="card-metric-label">/GB/mo</div></div><div class="card"><h3>🔗 Network</h3><div class="card-metric">15-30%</div><div class="card-metric-label">IB premium</div></div><div class="card"><h3>⏱️ Commit</h3><div class="card-metric">1-3yr</div><div class="card-metric-label">RI terms</div></div><div class="card"><h3>🛡️ Support</h3><div class="card-metric">$5-15K</div><div class="card-metric-label">/mo enterprise</div></div><div class="card"><h3>⚡ Spot Risk</h3><div class="card-metric">60-90%</div><div class="card-metric-label">save vs interrupt</div></div></div></div></div>
+    <div class="sub-content" id="gpu-calc"><div class="container"><div class="section-title">GPU Calculator</div><div class="card calc-wrap"><label>GPU</label><select id="gc-g"><option value="1.49">H100 Marketplace $1.49</option><option value="4.10">H100 Hyperscaler $4.10</option><option value="2.14">H200 $2.14</option><option value="3.79">B200 $3.79</option><option value="0.50">A100 Marketplace $0.50</option></select><label>GPUs</label><input id="gc-c" type="number" value="8"><label>Hours/Day</label><input id="gc-h" type="number" value="24"><label>Days/Month</label><input id="gc-d" type="number" value="30"><button class="calc-btn" onclick="calcGPU()">Calculate</button><div class="calc-result" id="gc-r"><div style="color:#6b7280;font-size:11px">Monthly</div><div class="calc-big" id="gc-t"></div><div class="calc-detail" id="gc-dt"></div></div></div></div></div>
+</div>
+
+<!-- ===================================================== SECTION: AGENTS ===================================================== -->
+<div id="sec-agents" class="main-section">
+    <div class="sec-header"><h2><span>AI Agents</span> Economics</h2><p>Dev costs, inference, pricing models, and ROI benchmarks.</p></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value">-92%</div><div class="stat-label">Inference Drop 3yr</div></div><div class="stat-item"><div class="stat-value">84%</div><div class="stat-label">Margin Erosion</div></div><div class="stat-item"><div class="stat-value">$1.3T</div><div class="stat-label">AI Invest 2029</div></div></div>
+    <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'agents','dev')">💰 Dev Costs</button><button class="sub-tab" onclick="showSub(event,'agents','inf')">⚡ Inference</button><button class="sub-tab" onclick="showSub(event,'agents','price')">🏷️ Pricing</button><button class="sub-tab" onclick="showSub(event,'agents','roi')">📈 ROI</button><button class="sub-tab" onclick="showSub(event,'agents','calc')">🧮 Calculator</button></div>
+    <div class="sub-content active" id="agents-dev"><div class="container"><div class="section-title">Dev Cost Tiers</div><div class="tier-grid"><div class="tier-card"><div class="tier-name">Reactive</div><div class="tier-price">$20-35K</div><div class="tier-range">2-4 wks</div><ul class="tier-features"><li>Single LLM</li><li>Rule routing</li><li>Templates</li></ul></div><div class="tier-card"><div class="tier-name">Intermediate</div><div class="tier-price">$40-70K</div><div class="tier-range">4-8 wks</div><ul class="tier-features"><li>Multi-step</li><li>API tools</li><li>Memory</li></ul></div><div class="tier-card"><div class="tier-name">Advanced</div><div class="tier-price">$80-120K</div><div class="tier-range">8-16 wks</div><ul class="tier-features"><li>Planning</li><li>RAG memory</li><li>Self-correct</li></ul></div><div class="tier-card"><div class="tier-name">Swarm</div><div class="tier-price">$100-200K+</div><div class="tier-range">12-24 wks</div><ul class="tier-features"><li>Multi-agent</li><li>HITL</li><li>Governance</li></ul></div></div></div></div>
+    <div class="sub-content" id="agents-inf"><div class="container"><div class="section-title">Inference Costs</div><div class="table-wrap"><table><thead><tr><th>Agent</th><th>Tok/Task</th><th>Budget</th><th>Premium</th><th>Mo/10K</th></tr></thead><tbody><tr><td><strong>Support</strong></td><td>2K</td><td class="price-low">$0.001</td><td class="price-mid">$0.03</td><td>$10-300</td></tr><tr><td><strong>RAG</strong></td><td>15K</td><td class="price-low">$0.008</td><td class="price-mid">$0.23</td><td>$80-2.3K</td></tr><tr><td><strong>Code Gen</strong></td><td>25K</td><td class="price-low">$0.013</td><td class="price-mid">$0.38</td><td>$130-3.8K</td></tr><tr><td><strong>Data</strong></td><td>40K</td><td class="price-mid">$0.021</td><td class="price-high">$0.60</td><td>$210-6K</td></tr><tr><td><strong>Web Agent</strong></td><td>80K</td><td class="price-mid">$0.042</td><td class="price-high">$1.20</td><td>$420-12K</td></tr><tr><td><strong>Multi-Agent</strong></td><td>200K</td><td class="price-mid">$0.11</td><td class="price-high">$3.00</td><td>$1.1K-30K</td></tr></tbody></table></div></div></div>
+    <div class="sub-content" id="agents-price"><div class="container"><div class="section-title">Pricing Models</div><div class="cards-grid"><div class="card"><h3>🏷️ Per-Seat</h3><div class="card-metric">$20-500</div><div class="card-metric-label">/user/mo</div><p>Traditional SaaS.</p></div><div class="card"><h3>⚡ Per-Task</h3><div class="card-metric">$0.01-5</div><div class="card-metric-label">/task</div><p>Aligns cost with value.</p></div><div class="card"><h3>🎯 Outcome</h3><div class="card-metric">10-30%</div><div class="card-metric-label">of value</div><p>Revenue share.</p></div><div class="card"><h3>🔢 Token Pass</h3><div class="card-metric">2-5x</div><div class="card-metric-label">markup</div><p>Transparent, deflation risk.</p></div></div></div></div>
+    <div class="sub-content" id="agents-roi"><div class="container"><div class="section-title">ROI Benchmarks</div><div class="cards-grid"><div class="card"><h3>Support</h3><div class="card-metric">40-60%</div><div class="card-metric-label">deflection</div><div class="roi-meter"><div class="roi-bar"><div class="roi-fill" style="width:85%;background:#4ade80"></div></div></div></div><div class="card"><h3>Sales SDR</h3><div class="card-metric">2-3x</div><div class="card-metric-label">pipeline/cost</div><div class="roi-meter"><div class="roi-bar"><div class="roi-fill" style="width:70%;background:#f5a623"></div></div></div></div><div class="card"><h3>Code Gen</h3><div class="card-metric">25-45%</div><div class="card-metric-label">productivity</div><div class="roi-meter"><div class="roi-bar"><div class="roi-fill" style="width:75%;background:#4ade80"></div></div></div></div><div class="card"><h3>Data Analysis</h3><div class="card-metric">60-80%</div><div class="card-metric-label">time saved</div><div class="roi-meter"><div class="roi-bar"><div class="roi-fill" style="width:65%;background:#f5a623"></div></div></div></div></div></div></div>
+    <div class="sub-content" id="agents-calc"><div class="container"><div class="section-title">Agent TCO Calculator</div><div class="card calc-wrap"><label>Complexity</label><select id="ac-t"><option value="27500|2000">Reactive $20-35K</option><option value="55000|15000" selected>Intermediate $40-70K</option><option value="100000|40000">Advanced $80-120K</option><option value="150000|100000">Swarm $100-200K+</option></select><label>LLM</label><select id="ac-m"><option value="0.21">DeepSeek V3.2</option><option value="5.63" selected>GPT-5</option><option value="9.00">Sonnet 4.6</option><option value="15.00">Opus 4.6</option></select><label>Tasks/Month</label><input id="ac-k" type="number" value="10000"><button class="calc-btn" onclick="calcAgent()">Calculate</button><div class="calc-result" id="ac-r"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center;margin-bottom:10px"><div><div style="color:#6b7280;font-size:10px">Dev</div><div id="ac-d" style="font-size:22px;font-weight:800;color:#60a5fa"></div></div><div><div style="color:#6b7280;font-size:10px">Monthly Inference</div><div id="ac-mo" style="font-size:22px;font-weight:800;color:#f5a623"></div></div></div><div style="text-align:center;border-top:1px solid #1c1f28;padding-top:10px"><div style="color:#6b7280;font-size:10px">Year 1 TCO</div><div id="ac-tc" class="calc-big"></div></div></div></div></div></div>
+</div>
+
+<!-- ===================================================== SECTION: BENCHMARKS ===================================================== -->
+<div id="sec-benchmarks" class="main-section">
+    <div class="sec-header"><h2><span>LLM Benchmarks</span> Leaderboard</h2><p>Arena Elo, MMLU-Pro, GPQA, HumanEval, SWE-bench, MATH-500.</p></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value">25+</div><div class="stat-label">Models</div></div><div class="stat-item"><div class="stat-value">10</div><div class="stat-label">Benchmarks</div></div><div class="stat-item"><div class="stat-value">6M+</div><div class="stat-label">Arena Votes</div></div></div>
+    <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'bench','overall')">🏆 Overall</button><button class="sub-tab" onclick="showSub(event,'bench','arena')">⚔️ Arena</button><button class="sub-tab" onclick="showSub(event,'bench','code')">💻 Coding</button><button class="sub-tab" onclick="showSub(event,'bench','reason')">🧠 Reasoning</button><button class="sub-tab" onclick="showSub(event,'bench','guide')">📖 Guide</button></div>
+    <div class="sub-content active" id="bench-overall"><div class="container"><div class="section-title">Overall Rankings</div><div class="filter-row"><button class="filter-btn active" onclick="filterTable('bt','all',this)">All</button><button class="filter-btn" onclick="filterTable('bt','open',this)">Open</button><button class="filter-btn" onclick="filterTable('bt','closed',this)">Closed</button></div><div class="table-wrap"><table id="bt"><thead><tr><th>#</th><th>Model</th><th>Arena</th><th>MMLU-Pro</th><th>GPQA</th><th>HumanEval</th><th>SWE</th><th>MATH</th><th>Type</th><th>$/1M</th></tr></thead><tbody>
+    <tr data-provider="closed"><td><span class="rank-badge rank-1">1</span></td><td><strong>Claude Opus 4.6</strong></td><td class="score-top">1389</td><td class="score-top">84.5</td><td class="score-top">72.1</td><td class="score-top">95.2</td><td class="score-top">62.3</td><td class="score-top">96.8</td><td><span class="badge badge-red">Closed</span></td><td>$15</td></tr>
+    <tr data-provider="closed"><td><span class="rank-badge rank-2">2</span></td><td><strong>GPT-5</strong></td><td class="score-top">1380</td><td class="score-top">83.8</td><td class="score-top">70.5</td><td class="score-top">94.8</td><td class="score-top">60.1</td><td class="score-top">95.5</td><td><span class="badge badge-red">Closed</span></td><td>$5.63</td></tr>
+    <tr data-provider="closed"><td><span class="rank-badge rank-3">3</span></td><td><strong>Gemini 2.5 Pro</strong></td><td class="score-top">1372</td><td class="score-top">82.9</td><td class="score-high">69.2</td><td class="score-top">93.5</td><td class="score-top">58.7</td><td class="score-top">94.2</td><td><span class="badge badge-red">Closed</span></td><td>$5.63</td></tr>
+    <tr data-provider="closed"><td><span class="rank-badge rank-other">4</span></td><td><strong>Claude Sonnet 4.6</strong></td><td class="score-high">1358</td><td class="score-high">81.2</td><td class="score-high">66.8</td><td class="score-top">92.1</td><td class="score-high">55.4</td><td class="score-top">93.1</td><td><span class="badge badge-red">Closed</span></td><td>$9</td></tr>
+    <tr data-provider="closed"><td><span class="rank-badge rank-other">5</span></td><td><strong>Grok 3</strong></td><td class="score-high">1350</td><td class="score-high">79.8</td><td class="score-high">64.5</td><td class="score-high">90.3</td><td class="score-high">52.1</td><td class="score-top">91.8</td><td><span class="badge badge-red">Closed</span></td><td>$9</td></tr>
+    <tr data-provider="open"><td><span class="rank-badge rank-other">6</span></td><td><strong>DeepSeek V3.2</strong></td><td class="score-high">1342</td><td class="score-high">78.5</td><td class="score-high">62.1</td><td class="score-high">89.7</td><td class="score-high">49.8</td><td class="score-high">90.5</td><td><span class="badge badge-green">Open</span></td><td>$0.21</td></tr>
+    <tr data-provider="closed"><td><span class="rank-badge rank-other">7</span></td><td><strong>GPT-4o</strong></td><td class="score-high">1335</td><td class="score-high">76.2</td><td class="score-mid">58.9</td><td class="score-high">88.4</td><td class="score-mid">45.2</td><td class="score-high">88.7</td><td><span class="badge badge-red">Closed</span></td><td>$6.25</td></tr>
+    <tr data-provider="open"><td><span class="rank-badge rank-other">8</span></td><td><strong>Llama 4 Maverick</strong></td><td class="score-high">1320</td><td class="score-mid">74.1</td><td class="score-mid">56.3</td><td class="score-high">86.9</td><td class="score-mid">42.5</td><td class="score-high">87.2</td><td><span class="badge badge-green">Open</span></td><td>Host</td></tr>
+    <tr data-provider="closed"><td><span class="rank-badge rank-other">9</span></td><td><strong>Claude Haiku 4.5</strong></td><td class="score-mid">1290</td><td class="score-mid">70.5</td><td class="score-mid">52.1</td><td class="score-high">82.3</td><td class="score-mid">38.1</td><td class="score-high">84.5</td><td><span class="badge badge-red">Closed</span></td><td>$2.40</td></tr>
+    <tr data-provider="open"><td><span class="rank-badge rank-other">10</span></td><td><strong>Mistral Large 2</strong></td><td class="score-mid">1275</td><td class="score-mid">68.8</td><td class="score-mid">50.2</td><td class="score-mid">80.1</td><td class="score-mid">35.6</td><td class="score-high">82.1</td><td><span class="badge badge-green">Open</span></td><td>$2</td></tr>
+    </tbody></table></div></div></div>
+    <div class="sub-content" id="bench-arena"><div class="container"><div class="section-title">Chatbot Arena Elo</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Claude Opus 4.6</span><span>1389</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#4ade80">1389</div></div></div><div class="bar-group"><div class="bar-label"><span>GPT-5</span><span>1380</span></div><div class="bar-track"><div class="bar-fill" style="width:97%;background:#4ade80">1380</div></div></div><div class="bar-group"><div class="bar-label"><span>Gemini 2.5 Pro</span><span>1372</span></div><div class="bar-track"><div class="bar-fill" style="width:94%;background:#4ade80">1372</div></div></div><div class="bar-group"><div class="bar-label"><span>Claude Sonnet 4.6</span><span>1358</span></div><div class="bar-track"><div class="bar-fill" style="width:88%;background:#f5a623">1358</div></div></div><div class="bar-group"><div class="bar-label"><span>Grok 3</span><span>1350</span></div><div class="bar-track"><div class="bar-fill" style="width:85%;background:#f5a623">1350</div></div></div><div class="bar-group"><div class="bar-label"><span>DeepSeek V3.2</span><span>1342</span></div><div class="bar-track"><div class="bar-fill" style="width:82%;background:#f5a623">1342</div></div></div></div></div></div>
+    <div class="sub-content" id="bench-code"><div class="container"><div class="section-title">SWE-bench Verified</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Claude Opus 4.6</span><span>62.3%</span></div><div class="bar-track"><div class="bar-fill" style="width:62%;background:#4ade80">62.3%</div></div></div><div class="bar-group"><div class="bar-label"><span>GPT-5</span><span>60.1%</span></div><div class="bar-track"><div class="bar-fill" style="width:60%;background:#4ade80">60.1%</div></div></div><div class="bar-group"><div class="bar-label"><span>Gemini 2.5 Pro</span><span>58.7%</span></div><div class="bar-track"><div class="bar-fill" style="width:58%;background:#f5a623">58.7%</div></div></div><div class="bar-group"><div class="bar-label"><span>Claude Sonnet 4.6</span><span>55.4%</span></div><div class="bar-track"><div class="bar-fill" style="width:55%;background:#f5a623">55.4%</div></div></div><div class="bar-group"><div class="bar-label"><span>DeepSeek V3.2</span><span>49.8%</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:#fbbf24">49.8%</div></div></div></div></div></div>
+    <div class="sub-content" id="bench-reason"><div class="container"><div class="section-title">MATH-500</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Claude Opus 4.6</span><span>96.8%</span></div><div class="bar-track"><div class="bar-fill" style="width:97%;background:#4ade80">96.8%</div></div></div><div class="bar-group"><div class="bar-label"><span>GPT-5</span><span>95.5%</span></div><div class="bar-track"><div class="bar-fill" style="width:96%;background:#4ade80">95.5%</div></div></div><div class="bar-group"><div class="bar-label"><span>Gemini 2.5 Pro</span><span>94.2%</span></div><div class="bar-track"><div class="bar-fill" style="width:94%;background:#4ade80">94.2%</div></div></div><div class="bar-group"><div class="bar-label"><span>Grok 3</span><span>91.8%</span></div><div class="bar-track"><div class="bar-fill" style="width:92%;background:#f5a623">91.8%</div></div></div><div class="bar-group"><div class="bar-label"><span>DeepSeek V3.2</span><span>90.5%</span></div><div class="bar-track"><div class="bar-fill" style="width:91%;background:#f5a623">90.5%</div></div></div></div></div></div>
+    <div class="sub-content" id="bench-guide"><div class="container"><div class="section-title">Benchmark Guide</div><div class="cards-grid"><div class="card"><h3>⚔️ Arena</h3><p>6M+ human votes. Gold standard for preference.</p></div><div class="card"><h3>📚 MMLU-Pro</h3><p>57 subjects. Broad knowledge test.</p></div><div class="card"><h3>🔬 GPQA</h3><p>PhD-level science reasoning.</p></div><div class="card"><h3>💻 HumanEval</h3><p>164 Python coding tasks.</p></div><div class="card"><h3>🛠️ SWE-bench</h3><p>Real GitHub issues. Most realistic.</p></div><div class="card"><h3>🧮 MATH-500</h3><p>Competition math reasoning.</p></div></div></div></div>
+</div>
+
+<!-- ===================================================== SECTION: FINOPS ===================================================== -->
+<div id="sec-finops" class="main-section">
+    <div class="sec-header"><h2><span>FinOps</span> for AI</h2><p>Frameworks, tools, and strategies to cut AI spend 20-60%.</p></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value">84%</div><div class="stat-label">Margin Hit</div></div><div class="stat-item"><div class="stat-value">15%</div><div class="stat-label">Forecast Right</div></div><div class="stat-item"><div class="stat-value">20-40%</div><div class="stat-label">Savings Opp</div></div></div>
+    <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'finops','frame')">🎯 Framework</button><button class="sub-tab" onclick="showSub(event,'finops','tools')">🔧 Tools</button><button class="sub-tab" onclick="showSub(event,'finops','strat')">💡 Strategies</button><button class="sub-tab" onclick="showSub(event,'finops','data')">📊 Benchmarks</button><button class="sub-tab" onclick="showSub(event,'finops','calc')">🧮 Savings</button></div>
+    <div class="sub-content active" id="finops-frame"><div class="container"><div class="section-title">AI FinOps Framework</div><div style="max-width:700px"><div class="framework-step"><div class="step-num">1</div><div class="step-content"><h3>Allocation</h3><p>Tag AI costs to teams, projects, models.</p></div></div><div class="framework-step"><div class="step-num">2</div><div class="step-content"><h3>Forecasting</h3><p>Predict costs. Build 30-50% buffers.</p></div></div><div class="framework-step"><div class="step-num">3</div><div class="step-content"><h3>Anomaly Detection</h3><p>Real-time alerts. Per-task budgets.</p></div></div><div class="framework-step"><div class="step-num">4</div><div class="step-content"><h3>Rate Optimization</h3><p>Volume discounts, CUDs, spot, cheapest model.</p></div></div><div class="framework-step"><div class="step-num">5</div><div class="step-content"><h3>Rightsizing</h3><p>Match model to task complexity.</p></div></div><div class="framework-step"><div class="step-num">6</div><div class="step-content"><h3>Governance</h3><p>Unified dashboards, approval workflows.</p></div></div></div></div></div>
+    <div class="sub-content" id="finops-tools"><div class="container"><div class="section-title">Top Tools 2026</div><div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))"><div class="tool-card"><div class="tool-name">Cast AI</div><div class="tool-cat">K8s + GPU</div><ul class="tool-feat"><li>K8s cost optimization</li><li>Spot management</li><li>GPU monitoring</li></ul></div><div class="tool-card"><div class="tool-name">Finout</div><div class="tool-cat">Enterprise FinOps</div><ul class="tool-feat"><li>Multi-cloud billing</li><li>AI cost attribution</li><li>Custom dashboards</li></ul></div><div class="tool-card"><div class="tool-name">Cloudchipr</div><div class="tool-cat">AI Optimization</div><ul class="tool-feat"><li>AI recommendations</li><li>Real-time observability</li><li>Auto cleanup</li></ul></div><div class="tool-card"><div class="tool-name">Holori</div><div class="tool-cat">Multi-Cloud</div><ul class="tool-feat"><li>20+ providers</li><li>Topology mapping</li><li>Forecasting</li></ul></div><div class="tool-card"><div class="tool-name">Flexera One</div><div class="tool-cat">IT + Cloud</div><ul class="tool-feat"><li>Hybrid cloud</li><li>SaaS optimization</li><li>License compliance</li></ul></div><div class="tool-card"><div class="tool-name">Keebo</div><div class="tool-cat">Data Cost</div><ul class="tool-feat"><li>Auto-tune warehouses</li><li>Query optimization</li><li>Snowflake focus</li></ul></div></div></div></div>
+    <div class="sub-content" id="finops-strat"><div class="container"><div class="section-title">Optimization Strategies</div><div class="cards-grid"><div class="card"><h3>🔀 Model Routing</h3><div class="card-metric">40-70%</div><div class="card-metric-label">savings</div></div><div class="card"><h3>💾 Prompt Caching</h3><div class="card-metric">50-90%</div><div class="card-metric-label">on repeats</div></div><div class="card"><h3>📐 Prompt Eng</h3><div class="card-metric">20-50%</div><div class="card-metric-label">token cut</div></div><div class="card"><h3>🔄 Batch API</h3><div class="card-metric">50%</div><div class="card-metric-label">discount</div></div><div class="card"><h3>🖥️ Spot GPUs</h3><div class="card-metric">60-90%</div><div class="card-metric-label">vs on-demand</div></div><div class="card"><h3>🏠 Self-Host</h3><div class="card-metric">80-95%</div><div class="card-metric-label">at scale</div></div></div><div class="alert-box"><h4>Quick Win Stack (1 week)</h4><p>Cache → Route → Batch → Prompt audit = 60-80% reduction.</p></div></div></div>
+    <div class="sub-content" id="finops-data"><div class="container"><div class="section-title">Cost by Org Size</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Enterprise 10K+</span><span class="price-high">$500K-2M+/mo</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#ef4444">$500K-2M+</div></div></div><div class="bar-group"><div class="bar-label"><span>Mid-Market</span><span class="price-mid">$50-500K</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:#f5a623">$50-500K</div></div></div><div class="bar-group"><div class="bar-label"><span>Startup</span><span class="price-low">$5-50K</span></div><div class="bar-track"><div class="bar-fill" style="width:15%;background:#4ade80">$5-50K</div></div></div></div></div></div>
+    <div class="sub-content" id="finops-calc"><div class="container"><div class="section-title">Savings Calculator</div><div class="card calc-wrap"><label>Monthly AI Spend</label><input id="fc-s" type="number" value="50000"><label>Level</label><select id="fc-l"><option value="0.15">Basic ~15%</option><option value="0.35" selected>Moderate ~35%</option><option value="0.55">Advanced ~55%</option><option value="0.75">Aggressive ~75%</option></select><button class="calc-btn" onclick="calcFin()">Calculate</button><div class="calc-result" id="fc-r"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center"><div><div style="color:#6b7280;font-size:10px">Monthly Save</div><div id="fc-m" style="font-size:20px;font-weight:800;color:#4ade80"></div></div><div><div style="color:#6b7280;font-size:10px">Annual</div><div id="fc-y" style="font-size:20px;font-weight:800;color:#4ade80"></div></div><div><div style="color:#6b7280;font-size:10px">New Monthly</div><div id="fc-n" style="font-size:20px;font-weight:800;color:#f5a623"></div></div></div></div></div></div></div>
+</div>
+
+<!-- ===================================================== SECTION: PRICING ===================================================== -->
+<div id="sec-pricing" class="main-section">
+    <div class="sec-header"><h2>Perffeco <span>Pricing</span></h2><p>Choose the plan for your intelligence economics needs.</p></div>
+    <div class="container">
+        <div class="billing-toggle">
+            <span class="active" id="toggle-monthly">Monthly</span>
+            <div class="toggle-switch" id="billing-switch" onclick="toggleBilling()"></div>
+            <span id="toggle-annual">Annual</span>
+            <span class="billing-save">Save 20%</span>
+        </div>
+        <div class="tier-grid" style="max-width:1100px;margin:0 auto">
+            <div class="tier-card">
+                <div class="tier-name">Free</div>
+                <div class="tier-price">$0</div>
+                <div class="tier-range">/month</div>
+                <ul class="tier-features"><li>LLM pricing dashboard</li><li>Basic benchmarks</li><li>Top 5 GPU pricing</li><li>Weekly updates</li></ul>
+                <button class="calc-btn" style="margin-top:16px" onclick="showMain('home')">Get Started</button>
+            </div>
+            <div class="tier-card" style="border-color:#f5a623">
+                <div class="tier-name" style="color:#f5a623">Pro</div>
+                <div class="tier-price" data-monthly="$29" data-annual="$23">$29</div>
+                <div class="tier-range" data-monthly="/month" data-annual="/mo (billed annually)">/month</div>
+                <ul class="tier-features"><li>Everything in Free</li><li>Full GPU economics (15+)</li><li>AI Agent analytics</li><li>FinOps tools & strategies</li><li>All calculators</li><li>Daily updates + CSV/API</li></ul>
+                <a class="calc-btn" style="margin-top:16px;display:block;text-align:center;text-decoration:none;color:#0d0f14" href="https://buy.stripe.com/YOUR_PRO_MONTHLY_LINK" data-monthly-href="https://buy.stripe.com/YOUR_PRO_MONTHLY_LINK" data-annual-href="https://buy.stripe.com/YOUR_PRO_ANNUAL_LINK" target="_blank">Subscribe</a>
+            </div>
+            <div class="tier-card">
+                <div class="tier-name">Team</div>
+                <div class="tier-price" data-monthly="$79" data-annual="$63">$79</div>
+                <div class="tier-range" data-monthly="/user/month" data-annual="/user/mo (billed annually)">/user/month</div>
+                <ul class="tier-features"><li>Everything in Pro</li><li>Up to 10 seats</li><li>Shared dashboards</li><li>Team analytics</li><li>Priority support</li><li>API access (10K calls/mo)</li></ul>
+                <a class="calc-btn" style="margin-top:16px;display:block;text-align:center;text-decoration:none;color:#0d0f14" href="https://buy.stripe.com/YOUR_TEAM_MONTHLY_LINK" data-monthly-href="https://buy.stripe.com/YOUR_TEAM_MONTHLY_LINK" data-annual-href="https://buy.stripe.com/YOUR_TEAM_ANNUAL_LINK" target="_blank">Subscribe</a>
+            </div>
+            <div class="tier-card">
+                <div class="tier-name">Enterprise</div>
+                <div class="tier-price">Custom</div>
+                <div class="tier-range">contact us</div>
+                <ul class="tier-features"><li>Everything in Team</li><li>Unlimited seats</li><li>Real-time API</li><li>Custom dashboards</li><li>SSO & SAML</li><li>Dedicated manager + SLA</li><li>White-label option</li></ul>
+                <a class="calc-btn" style="margin-top:16px;display:block;text-align:center;text-decoration:none;color:#0d0f14" href="mailto:hello@perffeco.com">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     SECTION: FAQ
+     ===================================================== -->
+<div id="sec-faq" class="main-section">
+    <div class="sec-header"><h2>Frequently Asked <span>Questions</span></h2><p>Everything you need to know about Perffeco and our data.</p></div>
+    <div class="faq-list">
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">Where does Perffeco source its data?</div>
+            <div class="faq-a"><p>We aggregate data from official provider APIs, published technical reports, Epoch AI research, LM Arena leaderboards, and direct price-page scraping across 15+ GPU providers and 8+ LLM API providers. All disclosed costs are lab-verified; estimated costs use the Epoch AI cost model.</p></div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">How often is data updated?</div>
+            <div class="faq-a"><p>Free tier data updates weekly. Pro subscribers get daily updates. Enterprise customers receive real-time feeds via our API. Pricing data is checked against live provider pages every 24 hours.</p></div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">How is the Composite Intelligence Score (CIS) calculated?</div>
+            <div class="faq-a"><p>CIS = MMLU x 0.15 + MMLU-Pro x 0.30 + GPQA x 0.35 + HLE x 0.20. This weighting reflects the discriminative power of each benchmark in 2025-2026: GPQA (PhD-level) has the highest weight, while MMLU is down-weighted due to near-saturation at 91%+ ceilings.</p></div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">Can I export data or use an API?</div>
+            <div class="faq-a"><p>Pro subscribers can export data as CSV. Team and Enterprise plans include API access with up to 10K calls/month (Team) or unlimited (Enterprise). Contact us for custom data feeds and white-label solutions.</p></div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">What do the subscription plans include?</div>
+            <div class="faq-a"><p>Free gives you basic dashboards and weekly data. Pro ($29/mo) unlocks all calculators, full GPU/agent analytics, daily data, and CSV export. Team ($79/user/mo) adds shared dashboards, team analytics, and API access. Enterprise gets unlimited API, SSO, dedicated support, and SLA.</p></div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">How do I cancel my subscription?</div>
+            <div class="faq-a"><p>You can cancel anytime from your Stripe billing portal — no lock-in, no questions asked. Your access continues until the end of your billing period. Email hello@perffeco.com if you need help.</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+    <p style="color:#f5a623;font-weight:700;margin-bottom:6px">Perffeco — The Central Hub for Intelligence Economics</p>
+    <p>LLM Pricing · GPU Economics · AI Agents · FinOps · Benchmarks</p>
+    <p style="margin-top:10px"><a onclick="showMain('faq')" style="color:#6b7280;cursor:pointer;text-decoration:none;margin:0 8px">FAQ</a> · <a onclick="showMain('pricing')" style="color:#6b7280;cursor:pointer;text-decoration:none;margin:0 8px">Pricing</a> · <a href="mailto:hello@perffeco.com" style="color:#6b7280;text-decoration:none;margin:0 8px">Contact</a></p>
+    <p style="margin-top:8px;font-size:10px;color:#4b5563">Sources: Epoch AI · LM Arena · GetDeploying · Cast AI · FinOps Foundation · PricePerToken · Provider APIs</p>
+    <p style="margin-top:4px;font-size:10px;color:#4b5563">&copy; 2026 Perffeco. All rights reserved.</p>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// Model data with multiple axis values
+const models=[
+    {name:'Gemini 2.5 Pro',provider:'google',flops:25.1,cost:8.18,cpt:-4.52,cis:71.9,ipd:8.80,ipt:15.9,r:14,color:'#60a5fa'},
+    {name:'o1',provider:'openai',flops:24.8,cost:8.30,cpt:-3.82,cis:66.8,ipd:8.05,ipt:17.5,r:13,color:'#4ade80'},
+    {name:'DeepSeek V3/R1',provider:'deepseek',flops:24.5,cost:6.75,cpt:-5.52,cis:65.8,ipd:9.76,ipt:19.2,r:15,color:'#f87171'},
+    {name:'Claude 3.5 Sonnet',provider:'anthropic',flops:24.4,cost:7.60,cpt:-4.52,cis:60.4,ipd:7.95,ipt:13.4,r:12,color:'#f5a623'},
+    {name:'Claude 3 Opus',provider:'anthropic',flops:25.0,cost:8.00,cpt:-3.70,cis:57.2,ipd:7.15,ipt:11.5,r:14,color:'#f5a623'},
+    {name:'Llama 3.1 405B',provider:'meta',flops:25.0,cost:7.48,cpt:-5.00,cis:55.2,ipd:7.38,ipt:11.0,r:13,color:'#34d399'},
+    {name:'GPT-4o',provider:'openai',flops:24.8,cost:7.90,cpt:-4.40,cis:54.1,ipd:6.85,ipt:12.3,r:12,color:'#4ade80'},
+    {name:'Qwen2.5 72B',provider:'alibaba',flops:24.7,cost:6.90,cpt:-5.22,cis:53.1,ipd:7.70,ipt:10.2,r:11,color:'#fb923c'},
+    {name:'Gemini 1.5 Pro',provider:'google',flops:25.2,cost:7.70,cpt:-4.30,cis:50.9,ipd:6.61,ipt:11.8,r:13,color:'#60a5fa'},
+    {name:'Mistral Large 2',provider:'mistral',flops:25.4,cost:7.40,cpt:-4.70,cis:55.5,ipd:7.50,ipt:11.8,r:12,color:'#c084fc'},
+    {name:'GPT-4',provider:'openai',flops:25.4,cost:8.70,cpt:-3.52,cis:47.3,ipd:5.43,ipt:13.4,r:14,color:'#4ade80'},
+    {name:'Llama 4 Scout',provider:'meta',flops:23.8,cost:6.30,cpt:-5.40,cis:45.2,ipd:7.17,ipt:8.4,r:10,color:'#34d399'},
+];
+
+// Axis configuration
+const axisConfig={
+    x:{
+        flops:{key:'flops',label:'Train FLOPs (Log\u2081\u2080)',min:23.2,max:26.0},
+        cost:{key:'cost',label:'Train Cost USD (Log\u2081\u2080)',min:5.8,max:9.2},
+        cpt:{key:'cpt',label:'Cost per Token (Log\u2081\u2080)',min:-6.0,max:-3.0}
+    },
+    y:{
+        cis:{key:'cis',label:'Composite Intelligence (0-100)',min:42,max:76},
+        ipd:{key:'ipd',label:'Intelligence / Dollar (Log\u2081\u2080)',min:4.5,max:10.5},
+        ipt:{key:'ipt',label:'Intelligence / Token-$ (Log\u2081\u2080)',min:6,max:22}
+    }
+};
+
+let chartInstance=null;
+let currentX='flops',currentY='cis';
+
+function renderChart(){
+    const canvas=document.getElementById('modelChart');
+    if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    if(chartInstance){chartInstance.destroy();chartInstance=null;}
+    const xCfg=axisConfig.x[currentX],yCfg=axisConfig.y[currentY];
+    chartInstance=new Chart(ctx,{
+        type:'bubble',
+        data:{datasets:models.map(m=>({
+            label:m.name,
+            data:[{x:m[xCfg.key],y:m[yCfg.key],r:m.r}],
+            backgroundColor:m.color+'99',
+            borderColor:m.color,
+            borderWidth:2,
+            hoverBorderWidth:3,
+            hoverBackgroundColor:m.color+'cc'
+        }))},
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            animation:{duration:600,easing:'easeOutQuart'},
+            plugins:{
+                legend:{display:false},
+                tooltip:{
+                    backgroundColor:'#1c1f28',titleColor:'#e2e8f0',bodyColor:'#9ca3af',
+                    borderColor:'#2a2d38',borderWidth:1,padding:12,cornerRadius:8,
+                    titleFont:{family:'IBM Plex Mono',size:12,weight:'bold'},
+                    bodyFont:{family:'IBM Plex Mono',size:11},
+                    callbacks:{
+                        title:function(items){return items[0].dataset.label},
+                        label:function(item){
+                            return[xCfg.label+': '+item.parsed.x.toFixed(2),yCfg.label+': '+item.parsed.y.toFixed(1)]
+                        }
+                    }
+                }
+            },
+            scales:{
+                x:{
+                    title:{display:true,text:xCfg.label,color:'#6b7280',font:{family:'IBM Plex Mono',size:11}},
+                    grid:{color:'#1c1f2840',drawBorder:false},
+                    ticks:{color:'#6b7280',font:{family:'IBM Plex Mono',size:10}},
+                    min:xCfg.min,max:xCfg.max
+                },
+                y:{
+                    title:{display:true,text:yCfg.label,color:'#6b7280',font:{family:'IBM Plex Mono',size:11}},
+                    grid:{color:'#1c1f2840',drawBorder:false},
+                    ticks:{color:'#6b7280',font:{family:'IBM Plex Mono',size:10}},
+                    min:yCfg.min,max:yCfg.max
+                }
+            }
+        }
+    });
+}
+
+function showMain(sec){
+    document.querySelectorAll('.main-section').forEach(function(s){s.classList.remove('active')});
+    document.querySelectorAll('.nav-links a').forEach(function(a){a.classList.remove('active')});
+    var el=document.getElementById('sec-'+sec);
+    if(el)el.classList.add('active');
+    var sectionMap={home:'DASHBOARD',agents:'AGENTS',benchmarks:'BENCHMARKS',pricing:'PRICING',finops:'FINOPS',gpu:'GPU ECONOMICS',llm:'LLM ECONOMICS',faq:'FAQ'};
+    var links=document.querySelectorAll('.nav-links a');
+    for(var i=0;i<links.length;i++){if(links[i].textContent.trim()===sectionMap[sec])links[i].classList.add('active');}
+    // Close mobile menu
+    var navLinks=document.querySelector('.nav-links');
+    var hamburger=document.querySelector('.hamburger');
+    if(navLinks)navLinks.classList.remove('open');
+    if(hamburger)hamburger.classList.remove('open');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(sec==='home')setTimeout(renderChart,150);
+}
+
+function showSub(e,section,tab){
+    var secId=section==='bench'?'benchmarks':section;
+    var prefix=section==='bench'?'bench':section;
+    var parent=document.getElementById('sec-'+secId);
+    parent.querySelectorAll('.sub-content').forEach(function(s){s.classList.remove('active')});
+    parent.querySelectorAll('.sub-tab').forEach(function(t){t.classList.remove('active')});
+    var target=document.getElementById(prefix+'-'+tab);
+    if(target)target.classList.add('active');
+    if(e&&e.target)e.target.classList.add('active');
+}
+
+function changeAxis(axis,type,btn){
+    btn.parentElement.querySelectorAll('.axis-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    if(axis==='x')currentX=type;
+    else currentY=type;
+    renderChart();
+}
+
+function filterTable(id,val,btn){
+    btn.parentElement.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    document.querySelectorAll('#'+id+' tbody tr').forEach(function(r){
+        if(val==='all'||r.dataset.provider===val)r.style.display='';
+        else r.style.display='none';
+    });
+}
+
+function fmt(n){return'$'+n.toLocaleString('en-US',{maximumFractionDigits:0})}
+
+function calcLLM(){
+    var vals=document.getElementById('lc-m').value.split('|').map(Number);
+    var i=vals[0],o=vals[1];
+    var c=+document.getElementById('lc-c').value,ti=+document.getElementById('lc-i').value,to=+document.getElementById('lc-o').value;
+    var mi=(c*ti*30)/1e6,mo=(c*to*30)/1e6,cost=mi*i+mo*o;
+    document.getElementById('lc-r').style.display='block';
+    document.getElementById('lc-t').textContent='$'+cost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById('lc-d').textContent=mi.toFixed(1)+'M in + '+mo.toFixed(1)+'M out = '+(c*30).toLocaleString()+' calls/mo';
+}
+
+function calcGPU(){
+    var p=+document.getElementById('gc-g').value,c=+document.getElementById('gc-c').value,h=+document.getElementById('gc-h').value,d=+document.getElementById('gc-d').value;
+    var t=p*c*h*d;
+    document.getElementById('gc-r').style.display='block';
+    document.getElementById('gc-t').textContent=fmt(t);
+    document.getElementById('gc-dt').innerHTML=c+' GPUs × $'+p+'/hr × '+h+'h × '+d+'d<br><span style="color:#f5a623">+~'+fmt(t*.25)+' hidden costs</span>';
+}
+
+function calcAgent(){
+    var vals=document.getElementById('ac-t').value.split('|').map(Number);
+    var dv=vals[0],tk=vals[1];
+    var pr=+document.getElementById('ac-m').value,ts=+document.getElementById('ac-k').value;
+    var mo=(ts*tk/1e6)*pr,tco=dv+mo*12;
+    document.getElementById('ac-r').style.display='block';
+    document.getElementById('ac-d').textContent=fmt(dv);
+    document.getElementById('ac-mo').textContent=fmt(mo);
+    document.getElementById('ac-tc').textContent=fmt(tco);
+}
+
+function calcFin(){
+    var s=+document.getElementById('fc-s').value,r=+document.getElementById('fc-l').value;
+    var m=s*r;
+    document.getElementById('fc-r').style.display='block';
+    document.getElementById('fc-m').textContent=fmt(m);
+    document.getElementById('fc-y').textContent=fmt(m*12);
+    document.getElementById('fc-n').textContent=fmt(s-m);
+}
+
+// Mobile menu
+function toggleMobileMenu(){
+    document.querySelector('.nav-links').classList.toggle('open');
+    document.querySelector('.hamburger').classList.toggle('open');
+}
+
+// Billing toggle
+function toggleBilling(){
+    var sw=document.getElementById('billing-switch');
+    var isAnnual=sw.classList.toggle('annual');
+    document.getElementById('toggle-monthly').classList.toggle('active',!isAnnual);
+    document.getElementById('toggle-annual').classList.toggle('active',isAnnual);
+    document.querySelectorAll('[data-monthly]').forEach(function(el){
+        el.textContent=isAnnual?el.getAttribute('data-annual'):el.getAttribute('data-monthly');
+    });
+    document.querySelectorAll('[data-monthly-href]').forEach(function(el){
+        el.href=isAnnual?el.getAttribute('data-annual-href'):el.getAttribute('data-monthly-href');
+    });
+}
+
+// Back to top
+window.addEventListener('scroll',function(){
+    var btn=document.getElementById('backToTop');
+    if(btn)btn.classList.toggle('visible',window.scrollY>400);
+});
+
+// Stripe payment success handler
+(function(){
+    var params=new URLSearchParams(window.location.search);
+    if(params.get('payment')==='success'){
+        var toast=document.createElement('div');
+        toast.className='toast';
+        toast.textContent='Payment successful! Welcome to Perffeco Pro.';
+        document.body.appendChild(toast);
+        setTimeout(function(){toast.remove()},5000);
+        window.history.replaceState({},'',window.location.pathname);
+    }
+})();
+
+// Init chart when page loads - with retry logic
+window.addEventListener('load',function(){
+    function tryRender(attempts){
+        if(attempts<=0)return;
+        var canvas=document.getElementById('modelChart');
+        if(canvas&&typeof Chart!=='undefined'){
+            renderChart();
+        }else{
+            setTimeout(function(){tryRender(attempts-1)},300);
+        }
+    }
+    tryRender(10);
+});
+</script>
+</body>
+</html>
