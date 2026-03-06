@@ -326,6 +326,9 @@
         .gated-cta{background:#FF8200;color:#000;padding:10px 28px;border-radius:3px;font-weight:700;font-size:13px;border:none;cursor:pointer;transition:opacity .2s}
         .gated-cta:hover{opacity:.85}
         .nav-lock{font-size:10px;margin-left:2px}
+        .export-btn{padding:6px 14px;border-radius:3px;border:1px solid #1e2a38;background:transparent;color:#556677;cursor:pointer;font-size:11px;font-family:'IBM Plex Mono',monospace;transition:all .15s;float:right}
+        .export-btn:hover{border-color:#FF8200;color:#FF8200}
+        .export-btn:disabled{opacity:.4;cursor:default}
 
         footer{text-align:center;padding:36px;color:#3A4A5C;font-size:11px;border-top:1px solid #1a2030;margin-top:50px}
 
@@ -563,11 +566,11 @@
      SECTION: LLM ECONOMICS
      ===================================================== -->
 <div id="sec-llm" class="main-section">
-    <div class="sec-header"><h2><span>LLM Economics</span> Dashboard</h2><p>Compare API pricing across 60+ models. Prices dropped ~80% YoY.</p></div>
-    <div class="stats-row"><div class="stat-item"><div class="stat-value">60+</div><div class="stat-label">Models</div></div><div class="stat-item"><div class="stat-value">-80%</div><div class="stat-label">Price Drop YoY</div></div><div class="stat-item"><div class="stat-value">1000x</div><div class="stat-label">Gap</div></div><div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Providers</div></div></div>
+    <div class="sec-header"><h2><span>LLM Economics</span> Dashboard</h2><p>Compare API pricing across top models. Prices dropped ~80% YoY.</p></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value" id="stat-llm-models">11</div><div class="stat-label">Models</div></div><div class="stat-item"><div class="stat-value">-80%</div><div class="stat-label">Price Drop YoY</div></div><div class="stat-item"><div class="stat-value">1000x</div><div class="stat-label">Gap</div></div><div class="stat-item"><div class="stat-value">6</div><div class="stat-label">Providers</div></div></div>
     <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'llm','api')">💰 API Pricing</button><button class="sub-tab" onclick="showSub(event,'llm','costper')">📊 Cost/Task</button><button class="sub-tab" onclick="showSub(event,'llm','trends')">📈 Trends</button><button class="sub-tab" onclick="showSub(event,'llm','calc')">🧮 Calculator</button><button class="sub-tab" onclick="showSub(event,'llm','perf')">⚡ Price/Perf</button></div>
 
-    <div class="sub-content active" id="llm-api"><div class="container"><div class="section-title">LLM API Pricing</div><div class="section-sub">Per 1M tokens. Blended cost (lowest first).</div>
+    <div class="sub-content active" id="llm-api"><div class="container"><div class="section-title">LLM API Pricing <button class="export-btn" onclick="exportCSV('llm')">Export CSV</button></div><div class="section-sub">Per 1M tokens. Blended cost (lowest first).</div>
     <div class="filter-row"><button class="filter-btn active" onclick="filterTable('llm-table','all',this)">All</button><button class="filter-btn" onclick="filterTable('llm-table','openai',this)">OpenAI</button><button class="filter-btn" onclick="filterTable('llm-table','anthropic',this)">Anthropic</button><button class="filter-btn" onclick="filterTable('llm-table','google',this)">Google</button><button class="filter-btn" onclick="filterTable('llm-table','deepseek',this)">DeepSeek</button><button class="filter-btn" onclick="filterTable('llm-table','mistral',this)">Mistral</button><button class="filter-btn" onclick="filterTable('llm-table','xai',this)">xAI</button></div>
     <div class="table-wrap"><table id="llm-table"><thead><tr><th>Model</th><th>Provider</th><th>Input $/1M</th><th>Output $/1M</th><th>Blended</th><th>Context</th><th>Tier</th></tr></thead><tbody></tbody></table></div></div></div>
 
@@ -609,10 +612,10 @@
         <div class="gated-desc">Unlock full GPU pricing across 15+ providers, price trends, hidden cost analysis, and the GPU calculator.</div>
         <button class="gated-cta" onclick="handleGatedUpgrade()">Upgrade to Pro</button>
     </div>
-    <div class="sec-header"><h2><span>GPU Economics</span> Dashboard</h2><p>Real-time GPU cloud pricing across 15+ providers.</p></div>
-    <div class="stats-row"><div class="stat-item"><div class="stat-value">15+</div><div class="stat-label">Providers</div></div><div class="stat-item"><div class="stat-value">1,300+</div><div class="stat-label">Prices</div></div><div class="stat-item"><div class="stat-value">-70%</div><div class="stat-label">H100 from Peak</div></div><div class="stat-item"><div class="stat-value">4.7x</div><div class="stat-label">Gap</div></div></div>
+    <div class="sec-header"><h2><span>GPU Economics</span> Dashboard</h2><p>GPU cloud pricing across top providers.</p></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value">7</div><div class="stat-label">Providers</div></div><div class="stat-item"><div class="stat-value">10</div><div class="stat-label">Configs</div></div><div class="stat-item"><div class="stat-value">-70%</div><div class="stat-label">H100 from Peak</div></div><div class="stat-item"><div class="stat-value">4.7x</div><div class="stat-label">Gap</div></div></div>
     <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'gpu','table')">💰 Pricing</button><button class="sub-tab" onclick="showSub(event,'gpu','compare')">📊 Compare</button><button class="sub-tab" onclick="showSub(event,'gpu','trends')">📈 Trends</button><button class="sub-tab" onclick="showSub(event,'gpu','hidden')">🔍 Hidden Costs</button><button class="sub-tab" onclick="showSub(event,'gpu','calc')">🧮 Calculator</button></div>
-    <div class="sub-content active" id="gpu-table"><div class="container"><div class="section-title">GPU Pricing Table</div><div class="table-wrap"><table id="gpu-table-inner"><thead><tr><th>GPU</th><th>VRAM</th><th>Provider</th><th>On-Demand</th><th>Spot</th><th>Type</th></tr></thead><tbody></tbody></table></div></div></div>
+    <div class="sub-content active" id="gpu-table"><div class="container"><div class="section-title">GPU Pricing Table <button class="export-btn" onclick="exportCSV('gpu')">Export CSV</button></div><div class="table-wrap"><table id="gpu-table-inner"><thead><tr><th>GPU</th><th>VRAM</th><th>Provider</th><th>On-Demand</th><th>Spot</th><th>Type</th></tr></thead><tbody></tbody></table></div></div></div>
     <div class="sub-content" id="gpu-compare"><div class="container"><div class="section-title">H100 80GB — Provider Compare</div><div class="provider-grid"><div class="prov-card"><div class="prov-name">Vast.ai</div><div class="prov-type">Marketplace</div><div class="prov-price">$1.49</div><div class="prov-unit">/hr on-demand</div></div><div class="prov-card"><div class="prov-name">Lambda</div><div class="prov-type">Specialized</div><div class="prov-price">$1.85</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">RunPod</div><div class="prov-type">Marketplace</div><div class="prov-price">$2.69</div><div class="prov-unit">/hr secure</div></div><div class="prov-card"><div class="prov-name">CoreWeave</div><div class="prov-type">Specialized</div><div class="prov-price">$4.76</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">GCP</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$3.67</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">AWS</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$3.93</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">Azure</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$6.98</div><div class="prov-unit">/hr</div></div><div class="prov-card"><div class="prov-name">OCI</div><div class="prov-type">Hyperscaler</div><div class="prov-price">$10.00</div><div class="prov-unit">/hr</div></div></div></div></div>
     <div class="sub-content" id="gpu-trends"><div class="container"><div class="section-title">H100 Price Trends</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Mid 2023</span><span class="price-high">$7.50-$11.00</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#FF3333">$7.50-$11</div></div></div><div class="bar-group"><div class="bar-label"><span>Q1 2024</span><span class="price-high">$6.00-$8.00</span></div><div class="bar-track"><div class="bar-fill" style="width:75%;background:#FF3333">$6-$8</div></div></div><div class="bar-group"><div class="bar-label"><span>Q1 2025</span><span class="price-mid">$2.85-$3.50</span></div><div class="bar-track"><div class="bar-fill" style="width:35%;background:#FF8200">$2.85-$3.50</div></div></div><div class="bar-group"><div class="bar-label"><span>Jun 2025 (AWS -44%)</span><span class="price-low">$2.00-$3.93</span></div><div class="bar-track"><div class="bar-fill" style="width:28%;background:#33CC66">$2-$3.93</div></div></div><div class="bar-group"><div class="bar-label"><span>Q1 2026</span><span class="price-low">$1.49-$3.93</span></div><div class="bar-track"><div class="bar-fill" style="width:22%;background:#33CC66">$1.49-$3.93</div></div></div></div></div></div>
     <div class="sub-content" id="gpu-hidden"><div class="container"><div class="section-title">Hidden Costs</div><div class="cards-grid"><div class="card"><h3>🌐 Egress</h3><div class="card-metric">$0.08-0.12</div><div class="card-metric-label">/GB out</div></div><div class="card"><h3>💾 Storage</h3><div class="card-metric">$0.02-0.08</div><div class="card-metric-label">/GB/mo</div></div><div class="card"><h3>🔗 Network</h3><div class="card-metric">15-30%</div><div class="card-metric-label">IB premium</div></div><div class="card"><h3>⏱️ Commit</h3><div class="card-metric">1-3yr</div><div class="card-metric-label">RI terms</div></div><div class="card"><h3>🛡️ Support</h3><div class="card-metric">$5-15K</div><div class="card-metric-label">/mo enterprise</div></div><div class="card"><h3>⚡ Spot Risk</h3><div class="card-metric">60-90%</div><div class="card-metric-label">save vs interrupt</div></div></div></div></div>
@@ -643,9 +646,9 @@
 <!-- ===================================================== SECTION: BENCHMARKS ===================================================== -->
 <div id="sec-benchmarks" class="main-section">
     <div class="sec-header"><h2><span>LLM Benchmarks</span> Leaderboard</h2><p>Arena Elo, MMLU-Pro, GPQA, HumanEval, SWE-bench, MATH-500.</p></div>
-    <div class="stats-row"><div class="stat-item"><div class="stat-value">25+</div><div class="stat-label">Models</div></div><div class="stat-item"><div class="stat-value">10</div><div class="stat-label">Benchmarks</div></div><div class="stat-item"><div class="stat-value">5.4M+</div><div class="stat-label">Arena Votes</div></div></div>
+    <div class="stats-row"><div class="stat-item"><div class="stat-value">10</div><div class="stat-label">Models</div></div><div class="stat-item"><div class="stat-value">6</div><div class="stat-label">Benchmarks</div></div><div class="stat-item"><div class="stat-value">5.4M+</div><div class="stat-label">Arena Votes</div></div></div>
     <div class="sub-tabs"><button class="sub-tab active" onclick="showSub(event,'bench','overall')">🏆 Overall</button><button class="sub-tab" onclick="showSub(event,'bench','arena')">⚔️ Arena</button><button class="sub-tab" onclick="showSub(event,'bench','code')">💻 Coding</button><button class="sub-tab" onclick="showSub(event,'bench','reason')">🧠 Reasoning</button><button class="sub-tab" onclick="showSub(event,'bench','guide')">📖 Guide</button></div>
-    <div class="sub-content active" id="bench-overall"><div class="container"><div class="section-title">Overall Rankings</div><div class="filter-row"><button class="filter-btn active" onclick="filterTable('bt','all',this)">All</button><button class="filter-btn" onclick="filterTable('bt','open',this)">Open</button><button class="filter-btn" onclick="filterTable('bt','closed',this)">Closed</button></div><div class="table-wrap"><table id="bt"><thead><tr><th>#</th><th>Model</th><th>Arena</th><th>MMLU-Pro</th><th>GPQA</th><th>HumanEval</th><th>SWE</th><th>MATH</th><th>Type</th><th>$/1M</th></tr></thead><tbody></tbody></table></div></div></div>
+    <div class="sub-content active" id="bench-overall"><div class="container"><div class="section-title">Overall Rankings <button class="export-btn" onclick="exportCSV('benchmark')">Export CSV</button></div><div class="filter-row"><button class="filter-btn active" onclick="filterTable('bt','all',this)">All</button><button class="filter-btn" onclick="filterTable('bt','open',this)">Open</button><button class="filter-btn" onclick="filterTable('bt','closed',this)">Closed</button></div><div class="table-wrap"><table id="bt"><thead><tr><th>#</th><th>Model</th><th>Arena</th><th>MMLU-Pro</th><th>GPQA</th><th>HumanEval</th><th>SWE</th><th>MATH</th><th>Type</th><th>$/1M</th></tr></thead><tbody></tbody></table></div></div></div>
     <div class="sub-content" id="bench-arena"><div class="container"><div class="section-title">Chatbot Arena Elo</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Claude Opus 4.6</span><span>1503</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#33CC66">1503</div></div></div><div class="bar-group"><div class="bar-label"><span>GPT-5</span><span>1480</span></div><div class="bar-track"><div class="bar-fill" style="width:95%;background:#33CC66">1480</div></div></div><div class="bar-group"><div class="bar-label"><span>Claude Sonnet 4.6</span><span>1470</span></div><div class="bar-track"><div class="bar-fill" style="width:93%;background:#33CC66">1470</div></div></div><div class="bar-group"><div class="bar-label"><span>Gemini 2.5 Pro</span><span>1450</span></div><div class="bar-track"><div class="bar-fill" style="width:89%;background:#FF8200">1450</div></div></div><div class="bar-group"><div class="bar-label"><span>Grok 3</span><span>1440</span></div><div class="bar-track"><div class="bar-fill" style="width:87%;background:#FF8200">1440</div></div></div><div class="bar-group"><div class="bar-label"><span>DeepSeek R1</span><span>1436</span></div><div class="bar-track"><div class="bar-fill" style="width:86%;background:#FF8200">1436</div></div></div></div></div></div>
     <div class="sub-content" id="bench-code"><div class="container"><div class="section-title">SWE-bench Verified</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>Claude Opus 4.6</span><span>80.8%</span></div><div class="bar-track"><div class="bar-fill" style="width:81%;background:#33CC66">80.8%</div></div></div><div class="bar-group"><div class="bar-label"><span>Claude Sonnet 4.6</span><span>79.6%</span></div><div class="bar-track"><div class="bar-fill" style="width:80%;background:#33CC66">79.6%</div></div></div><div class="bar-group"><div class="bar-label"><span>GPT-5</span><span>76.3%</span></div><div class="bar-track"><div class="bar-fill" style="width:76%;background:#FF8200">76.3%</div></div></div><div class="bar-group"><div class="bar-label"><span>Claude Haiku 4.5</span><span>73.3%</span></div><div class="bar-track"><div class="bar-fill" style="width:73%;background:#FF8200">73.3%</div></div></div><div class="bar-group"><div class="bar-label"><span>DeepSeek R1</span><span>69.1%</span></div><div class="bar-track"><div class="bar-fill" style="width:69%;background:#FFAA00">69.1%</div></div></div></div></div></div>
     <div class="sub-content" id="bench-reason"><div class="container"><div class="section-title">MATH-500</div><div class="chart-box"><div class="bar-group"><div class="bar-label"><span>GPT-5</span><span>99.4%</span></div><div class="bar-track"><div class="bar-fill" style="width:99%;background:#33CC66">99.4%</div></div></div><div class="bar-group"><div class="bar-label"><span>Claude Sonnet 4.6</span><span>97.8%</span></div><div class="bar-track"><div class="bar-fill" style="width:98%;background:#33CC66">97.8%</div></div></div><div class="bar-group"><div class="bar-label"><span>Claude Opus 4.6</span><span>97.6%</span></div><div class="bar-track"><div class="bar-fill" style="width:98%;background:#33CC66">97.6%</div></div></div><div class="bar-group"><div class="bar-label"><span>DeepSeek R1</span><span>97.3%</span></div><div class="bar-track"><div class="bar-fill" style="width:97%;background:#33CC66">97.3%</div></div></div><div class="bar-group"><div class="bar-label"><span>Mistral Large 2</span><span>93.6%</span></div><div class="bar-track"><div class="bar-fill" style="width:94%;background:#FF8200">93.6%</div></div></div></div></div></div>
@@ -692,14 +695,14 @@
                     <li>Composite Intelligence Score (CIS) methodology & rankings</li>
                     <li>Intelligence / Dollar & Intelligence / Token rankings</li>
                     <li>Energy efficiency rankings (kWh/token)</li>
-                    <li>LLM API pricing table (60+ models, 8 providers)</li>
+                    <li>LLM API pricing table (10+ models, 6 providers)</li>
                     <li>Cost per task estimates (6 task types)</li>
                     <li>Price deflation trends</li>
-                    <li>Benchmark leaderboard (25+ models, 6 benchmarks)</li>
+                    <li>Benchmark leaderboard (10 models, 6 benchmarks)</li>
                     <li>Arena Elo, SWE-bench Coding & MATH Reasoning views</li>
                     <li>Benchmark guide (Arena, MMLU-Pro, GPQA, HumanEval, SWE-bench, MATH-500)</li>
                     <li>Basic GPU pricing (top providers)</li>
-                    <li>Weekly data updates</li>
+                    <li>Curated data with periodic updates</li>
                 </ul>
                 <button class="calc-btn" style="margin-top:16px" onclick="showMain('home')">Get Started</button>
             </div>
@@ -709,7 +712,7 @@
                 <div class="tier-range" data-monthly="/month" data-annual="/mo (billed annually)">/month</div>
                 <ul class="tier-features">
                     <li>Everything in Free</li>
-                    <li>Full GPU economics (1,300+ prices, 15+ providers)</li>
+                    <li>Full GPU economics (7+ providers, trends, hidden costs)</li>
                     <li>GPU provider compare (H100 across 8 providers)</li>
                     <li>GPU price trends (historical pricing)</li>
                     <li>GPU hidden cost analysis (egress, storage, network, spot risk)</li>
@@ -723,8 +726,7 @@
                     <li>Cost by org size benchmarks (startup to enterprise)</li>
                     <li>All calculators (LLM token, GPU cost, Agent TCO, FinOps savings)</li>
                     <li>LLM price/performance rankings</li>
-                    <li>Live data via OpenRouter API</li>
-                    <li>Daily data updates</li>
+                    <li>Live LLM pricing via OpenRouter API</li>
                     <li>CSV export</li>
                 </ul>
                 <button class="calc-btn" style="margin-top:16px;display:block;width:100%;text-align:center" data-monthly-href="https://buy.stripe.com/00waEX8te2cLdxwd3PaMU01" data-annual-href="https://buy.stripe.com/14AfZh9xicRpeBAbZLaMU02" onclick="handleSubscribe(this)">Subscribe</button>
@@ -735,12 +737,13 @@
                 <div class="tier-range" data-monthly="/user/month" data-annual="/user/mo (billed annually)">/user/month</div>
                 <ul class="tier-features">
                     <li>Everything in Pro</li>
-                    <li>Up to 10 seats</li>
-                    <li>Shared dashboards</li>
-                    <li>Team cost analytics</li>
                     <li>Priority support</li>
-                    <li>API access (10K calls/mo)</li>
-                    <li>Custom alerts</li>
+                    <li>Team features coming Q2 2026:</li>
+                    <li style="color:#556677">Up to 10 seats</li>
+                    <li style="color:#556677">Shared dashboards</li>
+                    <li style="color:#556677">Team cost analytics</li>
+                    <li style="color:#556677">API access (10K calls/mo)</li>
+                    <li style="color:#556677">Custom price alerts</li>
                 </ul>
                 <button class="calc-btn" style="margin-top:16px;display:block;width:100%;text-align:center" data-monthly-href="https://buy.stripe.com/fZu9ATbFqdVteBAaVHaMU03" data-annual-href="https://buy.stripe.com/9B64gz5h27x50KK5BnaMU04" onclick="handleSubscribe(this)">Subscribe</button>
             </div>
@@ -751,12 +754,12 @@
                 <ul class="tier-features">
                     <li>Everything in Team</li>
                     <li>Unlimited seats</li>
-                    <li>Real-time API (unlimited calls)</li>
-                    <li>Custom dashboards & reports</li>
-                    <li>SSO & SAML</li>
                     <li>Dedicated account manager</li>
                     <li>SLA guarantee</li>
-                    <li>White-label option</li>
+                    <li>Custom onboarding</li>
+                    <li style="color:#556677">SSO & SAML (roadmap)</li>
+                    <li style="color:#556677">Real-time API (roadmap)</li>
+                    <li style="color:#556677">White-label option (roadmap)</li>
                 </ul>
                 <a class="calc-btn" style="margin-top:16px;display:block;text-align:center;text-decoration:none;color:#000000" href="mailto:hello@perffeco.com">Contact Sales</a>
             </div>
@@ -839,7 +842,7 @@
         </div>
         <div class="faq-item" onclick="this.classList.toggle('open')">
             <div class="faq-q">What do the subscription plans include?</div>
-            <div class="faq-a"><p>Free includes the Frontier Model Economics dashboard (interactive bubble chart, 6 axes), CIS methodology and all intelligence rankings (per-dollar, per-token, energy efficiency), LLM API pricing (60+ models, 8 providers), cost/task estimates, price deflation trends, the full benchmark leaderboard (25+ models, 6 benchmarks), Arena Elo, SWE-bench Coding, MATH Reasoning views, benchmark guide, basic GPU pricing, and weekly updates. Pro ($29/mo) adds full GPU economics (1,300+ prices, 15+ providers, H100 compare across 8 providers, trends, hidden costs), complete AI Agent economics (dev cost tiers, inference tables, pricing models, ROI benchmarks), the full FinOps suite (6-step framework, tools directory, optimization strategies, Quick Win Stack, cost-by-org benchmarks), all four calculators (LLM token, GPU cost, Agent TCO, FinOps savings), LLM price/performance rankings, live data via OpenRouter API, daily updates, and CSV export. Team ($79/user/mo) adds up to 10 seats, shared dashboards, team cost analytics, priority support, API access (10K calls/mo), and custom alerts. Enterprise gets unlimited seats, real-time API (unlimited), custom dashboards and reports, SSO/SAML, a dedicated account manager, SLA guarantee, and white-label options.</p></div>
+            <div class="faq-a"><p>Free includes the Frontier Model Economics dashboard (interactive bubble chart, 6 axes), CIS methodology and all intelligence rankings (per-dollar, per-token, energy efficiency), LLM API pricing (10+ models, 6 providers), cost/task estimates, price deflation trends, the full benchmark leaderboard (10 models, 6 benchmarks), Arena Elo, SWE-bench Coding, MATH Reasoning views, benchmark guide, basic GPU pricing, and weekly updates. Pro ($29/mo) adds full GPU economics (1,300+ prices, 15+ providers, H100 compare across 8 providers, trends, hidden costs), complete AI Agent economics (dev cost tiers, inference tables, pricing models, ROI benchmarks), the full FinOps suite (6-step framework, tools directory, optimization strategies, Quick Win Stack, cost-by-org benchmarks), all four calculators (LLM token, GPU cost, Agent TCO, FinOps savings), LLM price/performance rankings, live data via OpenRouter API, daily updates, and CSV export. Team ($79/user/mo) adds up to 10 seats, shared dashboards, team cost analytics, priority support, API access (10K calls/mo), and custom alerts. Enterprise gets unlimited seats, real-time API (unlimited), custom dashboards and reports, SSO/SAML, a dedicated account manager, SLA guarantee, and white-label options.</p></div>
         </div>
         <div class="faq-item" onclick="this.classList.toggle('open')">
             <div class="faq-q">How do I cancel my subscription?</div>
@@ -973,6 +976,9 @@ function renderStatusBadge(sectionKey,meta){
 
 // ========== LIVE DATA FETCH ==========
 async function fetchLiveLLMPricing(){
+  // Gate live data to Pro+ users
+  var plan = (currentProfile && currentProfile.plan) ? currentProfile.plan : 'free';
+  if (plan === 'free') return;
   try{
     var ctrl=new AbortController();
     setTimeout(function(){ctrl.abort();},8000);
@@ -1553,6 +1559,45 @@ async function loadProfile() {
         document.getElementById('tgCodeResult').style.display = 'none';
         document.getElementById('tgLinked').style.display = '';
     }
+}
+
+// ========== CSV EXPORT (Pro+ only) ==========
+function exportCSV(type) {
+    var plan = (currentProfile && currentProfile.plan) ? currentProfile.plan : 'free';
+    if (plan === 'free') {
+        if (!currentUser) { openAuthModal(); return; }
+        alert('CSV export is a Pro feature. Upgrade your plan to export data.');
+        showMain('pricing');
+        return;
+    }
+
+    var csv = '';
+    var filename = 'perffeco-' + type + '-' + new Date().toISOString().slice(0,10) + '.csv';
+
+    if (type === 'llm') {
+        csv = 'Model,Provider,Input $/1M,Output $/1M,Blended $/1M,Context,Tier\n';
+        llmPricingData.forEach(function(r) {
+            csv += '"' + r.name + '","' + r.provider + '",' + r.input.toFixed(2) + ',' + r.output.toFixed(2) + ',' + ((r.input+r.output)/2).toFixed(2) + ',"' + r.context + '","' + r.tier + '"\n';
+        });
+    } else if (type === 'gpu') {
+        csv = 'GPU,VRAM,Provider,On-Demand $/hr,Spot,Type\n';
+        gpuPricingData.forEach(function(r) {
+            csv += '"' + r.gpu + '","' + r.vram + '","' + r.provider + '",' + r.onDemand.toFixed(2) + ',"' + r.spot + '","' + r.type + '"\n';
+        });
+    } else if (type === 'benchmark') {
+        csv = 'Rank,Model,Arena Elo,MMLU-Pro,GPQA,HumanEval,SWE-bench,MATH-500,Type,Price\n';
+        benchmarkData.forEach(function(r) {
+            csv += r.rank + ',"' + r.name + '",' + r.arena + ',' + r.mmlu + ',' + r.gpqa + ',' + r.humaneval + ',' + r.swe + ',' + r.math + ',"' + r.type + '","' + r.price + '"\n';
+        });
+    }
+
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // ========== FEATURE GATING & SUBSCRIBE ==========
