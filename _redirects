@@ -12,4 +12,6 @@
 /api/v1/models /.netlify/functions/api-v1-models 200!
 /api/v1/gpus /.netlify/functions/api-v1-gpus 200!
 /api/v1/benchmarks /.netlify/functions/api-v1-benchmarks 200!
+/api/dashboards /.netlify/functions/dashboards 200!
+/api/team/analytics /.netlify/functions/team-analytics 200!
 /* /index.html 200

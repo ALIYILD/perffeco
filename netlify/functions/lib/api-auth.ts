@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import type { HandlerEvent } from "@netlify/functions";
 import { getDb } from "./supabase.js";
+import { logUsage } from "./usage.js";
 
 const PLAN_API_LIMITS: Record<string, number> = {
   free: 0,      // no API access
@@ -107,5 +108,6 @@ export async function authenticateApiKey(event: HandlerEvent): Promise<AuthResul
     };
   }
 
+  logUsage(apiKey.team_id, apiKey.user_id, "api_call");
   return { valid: true, userId: apiKey.user_id, teamId: apiKey.team_id, plan };
 }

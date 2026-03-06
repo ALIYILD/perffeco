@@ -316,7 +316,60 @@
         .btn-outline:hover{background:rgba(255,130,0,.1)}
         .btn-danger{padding:10px 20px;background:transparent;border:1px solid #ff6b6b;color:#ff6b6b;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
         .btn-danger:hover{background:rgba(255,60,60,.1)}
-        .team-card-section,.alerts-card-section,.apikeys-card-section{display:none}
+        .team-card-section,.alerts-card-section,.apikeys-card-section,.dashboards-card-section,.analytics-card-section{display:none}
+
+        /* ========== NOTIFICATION BELL ========== */
+        .notif-bell{position:relative;cursor:pointer;display:none;align-items:center}
+        .notif-bell svg{width:20px;height:20px;stroke:#B0B8C4;stroke-width:2;fill:none;transition:stroke .2s}
+        .notif-bell:hover svg{stroke:#FF8200}
+        .notif-badge{position:absolute;top:-4px;right:-6px;background:#ff6b6b;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+        .notif-dropdown{position:absolute;top:32px;right:0;width:340px;max-height:420px;overflow-y:auto;background:#0a0e12;border:1px solid #1a2030;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:2000;display:none}
+        .notif-dropdown.open{display:block}
+        .notif-dropdown-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #1a2030}
+        .notif-dropdown-header span{color:#E8E8E8;font-size:13px;font-weight:600}
+        .notif-dropdown-header button{background:none;border:none;color:#FF8200;font-size:11px;cursor:pointer}
+        .notif-dropdown-header button:hover{text-decoration:underline}
+        .notif-item{padding:12px 16px;border-bottom:1px solid #0d1117;cursor:pointer;transition:background .15s}
+        .notif-item:hover{background:#111822}
+        .notif-item.unread{border-left:3px solid #FF8200}
+        .notif-item .notif-title{color:#E8E8E8;font-size:12px;font-weight:600;margin-bottom:2px}
+        .notif-item .notif-body{color:#7A8899;font-size:11px;line-height:1.4}
+        .notif-item .notif-time{color:#3A4A5C;font-size:10px;margin-top:4px}
+        .notif-empty{padding:24px;text-align:center;color:#556677;font-size:12px}
+
+        /* ========== DASHBOARD TOOLBAR ========== */
+        .dash-toolbar{display:none;padding:0 28px 12px;gap:8px;align-items:center}
+        .dash-toolbar button{padding:6px 14px;background:transparent;border:1px solid #1e2a38;color:#7A8899;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;font-family:'IBM Plex Mono',monospace;transition:all .15s}
+        .dash-toolbar button:hover{border-color:#FF8200;color:#FF8200}
+        .save-dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;display:none;align-items:center;justify-content:center}
+        .save-dialog-overlay.open{display:flex}
+        .save-dialog{background:#0a0e12;border:1px solid #1a2030;border-radius:4px;padding:24px;width:380px}
+        .save-dialog h3{color:#E8E8E8;font-size:15px;margin-bottom:16px}
+        .save-dialog input{width:100%;padding:10px 12px;background:#111822;border:1px solid #1a2030;border-radius:4px;color:#E8E8E8;font-size:13px;margin-bottom:12px}
+        .save-dialog input::placeholder{color:#3A4A5C}
+        .save-dialog-actions{display:flex;gap:8px;justify-content:flex-end}
+        .save-dialog-actions button{padding:8px 18px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;border:none}
+        .save-dialog-actions .btn-cancel{background:transparent;border:1px solid #1e2a38;color:#7A8899}
+        .save-dialog-actions .btn-save{background:#FF8200;color:#000}
+
+        /* ========== TEAM ANALYTICS CARD ========== */
+        .analytics-summary{display:flex;gap:16px;margin-bottom:20px}
+        .analytics-stat{flex:1;background:#111822;border:1px solid #1a2030;border-radius:4px;padding:14px;text-align:center}
+        .analytics-stat .stat-num{font-size:22px;font-weight:700;color:#FF8200;font-family:'IBM Plex Mono',monospace}
+        .analytics-stat .stat-lbl{font-size:10px;color:#556677;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+        .analytics-charts{display:flex;gap:16px}
+        .analytics-charts .chart-box{background:#111822;border:1px solid #1a2030;border-radius:4px;padding:16px;position:relative}
+        .analytics-charts .chart-box.line-chart{flex:3}
+        .analytics-charts .chart-box.bar-chart{flex:2}
+        .analytics-charts canvas{width:100%!important}
+
+        /* ========== SAVED DASHBOARDS CARD ========== */
+        .dash-saved-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2030;font-size:13px}
+        .dash-saved-row:last-child{border-bottom:none}
+        .dash-saved-row .dash-name{color:#E8E8E8;font-weight:500}
+        .dash-saved-actions{display:flex;gap:6px}
+        .dash-saved-actions button{background:none;border:1px solid #1e2a38;color:#7A8899;padding:4px 10px;border-radius:3px;font-size:10px;cursor:pointer;transition:all .15s}
+        .dash-saved-actions button:hover{border-color:#FF8200;color:#FF8200}
         .team-member-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2030;font-size:13px}
         .team-member-row:last-child{border-bottom:none}
         .team-member-role{font-size:10px;color:#556677;text-transform:uppercase;letter-spacing:1px}
@@ -405,6 +458,18 @@
     </div>
     <div class="nav-right">
         <span class="live-badge">LIVE DATA</span>
+        <!-- Notification Bell -->
+        <div class="notif-bell" id="notifBell" onclick="toggleNotifDropdown(event)">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+            <div class="notif-dropdown" id="notifDropdown">
+                <div class="notif-dropdown-header">
+                    <span>Notifications</span>
+                    <button onclick="markAllNotificationsRead(event)">Mark all read</button>
+                </div>
+                <div id="notifList"></div>
+            </div>
+        </div>
         <div id="navLoggedOut">
             <button class="btn-pro" onclick="openAuthModal()">Sign In</button>
         </div>
@@ -467,6 +532,25 @@
         <div class="dash-badges">
             <span class="dash-badge verified">✓ disclosed = lab-verified cost</span>
             <span class="dash-badge estimated">~ estimated = Epoch AI cost model</span>
+        </div>
+    </div>
+
+    <!-- Dashboard Toolbar (team+ only) -->
+    <div class="dash-toolbar" id="dashToolbar">
+        <button onclick="openSaveDialog()">Save View</button>
+        <button onclick="openLoadDropdown(this)">Load Saved...</button>
+        <button onclick="shareDashboard()">Share</button>
+    </div>
+
+    <!-- Save Dialog Modal -->
+    <div class="save-dialog-overlay" id="saveDialogOverlay" onclick="if(event.target===this)closeSaveDialog()">
+        <div class="save-dialog">
+            <h3>Save Dashboard View</h3>
+            <input type="text" id="saveDashName" placeholder="Name this view (e.g. CIS vs Cost)" maxlength="60">
+            <div class="save-dialog-actions">
+                <button class="btn-cancel" onclick="closeSaveDialog()">Cancel</button>
+                <button class="btn-save" onclick="saveDashboard()">Save</button>
+            </div>
         </div>
     </div>
 
@@ -765,8 +849,8 @@
                     <li>Up to 10 seats</li>
                     <li>Custom price alerts</li>
                     <li>API access (10K calls/mo)</li>
-                    <li style="color:#556677">Shared dashboards (coming soon)</li>
-                    <li style="color:#556677">Team analytics (coming soon)</li>
+                    <li>Shared dashboards</li>
+                    <li>Team analytics</li>
                 </ul>
                 <button class="calc-btn" style="margin-top:16px;display:block;width:100%;text-align:center" data-monthly-href="https://buy.stripe.com/fZu9ATbFqdVteBAaVHaMU03" data-annual-href="https://buy.stripe.com/9B64gz5h27x50KK5BnaMU04" onclick="handleSubscribe(this)">Subscribe</button>
             </div>
@@ -886,6 +970,20 @@
             <div class="form-row" style="margin-top:12px">
                 <input type="text" id="apiKeyName" placeholder="Key name (optional)">
                 <button onclick="createApiKey()">Generate Key</button>
+            </div>
+        </div>
+        <!-- Saved Dashboards Card (team+ only) -->
+        <div class="account-card dashboards-card-section" id="savedDashCard" style="grid-column:1/-1">
+            <h3><svg viewBox="0 0 24 24" width="18" height="18" stroke="#FF8200" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> Saved Dashboards</h3>
+            <div id="savedDashList"></div>
+        </div>
+        <!-- Team Analytics Card (owner only) -->
+        <div class="account-card analytics-card-section" id="analyticsCard" style="grid-column:1/-1">
+            <h3><svg viewBox="0 0 24 24" width="18" height="18" stroke="#FF8200" stroke-width="2" fill="none"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Team Analytics</h3>
+            <div class="analytics-summary" id="analyticsSummary"></div>
+            <div class="analytics-charts">
+                <div class="chart-box line-chart"><canvas id="analyticsLineChart" height="260"></canvas></div>
+                <div class="chart-box bar-chart"><canvas id="analyticsBarChart" height="260"></canvas></div>
             </div>
         </div>
     </div>
@@ -1573,6 +1671,8 @@ async function updateAuthUI() {
         loggedIn.style.display = '';
         navAccount.style.display = '';
         document.getElementById('navUserEmail').textContent = currentUser.email.split('@')[0];
+        document.getElementById('notifBell').style.display = 'flex';
+        startNotifPolling();
         await loadProfile();
         applyFeatureGating();
 
@@ -1595,6 +1695,8 @@ async function updateAuthUI() {
         loggedOut.style.display = '';
         loggedIn.style.display = 'none';
         navAccount.style.display = 'none';
+        document.getElementById('notifBell').style.display = 'none';
+        stopNotifPolling();
         currentProfile = null;
         applyFeatureGating();
     }
@@ -1643,9 +1745,13 @@ async function loadProfile() {
 
     // Show/hide team cards for team+ plans
     var isTeamPlus = (plan === 'team' || plan === 'enterprise');
-    document.querySelectorAll('.team-card-section, .alerts-card-section, .apikeys-card-section').forEach(function(el) {
+    document.querySelectorAll('.team-card-section, .alerts-card-section, .apikeys-card-section, .dashboards-card-section').forEach(function(el) {
         el.style.display = isTeamPlus ? '' : 'none';
     });
+
+    // Dashboard toolbar visible for team+
+    var toolbar = document.getElementById('dashToolbar');
+    if (toolbar) toolbar.style.display = isTeamPlus ? 'flex' : 'none';
 
     if (isTeamPlus) {
         // Populate alert model dropdown
@@ -1661,6 +1767,13 @@ async function loadProfile() {
         loadTeamInfo();
         loadAlerts();
         loadApiKeys();
+        loadSavedDashboards();
+
+        // Check if owner for analytics
+        var memberRes = await sb.from('team_members').select('role').eq('team_id', currentProfile.team_id).eq('user_id', currentUser.id).single();
+        if (memberRes.data && memberRes.data.role === 'owner') {
+            loadTeamAnalytics();
+        }
     }
 }
 
@@ -1945,6 +2058,432 @@ async function revokeApiKey(keyId) {
         await loadApiKeys();
     } catch (err) { console.error('revokeApiKey error:', err); }
 }
+
+// ========== NOTIFICATION BELL ==========
+var notifPollTimer = null;
+var cachedSavedDashboards = [];
+
+function escapeHtml(str) {
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+
+function timeAgo(dateStr) {
+    var diff = Date.now() - new Date(dateStr).getTime();
+    var mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + 'm ago';
+    var hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    var days = Math.floor(hrs / 24);
+    return days + 'd ago';
+}
+
+async function loadNotifications() {
+    if (!currentUser) return;
+    try {
+        var res = await fetch('/api/notifications?user_id=' + currentUser.id);
+        var data = await res.json();
+        var notifs = data.notifications || [];
+        var list = document.getElementById('notifList');
+        var badge = document.getElementById('notifBadge');
+        var unread = notifs.filter(function(n) { return !n.read; }).length;
+
+        badge.textContent = unread;
+        badge.style.display = unread > 0 ? '' : 'none';
+
+        if (notifs.length === 0) {
+            list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+            return;
+        }
+
+        var html = '';
+        notifs.slice(0, 20).forEach(function(n) {
+            html += '<div class="notif-item' + (n.read ? '' : ' unread') + '" onclick="markNotificationRead(\'' + n.id + '\', this)">'
+                + '<div class="notif-title">' + escapeHtml(n.title) + '</div>'
+                + '<div class="notif-body">' + escapeHtml(n.body).slice(0, 120) + '</div>'
+                + '<div class="notif-time">' + timeAgo(n.created_at) + '</div>'
+                + '</div>';
+        });
+        list.innerHTML = html;
+    } catch (err) { console.error('loadNotifications error:', err); }
+}
+
+function toggleNotifDropdown(e) {
+    e.stopPropagation();
+    var dd = document.getElementById('notifDropdown');
+    dd.classList.toggle('open');
+}
+
+async function markNotificationRead(notifId, el) {
+    if (el) el.classList.remove('unread');
+    try {
+        await fetch('/api/notifications', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ notification_id: notifId })
+        });
+        // Update badge count
+        var badge = document.getElementById('notifBadge');
+        var count = parseInt(badge.textContent) - 1;
+        badge.textContent = Math.max(0, count);
+        if (count <= 0) badge.style.display = 'none';
+    } catch (err) { console.error('markNotificationRead error:', err); }
+}
+
+async function markAllNotificationsRead(e) {
+    e.stopPropagation();
+    if (!currentUser) return;
+    try {
+        await fetch('/api/notifications', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mark_all: true, user_id: currentUser.id })
+        });
+        document.getElementById('notifBadge').style.display = 'none';
+        document.querySelectorAll('.notif-item.unread').forEach(function(el) { el.classList.remove('unread'); });
+    } catch (err) { console.error('markAllNotificationsRead error:', err); }
+}
+
+function startNotifPolling() {
+    loadNotifications();
+    if (notifPollTimer) clearInterval(notifPollTimer);
+    notifPollTimer = setInterval(loadNotifications, 60000);
+}
+
+function stopNotifPolling() {
+    if (notifPollTimer) { clearInterval(notifPollTimer); notifPollTimer = null; }
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', function(e) {
+    var dd = document.getElementById('notifDropdown');
+    if (dd && !e.target.closest('.notif-bell')) dd.classList.remove('open');
+});
+
+// ========== DASHBOARD TOOLBAR ==========
+function getCurrentDashConfig() {
+    return { x: currentX, y: currentY };
+}
+
+function openSaveDialog() {
+    document.getElementById('saveDialogOverlay').classList.add('open');
+    document.getElementById('saveDashName').value = '';
+    document.getElementById('saveDashName').focus();
+}
+
+function closeSaveDialog() {
+    document.getElementById('saveDialogOverlay').classList.remove('open');
+}
+
+async function saveDashboard() {
+    if (!currentUser || !currentProfile || !currentProfile.team_id) return;
+    var name = document.getElementById('saveDashName').value.trim();
+    if (!name) { alert('Please enter a name for this view.'); return; }
+
+    try {
+        var res = await fetch('/api/dashboards', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                team_id: currentProfile.team_id,
+                user_id: currentUser.id,
+                name: name,
+                config: getCurrentDashConfig()
+            })
+        });
+        var data = await res.json();
+        if (data.error) { alert(data.error); return; }
+        closeSaveDialog();
+        showToast('Dashboard view saved!');
+        loadSavedDashboards();
+    } catch (err) { alert('Failed to save dashboard.'); }
+}
+
+async function loadSavedDashboards() {
+    if (!currentUser || !currentProfile || !currentProfile.team_id) return;
+    try {
+        var res = await fetch('/api/dashboards?team_id=' + currentProfile.team_id);
+        var data = await res.json();
+        cachedSavedDashboards = data.dashboards || [];
+        renderSavedDashCards();
+    } catch (err) { console.error('loadSavedDashboards error:', err); }
+}
+
+function openLoadDropdown(btn) {
+    if (cachedSavedDashboards.length === 0) {
+        alert('No saved dashboards yet. Save a view first.');
+        return;
+    }
+    // Show a simple selection prompt
+    var names = cachedSavedDashboards.map(function(d, i) { return (i + 1) + '. ' + d.name; }).join('\n');
+    var choice = prompt('Load a saved dashboard:\n\n' + names + '\n\nEnter number:');
+    if (!choice) return;
+    var idx = parseInt(choice) - 1;
+    if (idx >= 0 && idx < cachedSavedDashboards.length) {
+        loadSavedDashboard(cachedSavedDashboards[idx]);
+    }
+}
+
+function loadSavedDashboard(dash) {
+    if (!dash || !dash.config) return;
+    var cfg = dash.config;
+    if (cfg.x && cfg.x !== currentX) {
+        currentX = cfg.x;
+        document.querySelectorAll('#sec-home .axis-controls')[0].querySelectorAll('.axis-btn').forEach(function(b) {
+            b.classList.remove('active');
+            if (b.textContent.toLowerCase().indexOf(cfg.x === 'flops' ? 'flops' : cfg.x === 'cost' ? 'cost usd' : 'cost per token') !== -1) b.classList.add('active');
+        });
+    }
+    if (cfg.y && cfg.y !== currentY) {
+        currentY = cfg.y;
+        document.querySelectorAll('#sec-home .axis-controls')[1].querySelectorAll('.axis-btn').forEach(function(b) {
+            b.classList.remove('active');
+            if (cfg.y === 'cis' && b.textContent.indexOf('Composite') !== -1) b.classList.add('active');
+            else if (cfg.y === 'ipd' && b.textContent.indexOf('/ Dollar') !== -1) b.classList.add('active');
+            else if (cfg.y === 'ipt' && b.textContent.indexOf('/ Token') !== -1) b.classList.add('active');
+        });
+    }
+    renderChart();
+    showToast('Loaded: ' + dash.name);
+}
+
+async function shareDashboard() {
+    if (cachedSavedDashboards.length === 0) {
+        alert('Save a view first, then share it.');
+        return;
+    }
+    var names = cachedSavedDashboards.map(function(d, i) { return (i + 1) + '. ' + d.name; }).join('\n');
+    var choice = prompt('Share a saved dashboard:\n\n' + names + '\n\nEnter number:');
+    if (!choice) return;
+    var idx = parseInt(choice) - 1;
+    if (idx < 0 || idx >= cachedSavedDashboards.length) return;
+    var dash = cachedSavedDashboards[idx];
+
+    try {
+        var res = await fetch('/api/dashboards', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dashboard_id: dash.id, user_id: currentUser.id, generate_share: true })
+        });
+        var data = await res.json();
+        if (data.error) { alert(data.error); return; }
+        var shareUrl = window.location.origin + '?dash=' + data.dashboard.share_token;
+        await navigator.clipboard.writeText(shareUrl).catch(function() {});
+        showToast('Share link copied to clipboard!');
+        // Update cache
+        cachedSavedDashboards[idx] = data.dashboard;
+        renderSavedDashCards();
+    } catch (err) { alert('Failed to generate share link.'); }
+}
+
+function showToast(msg) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function() { t.remove(); }, 3000);
+}
+
+// ========== SAVED DASHBOARDS ACCOUNT CARD ==========
+function renderSavedDashCards() {
+    var list = document.getElementById('savedDashList');
+    if (!list) return;
+    if (cachedSavedDashboards.length === 0) {
+        list.innerHTML = '<p style="color:#556677;font-size:12px">No saved dashboards yet.</p>';
+        return;
+    }
+    var html = '';
+    cachedSavedDashboards.forEach(function(d) {
+        html += '<div class="dash-saved-row">'
+            + '<span class="dash-name">' + escapeHtml(d.name) + '</span>'
+            + '<div class="dash-saved-actions">'
+            + '<button onclick="loadSavedDashboard(cachedSavedDashboards.find(function(x){return x.id===\'' + d.id + '\'}));showMain(\'home\')">Load</button>'
+            + '<button onclick="shareOneDashboard(\'' + d.id + '\')">Share</button>'
+            + '<button onclick="deleteDashboard(\'' + d.id + '\')" style="color:#ff6b6b;border-color:#ff6b6b33">Delete</button>'
+            + '</div></div>';
+    });
+    list.innerHTML = html;
+}
+
+async function shareOneDashboard(dashId) {
+    if (!currentUser) return;
+    try {
+        var res = await fetch('/api/dashboards', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dashboard_id: dashId, user_id: currentUser.id, generate_share: true })
+        });
+        var data = await res.json();
+        if (data.error) { alert(data.error); return; }
+        var shareUrl = window.location.origin + '?dash=' + data.dashboard.share_token;
+        await navigator.clipboard.writeText(shareUrl).catch(function() {});
+        showToast('Share link copied!');
+        loadSavedDashboards();
+    } catch (err) { alert('Failed to share dashboard.'); }
+}
+
+async function deleteDashboard(dashId) {
+    if (!confirm('Delete this saved dashboard?')) return;
+    try {
+        await fetch('/api/dashboards?dashboard_id=' + dashId + '&user_id=' + currentUser.id, { method: 'DELETE' });
+        showToast('Dashboard deleted.');
+        loadSavedDashboards();
+    } catch (err) { console.error('deleteDashboard error:', err); }
+}
+
+// ========== TEAM ANALYTICS ==========
+var analyticsLineChart = null;
+var analyticsBarChart = null;
+
+async function loadTeamAnalytics() {
+    if (!currentUser || !currentProfile || !currentProfile.team_id) return;
+    try {
+        var res = await fetch('/api/team/analytics?user_id=' + currentUser.id + '&team_id=' + currentProfile.team_id);
+        var data = await res.json();
+        if (data.error) return; // Not owner or error — just hide
+
+        // Show card
+        document.getElementById('analyticsCard').style.display = '';
+
+        // Summary
+        var summary = data.summary || {};
+        document.getElementById('analyticsSummary').innerHTML =
+            '<div class="analytics-stat"><div class="stat-num">' + (summary.total_actions || 0) + '</div><div class="stat-lbl">Total Actions</div></div>'
+            + '<div class="analytics-stat"><div class="stat-num">' + (summary.api_calls || 0) + '</div><div class="stat-lbl">API Calls</div></div>'
+            + '<div class="analytics-stat"><div class="stat-num">' + (summary.active_members || 0) + '</div><div class="stat-lbl">Active Members</div></div>';
+
+        renderAnalyticsLineChart(data.daily || []);
+        renderAnalyticsBarChart(data.members || []);
+    } catch (err) { console.error('loadTeamAnalytics error:', err); }
+}
+
+function renderAnalyticsLineChart(daily) {
+    var canvas = document.getElementById('analyticsLineChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+    if (analyticsLineChart) { analyticsLineChart.destroy(); analyticsLineChart = null; }
+
+    var actionColors = {
+        api_call: '#FF8200',
+        alert_create: '#33CC66',
+        alert_trigger: '#ff6b6b',
+        key_create: '#a855f7',
+        dashboard_save: '#3b82f6',
+        dashboard_share: '#3b82f6'
+    };
+
+    // Group by action then by date
+    var actions = {};
+    daily.forEach(function(r) {
+        if (!actions[r.action]) actions[r.action] = {};
+        actions[r.action][r.date] = (actions[r.action][r.date] || 0) + (r.count || 1);
+    });
+
+    // Build date labels (last 30 days)
+    var labels = [];
+    var now = new Date();
+    for (var i = 29; i >= 0; i--) {
+        var d = new Date(now);
+        d.setDate(d.getDate() - i);
+        labels.push(d.toISOString().slice(0, 10));
+    }
+
+    var datasets = Object.keys(actions).map(function(action) {
+        return {
+            label: action.replace(/_/g, ' '),
+            data: labels.map(function(dt) { return actions[action][dt] || 0; }),
+            borderColor: actionColors[action] || '#7A8899',
+            backgroundColor: (actionColors[action] || '#7A8899') + '22',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 4
+        };
+    });
+
+    analyticsLineChart = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: { labels: labels.map(function(d) { return d.slice(5); }), datasets: datasets },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 400 },
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#7A8899', font: { family: 'IBM Plex Mono', size: 10 }, boxWidth: 12 } },
+                tooltip: { backgroundColor: '#1a2030', titleColor: '#E8E8E8', bodyColor: '#7A8899', borderColor: '#1e2a38', borderWidth: 1, padding: 10, cornerRadius: 3 }
+            },
+            scales: {
+                x: { grid: { color: '#1a203040' }, ticks: { color: '#556677', font: { size: 9 }, maxRotation: 0, maxTicksLimit: 10 } },
+                y: { beginAtZero: true, grid: { color: '#1a203040' }, ticks: { color: '#556677', font: { size: 10 }, precision: 0 } }
+            }
+        }
+    });
+}
+
+function renderAnalyticsBarChart(members) {
+    var canvas = document.getElementById('analyticsBarChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+    if (analyticsBarChart) { analyticsBarChart.destroy(); analyticsBarChart = null; }
+
+    var labels = members.map(function(m) { return m.label; });
+    var data = members.map(function(m) { return m.total; });
+
+    analyticsBarChart = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Actions',
+                data: data,
+                backgroundColor: '#FF820066',
+                borderColor: '#FF8200',
+                borderWidth: 1,
+                borderRadius: 3
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 400 },
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#1a2030', titleColor: '#E8E8E8', bodyColor: '#7A8899', borderColor: '#1e2a38', borderWidth: 1, padding: 10, cornerRadius: 3 }
+            },
+            scales: {
+                x: { beginAtZero: true, grid: { color: '#1a203040' }, ticks: { color: '#556677', font: { size: 10 }, precision: 0 } },
+                y: { grid: { display: false }, ticks: { color: '#E8E8E8', font: { family: 'IBM Plex Mono', size: 11 } } }
+            }
+        }
+    });
+}
+
+// ========== SHARED DASHBOARD URL HANDLER ==========
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    var dashToken = params.get('dash');
+    if (dashToken) {
+        fetch('/api/dashboards?share_token=' + dashToken)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.dashboard && data.dashboard.config) {
+                    // Wait for chart to be ready
+                    function applyShared(attempts) {
+                        if (attempts <= 0) return;
+                        if (typeof renderChart === 'function' && document.getElementById('modelChart')) {
+                            loadSavedDashboard(data.dashboard);
+                        } else {
+                            setTimeout(function() { applyShared(attempts - 1); }, 300);
+                        }
+                    }
+                    applyShared(15);
+                }
+            })
+            .catch(function() {});
+    }
+})();
 
 async function generateTelegramCode() {
     if (!currentUser) return;

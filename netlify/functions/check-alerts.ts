@@ -1,6 +1,7 @@
 import type { Config } from "@netlify/functions";
 import { getDb } from "./lib/supabase.js";
 import { LLM_DATA, findModel } from "./lib/data.js";
+import { logUsage } from "./lib/usage.js";
 
 const TELEGRAM_API = "https://api.telegram.org/bot";
 
@@ -87,6 +88,12 @@ export default async function handler() {
       body: alertMsg,
       metadata: { alert_id: alert.id, model_name: model.name, current_price: currentPrice },
     });
+
+    // Log usage — resolve team_id from profile
+    const { data: alertProfile } = await db.from("profiles").select("team_id").eq("id", alert.user_id).single();
+    if (alertProfile?.team_id) {
+      logUsage(alertProfile.team_id, alert.user_id, "alert_trigger");
+    }
 
     // Record in alert_history
     await db.from("alert_history").insert({

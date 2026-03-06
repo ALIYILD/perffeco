@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import { getDb } from "./lib/supabase.js";
+import { logUsage } from "./lib/usage.js";
 
 function json(body: unknown, status = 200) {
   return { statusCode: status, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
@@ -57,6 +58,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
         .single();
 
       if (error) return json({ error: error.message }, 500);
+      logUsage(profile.team_id, user_id, "alert_create");
       return json({ alert }, 201);
     }
 

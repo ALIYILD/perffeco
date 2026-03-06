@@ -1,6 +1,7 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import { getDb } from "./lib/supabase.js";
 import { hashApiKey, generateApiKey } from "./lib/api-auth.js";
+import { logUsage } from "./lib/usage.js";
 
 function json(body: unknown, status = 200) {
   return { statusCode: status, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
@@ -64,6 +65,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
 
       if (error) return json({ error: error.message }, 500);
 
+      logUsage(teamId, user_id, "key_create");
       // Return raw key ONCE — user must copy it now
       return json({ key: { ...apiKey, raw_key: rawKey } }, 201);
     }
