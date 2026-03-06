@@ -3,4 +3,13 @@
 /api/telegram/webhook /.netlify/functions/telegram-webhook 200!
 /api/telegram/link /.netlify/functions/telegram-link 200!
 /api/signup /.netlify/functions/signup 200!
+/api/team/create /.netlify/functions/team-create 200!
+/api/team/invite /.netlify/functions/team-invite 200!
+/api/team/accept /.netlify/functions/team-accept 200!
+/api/alerts /.netlify/functions/alerts 200!
+/api/notifications /.netlify/functions/notifications 200!
+/api/keys /.netlify/functions/api-keys 200!
+/api/v1/models /.netlify/functions/api-v1-models 200!
+/api/v1/gpus /.netlify/functions/api-v1-gpus 200!
+/api/v1/benchmarks /.netlify/functions/api-v1-benchmarks 200!
 /* /index.html 200

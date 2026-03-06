@@ -1,5 +1,6 @@
 import Groq from "groq-sdk";
 import { getDb } from "./supabase.js";
+import { LLM_DATA, GPU_DATA, findModel, findGpu } from "./data.js";
 
 const SYSTEM_PROMPT = `You are Perffeco AI Agent. You help users query AI model economics data — LLM API pricing, GPU cloud costs, training expenses, and benchmarks.
 
@@ -69,39 +70,6 @@ const TOOLS: Groq.Chat.Completions.ChatCompletionTool[] = [
     },
   },
 ];
-
-// Embedded pricing data (same as index.html)
-const LLM_DATA = [
-  { name: "Mistral Nemo", provider: "mistral", input: 0.02, output: 0.04, context: "131K", tier: "Budget" },
-  { name: "DeepSeek V3.2", provider: "deepseek", input: 0.14, output: 0.28, context: "128K", tier: "Budget" },
-  { name: "Gemini 2.0 Flash", provider: "google", input: 0.10, output: 0.40, context: "1M", tier: "Budget" },
-  { name: "GPT-4o Mini", provider: "openai", input: 0.15, output: 0.60, context: "128K", tier: "Budget" },
-  { name: "Claude Haiku 4.5", provider: "anthropic", input: 1.00, output: 5.00, context: "200K", tier: "Mid" },
-  { name: "Gemini 2.5 Pro", provider: "google", input: 1.25, output: 10.00, context: "1M", tier: "Mid" },
-  { name: "GPT-5", provider: "openai", input: 1.25, output: 10.00, context: "400K", tier: "Mid" },
-  { name: "Claude Sonnet 4.6", provider: "anthropic", input: 3.00, output: 15.00, context: "200K", tier: "Mid" },
-  { name: "Grok 3", provider: "xai", input: 3.00, output: 15.00, context: "131K", tier: "Mid" },
-  { name: "GPT-4.5", provider: "openai", input: 75.00, output: 150.00, context: "128K", tier: "Premium" },
-  { name: "Claude Opus 4.6", provider: "anthropic", input: 15.00, output: 75.00, context: "200K", tier: "Premium" },
-];
-
-const GPU_DATA = [
-  { name: "H100 SXM", vram: "80GB", providers: [{ name: "Lambda", price: 2.49 }, { name: "CoreWeave", price: 2.23 }, { name: "RunPod", price: 3.29 }] },
-  { name: "A100 SXM", vram: "80GB", providers: [{ name: "Lambda", price: 1.29 }, { name: "CoreWeave", price: 1.22 }, { name: "RunPod", price: 1.64 }] },
-  { name: "L40S", vram: "48GB", providers: [{ name: "Lambda", price: 0.99 }, { name: "RunPod", price: 0.89 }] },
-  { name: "A10G", vram: "24GB", providers: [{ name: "AWS", price: 1.01 }, { name: "RunPod", price: 0.37 }] },
-  { name: "H200 SXM", vram: "141GB", providers: [{ name: "CoreWeave", price: 3.49 }, { name: "Lambda", price: 3.99 }] },
-];
-
-function findModel(query: string) {
-  const q = query.toLowerCase().replace(/[-\s.]/g, "");
-  return LLM_DATA.find((m) => m.name.toLowerCase().replace(/[-\s.]/g, "").includes(q));
-}
-
-function findGpu(query: string) {
-  const q = query.toLowerCase().replace(/[-\s]/g, "");
-  return GPU_DATA.find((g) => g.name.toLowerCase().replace(/[-\s]/g, "").includes(q));
-}
 
 async function executeToolCall(
   name: string,

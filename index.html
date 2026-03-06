@@ -316,6 +316,29 @@
         .btn-outline:hover{background:rgba(255,130,0,.1)}
         .btn-danger{padding:10px 20px;background:transparent;border:1px solid #ff6b6b;color:#ff6b6b;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
         .btn-danger:hover{background:rgba(255,60,60,.1)}
+        .team-card-section,.alerts-card-section,.apikeys-card-section{display:none}
+        .team-member-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2030;font-size:13px}
+        .team-member-row:last-child{border-bottom:none}
+        .team-member-role{font-size:10px;color:#556677;text-transform:uppercase;letter-spacing:1px}
+        .alert-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2030;font-size:13px}
+        .alert-row:last-child{border-bottom:none}
+        .alert-toggle{width:36px;height:20px;background:#1e2a38;border-radius:10px;position:relative;cursor:pointer;border:none;transition:background .3s}
+        .alert-toggle.on{background:rgba(51,204,102,.3)}
+        .alert-toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#556677;border-radius:50%;transition:all .3s}
+        .alert-toggle.on::after{left:18px;background:#33CC66}
+        .alert-actions{display:flex;gap:8px;align-items:center}
+        .alert-delete{background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:14px;padding:2px 6px}
+        .apikey-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2030;font-size:13px}
+        .apikey-row:last-child{border-bottom:none}
+        .apikey-prefix{font-family:'IBM Plex Mono',monospace;color:#FF8200;font-size:12px}
+        .apikey-usage{color:#556677;font-size:11px}
+        .apikey-revoke{background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:11px;padding:2px 6px}
+        .raw-key-box{background:#111822;border:1px solid #33CC66;border-radius:4px;padding:12px;margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#33CC66;word-break:break-all}
+        .raw-key-box .hint{color:#556677;font-size:10px;margin-top:6px;font-family:'Inter',sans-serif}
+        .form-row{display:flex;gap:8px;margin-top:12px}
+        .form-row input,.form-row select{flex:1;padding:8px 12px;background:#111822;border:1px solid #1a2030;border-radius:4px;color:#E8E8E8;font-size:13px}
+        .form-row input::placeholder{color:#3A4A5C}
+        .form-row button{padding:8px 16px;background:#FF8200;color:#000;border:none;border-radius:4px;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap}
         @media(max-width:700px){.account-grid{grid-template-columns:1fr}}
 
         /* ========== FEATURE GATING ========== */
@@ -738,12 +761,12 @@
                 <ul class="tier-features">
                     <li>Everything in Pro</li>
                     <li>Priority support</li>
-                    <li>Team features coming Q2 2026:</li>
-                    <li style="color:#556677">Up to 10 seats</li>
-                    <li style="color:#556677">Shared dashboards</li>
-                    <li style="color:#556677">Team cost analytics</li>
-                    <li style="color:#556677">API access (10K calls/mo)</li>
-                    <li style="color:#556677">Custom price alerts</li>
+                    <li>Team collaboration:</li>
+                    <li>Up to 10 seats</li>
+                    <li>Custom price alerts</li>
+                    <li>API access (10K calls/mo)</li>
+                    <li style="color:#556677">Shared dashboards (coming soon)</li>
+                    <li style="color:#556677">Team analytics (coming soon)</li>
                 </ul>
                 <button class="calc-btn" style="margin-top:16px;display:block;width:100%;text-align:center" data-monthly-href="https://buy.stripe.com/fZu9ATbFqdVteBAaVHaMU03" data-annual-href="https://buy.stripe.com/9B64gz5h27x50KK5BnaMU04" onclick="handleSubscribe(this)">Subscribe</button>
             </div>
@@ -814,6 +837,56 @@
             <h3><svg viewBox="0 0 24 24" width="18" height="18" stroke="#FF8200" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Account Actions</h3>
             <p style="margin-bottom:16px">Manage your session and account settings.</p>
             <button class="btn-danger" onclick="handleSignOut()">Sign Out</button>
+        </div>
+        <!-- Team Card (team+ only) -->
+        <div class="account-card team-card-section" id="teamCard">
+            <h3><svg viewBox="0 0 24 24" width="18" height="18" stroke="#FF8200" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Team</h3>
+            <div id="teamInfo">
+                <div id="teamNoTeam">
+                    <p style="margin-bottom:12px">Create a team to collaborate with your organization.</p>
+                    <div class="form-row">
+                        <input type="text" id="teamNameInput" placeholder="Team name">
+                        <button onclick="createTeam()">Create Team</button>
+                    </div>
+                </div>
+                <div id="teamHasTeam" style="display:none">
+                    <div class="label">Team Name</div>
+                    <div class="value" id="teamNameDisplay">—</div>
+                    <div class="label">Members</div>
+                    <div id="teamMembersList"></div>
+                    <div class="form-row" style="margin-top:16px">
+                        <input type="email" id="teamInviteEmail" placeholder="Invite by email">
+                        <button onclick="inviteTeamMember()">Invite</button>
+                    </div>
+                    <div id="teamInviteResult" style="display:none;margin-top:8px"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Alerts Card (team+ only) -->
+        <div class="account-card alerts-card-section" id="alertsCard">
+            <h3><svg viewBox="0 0 24 24" width="18" height="18" stroke="#FF8200" stroke-width="2" fill="none"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Price Alerts</h3>
+            <div id="alertsList"></div>
+            <div class="form-row" style="margin-top:12px">
+                <select id="alertModelSelect">
+                    <option value="">Model...</option>
+                </select>
+                <select id="alertCondition">
+                    <option value="below">Below</option>
+                    <option value="above">Above</option>
+                </select>
+                <input type="number" id="alertThreshold" placeholder="$/1M" style="max-width:80px">
+                <button onclick="createAlert()">Add</button>
+            </div>
+        </div>
+        <!-- API Keys Card (team+ only) -->
+        <div class="account-card apikeys-card-section" id="apiKeysCard">
+            <h3><svg viewBox="0 0 24 24" width="18" height="18" stroke="#FF8200" stroke-width="2" fill="none"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> API Keys</h3>
+            <div id="apiKeysList"></div>
+            <div id="apiKeyRawBox" style="display:none"></div>
+            <div class="form-row" style="margin-top:12px">
+                <input type="text" id="apiKeyName" placeholder="Key name (optional)">
+                <button onclick="createApiKey()">Generate Key</button>
+            </div>
         </div>
     </div>
 </div>
@@ -1510,6 +1583,14 @@ async function updateAuthUI() {
             var sep = url.indexOf('?') === -1 ? '?' : '&';
             window.open(url + sep + 'client_reference_id=' + currentUser.id, '_blank');
         }
+
+        // Handle invite token in URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var inviteToken = urlParams.get('invite');
+        if (inviteToken) {
+            window.history.replaceState({}, '', window.location.pathname);
+            acceptTeamInvite(inviteToken);
+        }
     } else {
         loggedOut.style.display = '';
         loggedIn.style.display = 'none';
@@ -1558,6 +1639,28 @@ async function loadProfile() {
         document.getElementById('tgLinkArea').style.display = 'none';
         document.getElementById('tgCodeResult').style.display = 'none';
         document.getElementById('tgLinked').style.display = '';
+    }
+
+    // Show/hide team cards for team+ plans
+    var isTeamPlus = (plan === 'team' || plan === 'enterprise');
+    document.querySelectorAll('.team-card-section, .alerts-card-section, .apikeys-card-section').forEach(function(el) {
+        el.style.display = isTeamPlus ? '' : 'none';
+    });
+
+    if (isTeamPlus) {
+        // Populate alert model dropdown
+        var sel = document.getElementById('alertModelSelect');
+        if (sel && sel.options.length <= 1) {
+            llmPricingData.forEach(function(m) {
+                var opt = document.createElement('option');
+                opt.value = m.name;
+                opt.textContent = m.name;
+                sel.appendChild(opt);
+            });
+        }
+        loadTeamInfo();
+        loadAlerts();
+        loadApiKeys();
     }
 }
 
@@ -1653,6 +1756,194 @@ function handleGatedUpgrade() {
     } else {
         openAuthModal();
     }
+}
+
+// ========== TEAM MANAGEMENT ==========
+async function createTeam() {
+    if (!currentUser) return;
+    var name = document.getElementById('teamNameInput').value.trim();
+    if (!name) { alert('Please enter a team name.'); return; }
+
+    try {
+        var res = await fetch('/api/team/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: currentUser.id, name: name })
+        });
+        var data = await res.json();
+        if (data.error) { alert(data.error); return; }
+        await loadProfile();
+        await loadTeamInfo();
+    } catch (err) { alert('Failed to create team.'); }
+}
+
+async function inviteTeamMember() {
+    if (!currentUser) return;
+    var email = document.getElementById('teamInviteEmail').value.trim();
+    if (!email) { alert('Please enter an email.'); return; }
+
+    try {
+        var res = await fetch('/api/team/invite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: currentUser.id, email: email })
+        });
+        var data = await res.json();
+        var resultEl = document.getElementById('teamInviteResult');
+        if (data.error) {
+            resultEl.innerHTML = '<p style="color:#FF3333;font-size:12px">' + data.error + '</p>';
+        } else {
+            resultEl.innerHTML = '<p style="color:#33CC66;font-size:12px">Invite sent! Link: <span style="font-family:IBM Plex Mono,monospace;font-size:11px;word-break:break-all">' + data.invite_link + '</span></p>';
+            document.getElementById('teamInviteEmail').value = '';
+        }
+        resultEl.style.display = '';
+    } catch (err) { alert('Failed to send invite.'); }
+}
+
+async function loadTeamInfo() {
+    if (!currentUser || !currentProfile || !currentProfile.team_id) {
+        document.getElementById('teamNoTeam').style.display = '';
+        document.getElementById('teamHasTeam').style.display = 'none';
+        return;
+    }
+
+    document.getElementById('teamNoTeam').style.display = 'none';
+    document.getElementById('teamHasTeam').style.display = '';
+
+    try {
+        var teamResult = await sb.from('teams').select('name').eq('id', currentProfile.team_id).single();
+        document.getElementById('teamNameDisplay').textContent = teamResult.data ? teamResult.data.name : '—';
+
+        var membersResult = await sb.from('team_members').select('user_id, role, invite_email, joined_at').eq('team_id', currentProfile.team_id);
+        var list = document.getElementById('teamMembersList');
+        list.innerHTML = '';
+        if (membersResult.data) {
+            membersResult.data.forEach(function(m) {
+                var label = m.joined_at ? (m.invite_email || m.user_id) : (m.invite_email + ' (pending)');
+                list.innerHTML += '<div class="team-member-row"><span>' + label + '</span><span class="team-member-role">' + m.role + '</span></div>';
+            });
+        }
+    } catch (err) { console.error('loadTeamInfo error:', err); }
+}
+
+async function acceptTeamInvite(token) {
+    if (!currentUser) { openAuthModal(); return; }
+    try {
+        var res = await fetch('/api/team/accept', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: currentUser.id, token: token })
+        });
+        var data = await res.json();
+        if (data.error) { alert(data.error); return; }
+        alert('You have joined ' + data.team_name + '!');
+        await loadProfile();
+        showMain('account');
+    } catch (err) { alert('Failed to accept invite.'); }
+}
+
+// ========== ALERTS MANAGEMENT ==========
+async function loadAlerts() {
+    if (!currentUser) return;
+    try {
+        var res = await fetch('/api/alerts?user_id=' + currentUser.id);
+        var data = await res.json();
+        var list = document.getElementById('alertsList');
+        list.innerHTML = '';
+        if (data.alerts && data.alerts.length > 0) {
+            data.alerts.forEach(function(a) {
+                var onClass = a.active ? ' on' : '';
+                list.innerHTML += '<div class="alert-row" data-id="' + a.id + '"><span>' + a.model_name + ' ' + a.condition + ' $' + a.threshold + '</span><div class="alert-actions"><button class="alert-toggle' + onClass + '" onclick="toggleAlert(\'' + a.id + '\', ' + !a.active + ')"></button><button class="alert-delete" onclick="deleteAlert(\'' + a.id + '\')">&times;</button></div></div>';
+            });
+        } else {
+            list.innerHTML = '<p style="color:#556677;font-size:12px">No alerts yet.</p>';
+        }
+    } catch (err) { console.error('loadAlerts error:', err); }
+}
+
+async function createAlert() {
+    if (!currentUser) return;
+    var model = document.getElementById('alertModelSelect').value;
+    var condition = document.getElementById('alertCondition').value;
+    var threshold = parseFloat(document.getElementById('alertThreshold').value);
+    if (!model || !threshold) { alert('Select a model and set a threshold.'); return; }
+
+    try {
+        var res = await fetch('/api/alerts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: currentUser.id, model_name: model, condition: condition, threshold: threshold })
+        });
+        var data = await res.json();
+        if (data.error) { alert(data.error); return; }
+        document.getElementById('alertThreshold').value = '';
+        await loadAlerts();
+    } catch (err) { alert('Failed to create alert.'); }
+}
+
+async function toggleAlert(alertId, newActive) {
+    try {
+        await fetch('/api/alerts', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ alert_id: alertId, active: newActive })
+        });
+        await loadAlerts();
+    } catch (err) { console.error('toggleAlert error:', err); }
+}
+
+async function deleteAlert(alertId) {
+    try {
+        await fetch('/api/alerts?alert_id=' + alertId, { method: 'DELETE' });
+        await loadAlerts();
+    } catch (err) { console.error('deleteAlert error:', err); }
+}
+
+// ========== API KEYS MANAGEMENT ==========
+async function loadApiKeys() {
+    if (!currentUser) return;
+    try {
+        var res = await fetch('/api/keys?user_id=' + currentUser.id);
+        var data = await res.json();
+        var list = document.getElementById('apiKeysList');
+        list.innerHTML = '';
+        if (data.keys && data.keys.length > 0) {
+            data.keys.forEach(function(k) {
+                var status = k.active ? '' : ' (revoked)';
+                list.innerHTML += '<div class="apikey-row"><div><span class="apikey-prefix">' + k.key_prefix + '</span> <span style="color:#7A8899;font-size:12px">' + k.name + status + '</span><div class="apikey-usage">' + (k.calls_month || 0) + ' calls this month</div></div>' + (k.active ? '<button class="apikey-revoke" onclick="revokeApiKey(\'' + k.id + '\')">Revoke</button>' : '') + '</div>';
+            });
+        } else {
+            list.innerHTML = '<p style="color:#556677;font-size:12px">No API keys yet.</p>';
+        }
+    } catch (err) { console.error('loadApiKeys error:', err); }
+}
+
+async function createApiKey() {
+    if (!currentUser) return;
+    var name = document.getElementById('apiKeyName').value.trim() || 'Default';
+    try {
+        var res = await fetch('/api/keys', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: currentUser.id, name: name })
+        });
+        var data = await res.json();
+        if (data.error) { alert(data.error); return; }
+        // Show raw key once
+        var box = document.getElementById('apiKeyRawBox');
+        box.innerHTML = '<div class="raw-key-box">' + data.key.raw_key + '<div class="hint">Copy this key now. It will not be shown again.</div></div>';
+        box.style.display = '';
+        document.getElementById('apiKeyName').value = '';
+        await loadApiKeys();
+    } catch (err) { alert('Failed to generate API key.'); }
+}
+
+async function revokeApiKey(keyId) {
+    if (!confirm('Revoke this API key? This cannot be undone.')) return;
+    try {
+        await fetch('/api/keys?key_id=' + keyId, { method: 'DELETE' });
+        await loadApiKeys();
+    } catch (err) { console.error('revokeApiKey error:', err); }
 }
 
 async function generateTelegramCode() {

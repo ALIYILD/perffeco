@@ -82,6 +82,17 @@ export const handler: Handler = async (event: HandlerEvent) => {
           return { statusCode: 500, body: "DB update failed" };
         }
 
+        // Cascade plan change to team if user is a team owner
+        const { data: ownedTeam } = await db
+          .from("teams")
+          .select("id")
+          .eq("owner_id", userId)
+          .single();
+        if (ownedTeam) {
+          await db.from("teams").update({ plan, updated_at: new Date().toISOString() }).eq("id", ownedTeam.id);
+          console.log(`Team ${ownedTeam.id} plan cascaded to ${plan}`);
+        }
+
         console.log(`User ${userId} upgraded to ${plan}`);
         break;
       }
@@ -104,14 +115,26 @@ export const handler: Handler = async (event: HandlerEvent) => {
           break;
         }
 
+        const cancelUserId = profiles[0].id;
         const { error } = await db
           .from("profiles")
           .update({ plan: "free" })
-          .eq("id", profiles[0].id);
+          .eq("id", cancelUserId);
 
         if (error) {
           console.error("Failed to downgrade profile:", error.message);
           return { statusCode: 500, body: "DB update failed" };
+        }
+
+        // Cascade downgrade to team if user is a team owner
+        const { data: cancelledTeam } = await db
+          .from("teams")
+          .select("id")
+          .eq("owner_id", cancelUserId)
+          .single();
+        if (cancelledTeam) {
+          await db.from("teams").update({ plan: "free", updated_at: new Date().toISOString() }).eq("id", cancelledTeam.id);
+          console.log(`Team ${cancelledTeam.id} downgraded to free`);
         }
 
         console.log(`Customer ${customerId} downgraded to free`);

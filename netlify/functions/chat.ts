@@ -55,11 +55,20 @@ export const handler: Handler = async (event: HandlerEvent) => {
 
       const { data: profile } = await db
         .from("profiles")
-        .select("plan")
+        .select("plan, team_id")
         .eq("id", body.user_id)
         .single();
 
-      const plan = profile?.plan || "free";
+      // Team plan overrides user plan
+      let plan = profile?.plan || "free";
+      if (profile?.team_id) {
+        const { data: team } = await db
+          .from("teams")
+          .select("plan")
+          .eq("id", profile.team_id)
+          .single();
+        if (team?.plan) plan = team.plan;
+      }
       const limit = PLAN_LIMITS[plan] ?? 5;
 
       if (limit > 0) {
