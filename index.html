@@ -410,6 +410,7 @@
 
         .data-status{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-left:8px;vertical-align:middle}
         .data-status.live{color:#33CC66;border:1px solid #33CC66}
+        .data-status.curated{color:#FF8200;border:1px solid #FF8200}
         .data-status.default{color:#556677;border:1px solid #556677}
 
         @media(max-width:900px){
@@ -1037,7 +1038,7 @@
 <!-- ==================== JAVASCRIPT ==================== -->
 <script>
 // ========== DATA ARRAYS ==========
-const llmPricingData = [
+var llmPricingData = [
   {name:'Mistral Nemo',provider:'mistral',input:0.02,output:0.04,context:'131K',tier:'Budget'},
   {name:'DeepSeek V3.2',provider:'deepseek',input:0.14,output:0.28,context:'128K',tier:'Budget'},
   {name:'Gemini 2.0 Flash',provider:'google',input:0.10,output:0.40,context:'1M',tier:'Budget'},
@@ -1051,7 +1052,7 @@ const llmPricingData = [
   {name:'o3 Pro',provider:'openai',input:20.00,output:80.00,context:'200K',tier:'Premium'}
 ];
 
-const gpuPricingData = [
+var gpuPricingData = [
   {gpu:'L40S',vram:'48GB',provider:'RunPod',onDemand:0.79,spot:'$0.44',type:'Market'},
   {gpu:'A100 80GB',vram:'80GB',provider:'RunPod',onDemand:1.19,spot:'$0.89',type:'Market'},
   {gpu:'H100 SXM',vram:'80GB',provider:'Vast.ai',onDemand:1.49,spot:'dynamic',type:'Market'},
@@ -1137,53 +1138,93 @@ function renderStatusBadge(sectionKey,meta){
   }
   if(!title)return;
   var badge=document.createElement('span');
-  badge.className='data-status '+(meta.source==='live'?'live':'default');
-  badge.textContent=meta.source==='live'?'LIVE':'DEFAULT';
+  var cls=meta.source==='live'?'live':meta.source==='curated'?'curated':'default';
+  var label=meta.source==='live'?'LIVE':meta.source==='curated'?'CURATED':'DEFAULT';
+  badge.className='data-status '+cls;
+  badge.textContent=label;
   if(meta.updated){
-    badge.title='Updated: '+meta.updated.toLocaleTimeString();
+    badge.title='Updated: '+(meta.updated instanceof Date?meta.updated.toLocaleTimeString():new Date(meta.updated).toLocaleTimeString());
   }
   title.appendChild(badge);
 }
 
 // ========== LIVE DATA FETCH ==========
-async function fetchLiveLLMPricing(){
-  // Gate live data to Pro+ users
-  var plan = (currentProfile && currentProfile.plan) ? currentProfile.plan : 'free';
-  if (plan === 'free') return;
+var liveDataInterval=null;
+
+async function fetchLiveData(source){
   try{
-    var ctrl=new AbortController();
-    setTimeout(function(){ctrl.abort();},8000);
-    var res=await fetch('https://openrouter.ai/api/v1/models',{signal:ctrl.signal});
+    var res=await fetch('/api/live-data?source='+source);
+    if(!res.ok)throw new Error('HTTP '+res.status);
     var json=await res.json();
-    var modelMap={
-      'mistralai/mistral-nemo':'Mistral Nemo',
-      'deepseek/deepseek-chat':'DeepSeek V3.2',
-      'google/gemini-2.0-flash-001':'Gemini 2.0 Flash',
-      'openai/gpt-4o-mini':'GPT-4o Mini',
-      'anthropic/claude-3.5-haiku':'Claude Haiku 4.5',
-      'google/gemini-2.5-pro-preview':'Gemini 2.5 Pro',
-      'openai/gpt-5':'GPT-5',
-      'anthropic/claude-sonnet-4':'Claude Sonnet 4.6',
-      'x-ai/grok-3':'Grok 3',
-      'anthropic/claude-opus-4':'Claude Opus 4.6',
-      'openai/o3-pro':'o3 Pro'
-    };
-    json.data.forEach(function(m){
-      var displayName=modelMap[m.id];
-      if(displayName){
-        var entry=llmPricingData.find(function(e){return e.name===displayName;});
-        if(entry&&m.pricing){
-          entry.input=parseFloat(m.pricing.prompt)*1e6;
-          entry.output=parseFloat(m.pricing.completion)*1e6;
+    if(!json.data)throw new Error('No data in response');
+
+    if(source==='llm'){
+      llmPricingData=json.data;
+      dataSourceMeta.llm={source:json.source||'live',updated:json.updated||new Date().toISOString()};
+      renderLLMTable(llmPricingData);
+      renderStatusBadge('llm',dataSourceMeta.llm);
+      updateBubbleChartPrices();
+    }else if(source==='gpu'){
+      gpuPricingData=json.data;
+      dataSourceMeta.gpu={source:json.source||'live',updated:json.updated||new Date().toISOString()};
+      renderGPUTable(gpuPricingData);
+      renderStatusBadge('gpu',dataSourceMeta.gpu);
+    }else if(source==='benchmarks'){
+      dataSourceMeta.bench={source:json.source||'curated',updated:json.updated||new Date().toISOString()};
+      renderStatusBadge('bench',dataSourceMeta.bench);
+    }
+  }catch(e){
+    console.warn('Live data fetch failed ['+source+']:',e.message);
+  }
+}
+
+function updateBubbleChartPrices(){
+  // Map live LLM blended prices to bubble chart cpt values for matching models
+  var nameMap={
+    'Gemini 2.5 Pro':'Gemini 2.5 Pro',
+    'GPT-4o':'GPT-4o',
+    'Mistral Large 2':'Mistral Large 2',
+    'Claude Haiku 4.5':'Claude Haiku 4.5'
+  };
+  var changed=false;
+  models.forEach(function(m){
+    var llmEntry=llmPricingData.find(function(e){return e.name===m.name||nameMap[e.name]===m.name;});
+    if(llmEntry){
+      var blended=(llmEntry.input+llmEntry.output)/2;
+      if(blended>0){
+        var newCpt=Math.log10(blended/1e6);
+        if(Math.abs(newCpt-m.cpt)>0.01){
+          m.cpt=Math.round(newCpt*100)/100;
+          changed=true;
         }
       }
-    });
-    dataSourceMeta.llm={source:'live',updated:new Date()};
-    renderLLMTable(llmPricingData);
-    renderStatusBadge('llm',dataSourceMeta.llm);
-  }catch(e){
-    console.warn('OpenRouter fetch failed, using defaults:',e.message);
+    }
+  });
+  if(changed&&chartInstance&&currentX==='cpt'){
+    renderChart();
   }
+}
+
+async function fetchAllLiveData(){
+  var plan=(currentProfile&&currentProfile.plan)?currentProfile.plan:'free';
+  if(plan==='free')return;
+  await Promise.allSettled([
+    fetchLiveData('llm'),
+    fetchLiveData('gpu'),
+    fetchLiveData('benchmarks')
+  ]);
+}
+
+function startLiveDataPolling(){
+  // Fetch immediately
+  fetchAllLiveData();
+  // Then every 5 minutes
+  if(liveDataInterval)clearInterval(liveDataInterval);
+  liveDataInterval=setInterval(fetchAllLiveData,300000);
+}
+
+function stopLiveDataPolling(){
+  if(liveDataInterval){clearInterval(liveDataInterval);liveDataInterval=null;}
 }
 
 // Model data with multiple axis values
@@ -1424,8 +1465,8 @@ window.addEventListener('load',function(){
     renderStatusBadge('gpu',dataSourceMeta.gpu);
     renderStatusBadge('bench',dataSourceMeta.bench);
 
-    // Fetch live LLM pricing (async, updates when ready)
-    fetchLiveLLMPricing();
+    // Start live data polling (async, updates when ready)
+    startLiveDataPolling();
 
     // Apply feature gating on load
     applyFeatureGating();
@@ -1675,6 +1716,7 @@ async function updateAuthUI() {
         startNotifPolling();
         await loadProfile();
         applyFeatureGating();
+        startLiveDataPolling();
 
         // If user just logged in with a pending checkout URL, redirect
         if (_pendingCheckoutUrl) {
@@ -1697,6 +1739,7 @@ async function updateAuthUI() {
         navAccount.style.display = 'none';
         document.getElementById('notifBell').style.display = 'none';
         stopNotifPolling();
+        stopLiveDataPolling();
         currentProfile = null;
         applyFeatureGating();
     }

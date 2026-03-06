@@ -14,4 +14,5 @@
 /api/v1/benchmarks /.netlify/functions/api-v1-benchmarks 200!
 /api/dashboards /.netlify/functions/dashboards 200!
 /api/team/analytics /.netlify/functions/team-analytics 200!
+/api/live-data /.netlify/functions/live-data 200!
 /* /index.html 200
