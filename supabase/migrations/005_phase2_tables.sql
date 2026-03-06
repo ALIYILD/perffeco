@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS api_keys (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Alert history
+-- Alert history (price_alerts.id is TEXT in existing schema)
 CREATE TABLE IF NOT EXISTS alert_history (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  alert_id UUID NOT NULL REFERENCES price_alerts(id) ON DELETE CASCADE,
+  alert_id TEXT NOT NULL REFERENCES price_alerts(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   model_name TEXT NOT NULL,
   current_price DOUBLE PRECISION NOT NULL,
