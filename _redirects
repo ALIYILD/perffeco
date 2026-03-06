@@ -1,1 +1,6 @@
+/api/chat /.netlify/functions/chat 200!
+/api/stripe/webhook /.netlify/functions/stripe-webhook 200!
+/api/telegram/webhook /.netlify/functions/telegram-webhook 200!
+/api/telegram/link /.netlify/functions/telegram-link 200!
+/api/signup /.netlify/functions/signup 200!
 /* /index.html 200
