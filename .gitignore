@@ -9,3 +9,9 @@ node_modules
 
 # Build
 dist
+
+# Supabase local
+supabase/.temp/
+
+# Backups
+*.bak
