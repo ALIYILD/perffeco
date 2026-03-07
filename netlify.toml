@@ -5,6 +5,9 @@
 [functions]
   node_bundler = "esbuild"
 
+[[plugins]]
+  package = "./plugins/inject-env"
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -13,7 +16,7 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://js.stripe.com https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://*.supabase.co https://openrouter.ai https://api.groq.com https://api.telegram.org"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://js.stripe.com https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2 https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://*.supabase.co https://openrouter.ai https://api.groq.com https://api.telegram.org https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://www.googletagmanager.com"
 
 [[headers]]
   for = "/index.html"
