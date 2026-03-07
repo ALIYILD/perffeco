@@ -621,9 +621,9 @@
             <button class="btn-secondary" onclick="showMain('pricing')">View Plans</button>
         </div>
         <div class="hero-stats">
-            <div class="hero-stat"><span class="num">11+</span><span class="lbl">AI Models Tracked</span></div>
-            <div class="hero-stat"><span class="num">10+</span><span class="lbl">GPU Providers</span></div>
-            <div class="hero-stat"><span class="num">6</span><span class="lbl">Benchmarks</span></div>
+            <div class="hero-stat"><span class="num">22</span><span class="lbl">AI Models Tracked</span></div>
+            <div class="hero-stat"><span class="num">12</span><span class="lbl">Cloud Providers</span></div>
+            <div class="hero-stat"><span class="num">15</span><span class="lbl">Benchmarked Models</span></div>
             <div class="hero-stat"><span class="num">24h</span><span class="lbl">Update Cycle</span></div>
         </div>
 
@@ -1371,42 +1371,80 @@
 // ========== DATA ARRAYS ==========
 var llmPricingData = [
   {name:'Mistral Nemo',provider:'mistral',input:0.02,output:0.04,context:'131K',tier:'Budget'},
-  {name:'DeepSeek V3.2',provider:'deepseek',input:0.14,output:0.28,context:'128K',tier:'Budget'},
   {name:'Gemini 2.0 Flash',provider:'google',input:0.10,output:0.40,context:'1M',tier:'Budget'},
+  {name:'Mistral Small',provider:'mistral',input:0.10,output:0.30,context:'32K',tier:'Budget'},
+  {name:'Gemma 3 27B',provider:'google',input:0.10,output:0.20,context:'128K',tier:'Budget'},
+  {name:'DeepSeek V3.2',provider:'deepseek',input:0.14,output:0.28,context:'128K',tier:'Budget'},
   {name:'GPT-4o Mini',provider:'openai',input:0.15,output:0.60,context:'128K',tier:'Budget'},
+  {name:'Llama 4 Scout',provider:'meta',input:0.15,output:0.60,context:'512K',tier:'Budget'},
+  {name:'Qwen3 32B',provider:'alibaba',input:0.20,output:0.60,context:'128K',tier:'Budget'},
+  {name:'Grok 3 Mini',provider:'xai',input:0.30,output:0.50,context:'131K',tier:'Mid'},
+  {name:'Llama 4 Maverick',provider:'meta',input:0.50,output:2.00,context:'256K',tier:'Mid'},
+  {name:'DeepSeek R1',provider:'deepseek',input:0.55,output:2.19,context:'128K',tier:'Mid'},
   {name:'Claude Haiku 4.5',provider:'anthropic',input:1.00,output:5.00,context:'200K',tier:'Mid'},
   {name:'Gemini 2.5 Pro',provider:'google',input:1.25,output:10.00,context:'1M',tier:'Mid'},
   {name:'GPT-5',provider:'openai',input:1.25,output:10.00,context:'400K',tier:'Mid'},
+  {name:'Qwen3 235B',provider:'alibaba',input:1.50,output:6.00,context:'128K',tier:'Mid'},
+  {name:'Mistral Large',provider:'mistral',input:2.00,output:6.00,context:'128K',tier:'Mid'},
+  {name:'GPT-4o',provider:'openai',input:2.50,output:10.00,context:'128K',tier:'Mid'},
   {name:'Claude Sonnet 4.6',provider:'anthropic',input:3.00,output:15.00,context:'200K',tier:'Mid'},
   {name:'Grok 3',provider:'xai',input:3.00,output:15.00,context:'131K',tier:'Mid'},
-  {name:'Claude Opus 4.6',provider:'anthropic',input:5.00,output:25.00,context:'200K',tier:'Premium'},
-  {name:'o3 Pro',provider:'openai',input:20.00,output:80.00,context:'200K',tier:'Premium'}
+  {name:'Claude Opus 4.6',provider:'anthropic',input:15.00,output:75.00,context:'200K',tier:'Premium'},
+  {name:'o3 Pro',provider:'openai',input:20.00,output:80.00,context:'200K',tier:'Premium'},
+  {name:'GPT-4.5',provider:'openai',input:75.00,output:150.00,context:'128K',tier:'Premium'}
 ];
 
 var gpuPricingData = [
-  {gpu:'L40S',vram:'48GB',provider:'RunPod',onDemand:0.79,spot:'$0.44',type:'Market'},
-  {gpu:'A100 80GB',vram:'80GB',provider:'RunPod',onDemand:1.19,spot:'$0.89',type:'Market'},
+  {gpu:'RTX 4090',vram:'24GB',provider:'Vast.ai',onDemand:0.29,spot:'dynamic',type:'Market'},
+  {gpu:'RTX 4090',vram:'24GB',provider:'TensorDock',onDemand:0.34,spot:'\u2014',type:'Market'},
+  {gpu:'RTX 4090',vram:'24GB',provider:'RunPod',onDemand:0.44,spot:'$0.29',type:'Market'},
+  {gpu:'RTX 6000 Ada',vram:'48GB',provider:'Vast.ai',onDemand:0.55,spot:'dynamic',type:'Market'},
+  {gpu:'RTX 6000 Ada',vram:'48GB',provider:'RunPod',onDemand:0.69,spot:'$0.39',type:'Market'},
+  {gpu:'L40S',vram:'48GB',provider:'TensorDock',onDemand:0.79,spot:'\u2014',type:'Market'},
+  {gpu:'L40S',vram:'48GB',provider:'FluidStack',onDemand:0.85,spot:'\u2014',type:'Market'},
+  {gpu:'L40S',vram:'48GB',provider:'RunPod',onDemand:0.89,spot:'$0.44',type:'Market'},
+  {gpu:'L40S',vram:'48GB',provider:'Lambda',onDemand:0.99,spot:'\u2014',type:'Market'},
+  {gpu:'A100 PCIe',vram:'40GB',provider:'Vast.ai',onDemand:0.69,spot:'dynamic',type:'Market'},
+  {gpu:'A100 PCIe',vram:'40GB',provider:'TensorDock',onDemand:0.99,spot:'\u2014',type:'Market'},
+  {gpu:'A100 PCIe',vram:'40GB',provider:'RunPod',onDemand:1.19,spot:'$0.69',type:'Market'},
+  {gpu:'A100 SXM',vram:'80GB',provider:'FluidStack',onDemand:1.10,spot:'\u2014',type:'Market'},
+  {gpu:'A100 SXM',vram:'80GB',provider:'CoreWeave',onDemand:1.22,spot:'\u2014',type:'Market'},
+  {gpu:'A100 SXM',vram:'80GB',provider:'Lambda',onDemand:1.29,spot:'\u2014',type:'Market'},
+  {gpu:'A100 SXM',vram:'80GB',provider:'RunPod',onDemand:1.64,spot:'$0.89',type:'Market'},
   {gpu:'H100 SXM',vram:'80GB',provider:'Vast.ai',onDemand:1.49,spot:'dynamic',type:'Market'},
-  {gpu:'H100 SXM',vram:'80GB',provider:'Lambda',onDemand:1.85,spot:'\u2014',type:'Market'},
-  {gpu:'H200 SXM',vram:'141GB',provider:'Lambda',onDemand:1.85,spot:'\u2014',type:'Market'},
-  {gpu:'H100 SXM',vram:'80GB',provider:'RunPod',onDemand:2.69,spot:'$1.99',type:'Market'},
-  {gpu:'B200',vram:'192GB',provider:'Lambda',onDemand:2.99,spot:'\u2014',type:'Special'},
+  {gpu:'H100 SXM',vram:'80GB',provider:'FluidStack',onDemand:2.15,spot:'\u2014',type:'Market'},
+  {gpu:'H100 SXM',vram:'80GB',provider:'CoreWeave',onDemand:2.23,spot:'\u2014',type:'Market'},
+  {gpu:'H100 SXM',vram:'80GB',provider:'Lambda',onDemand:2.49,spot:'\u2014',type:'Market'},
+  {gpu:'H100 SXM',vram:'80GB',provider:'TensorDock',onDemand:2.59,spot:'\u2014',type:'Market'},
+  {gpu:'H100 SXM',vram:'80GB',provider:'RunPod',onDemand:3.29,spot:'$1.99',type:'Market'},
   {gpu:'H100 SXM',vram:'80GB',provider:'GCP',onDemand:3.67,spot:'$2.25',type:'Hyper'},
   {gpu:'H100 SXM',vram:'80GB',provider:'AWS',onDemand:3.93,spot:'$1.18',type:'Hyper'},
-  {gpu:'H100 SXM',vram:'80GB',provider:'Azure',onDemand:6.98,spot:'$4.89',type:'Hyper'}
+  {gpu:'H100 SXM',vram:'80GB',provider:'Azure',onDemand:6.98,spot:'$4.89',type:'Hyper'},
+  {gpu:'B200',vram:'192GB',provider:'Lambda',onDemand:2.99,spot:'\u2014',type:'Special'},
+  {gpu:'B200',vram:'192GB',provider:'CoreWeave',onDemand:3.29,spot:'\u2014',type:'Special'},
+  {gpu:'H200 SXM',vram:'141GB',provider:'CoreWeave',onDemand:3.49,spot:'\u2014',type:'Market'},
+  {gpu:'H200 SXM',vram:'141GB',provider:'RunPod',onDemand:3.89,spot:'$2.49',type:'Market'},
+  {gpu:'H200 SXM',vram:'141GB',provider:'Lambda',onDemand:3.99,spot:'\u2014',type:'Market'},
+  {gpu:'A100 SXM',vram:'80GB',provider:'AWS',onDemand:3.40,spot:'$1.02',type:'Hyper'},
+  {gpu:'A100 SXM',vram:'80GB',provider:'GCP',onDemand:3.67,spot:'$1.10',type:'Hyper'}
 ];
 
 const benchmarkData = [
   {rank:1,name:'Claude Opus 4.6',arena:1503,mmlu:82.0,gpqa:91.3,humaneval:95.0,swe:80.8,math:97.6,type:'closed',price:'$15'},
   {rank:2,name:'GPT-5',arena:1480,mmlu:80.0,gpqa:88.4,humaneval:96.0,swe:76.3,math:99.4,type:'closed',price:'$5.63'},
-  {rank:3,name:'Gemini 2.5 Pro',arena:1450,mmlu:78.0,gpqa:84.0,humaneval:93.0,swe:63.8,math:95.0,type:'closed',price:'$5.63'},
-  {rank:4,name:'Claude Sonnet 4.6',arena:1470,mmlu:78.0,gpqa:74.1,humaneval:93.0,swe:79.6,math:97.8,type:'closed',price:'$9'},
+  {rank:3,name:'Claude Sonnet 4.6',arena:1470,mmlu:78.0,gpqa:74.1,humaneval:93.0,swe:79.6,math:97.8,type:'closed',price:'$9'},
+  {rank:4,name:'Gemini 2.5 Pro',arena:1450,mmlu:78.0,gpqa:84.0,humaneval:93.0,swe:63.8,math:95.0,type:'closed',price:'$5.63'},
   {rank:5,name:'Grok 3',arena:1440,mmlu:76.0,gpqa:84.6,humaneval:90.0,swe:50.0,math:92.0,type:'closed',price:'$9'},
   {rank:6,name:'DeepSeek R1',arena:1436,mmlu:84.0,gpqa:71.5,humaneval:96.1,swe:69.1,math:97.3,type:'open',price:'$1.37'},
-  {rank:7,name:'Llama 4 Maverick',arena:1417,mmlu:80.5,gpqa:69.8,humaneval:88.0,swe:45.0,math:90.0,type:'open',price:'Host'},
-  {rank:8,name:'GPT-4o',arena:1350,mmlu:65.0,gpqa:53.6,humaneval:90.2,swe:45.2,math:76.6,type:'closed',price:'$6.25'},
-  {rank:9,name:'Claude Haiku 4.5',arena:1350,mmlu:70.5,gpqa:52.0,humaneval:85.0,swe:73.3,math:85.0,type:'closed',price:'$3'},
-  {rank:10,name:'Mistral Large 2',arena:1300,mmlu:68.0,gpqa:50.0,humaneval:92.0,swe:36.0,math:93.6,type:'open',price:'$4'}
+  {rank:7,name:'o3 Pro',arena:1430,mmlu:81.5,gpqa:87.7,humaneval:94.0,swe:71.2,math:99.2,type:'closed',price:'$50'},
+  {rank:8,name:'Llama 4 Maverick',arena:1417,mmlu:80.5,gpqa:69.8,humaneval:88.0,swe:45.0,math:90.0,type:'open',price:'Host'},
+  {rank:9,name:'Qwen3 235B',arena:1410,mmlu:79.0,gpqa:68.5,humaneval:89.0,swe:42.0,math:91.5,type:'open',price:'$1.50'},
+  {rank:10,name:'GPT-4o',arena:1350,mmlu:65.0,gpqa:53.6,humaneval:90.2,swe:45.2,math:76.6,type:'closed',price:'$6.25'},
+  {rank:11,name:'Claude Haiku 4.5',arena:1350,mmlu:70.5,gpqa:52.0,humaneval:85.0,swe:73.3,math:85.0,type:'closed',price:'$3'},
+  {rank:12,name:'Grok 3 Mini',arena:1340,mmlu:68.5,gpqa:58.0,humaneval:86.0,swe:40.0,math:88.0,type:'closed',price:'$0.40'},
+  {rank:13,name:'Llama 4 Scout',arena:1320,mmlu:67.0,gpqa:55.0,humaneval:82.0,swe:38.0,math:84.0,type:'open',price:'Host'},
+  {rank:14,name:'Mistral Large',arena:1300,mmlu:68.0,gpqa:50.0,humaneval:92.0,swe:36.0,math:93.6,type:'open',price:'$4'},
+  {rank:15,name:'Gemma 3 27B',arena:1280,mmlu:62.0,gpqa:45.0,humaneval:80.0,swe:28.0,math:78.0,type:'open',price:'Host'}
 ];
 
 const dataSourceMeta = {
