@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perffeco — Intelligence Economics Platform</title>
-    <meta name="description" content="Perffeco is the Bloomberg Terminal for AI costs. Compare LLM API pricing, GPU cloud economics, AI agent ROI, and FinOps strategies across 60+ models and 15+ providers.">
+    <meta name="description" content="Perffeco is the Bloomberg Terminal for AI costs. Compare LLM API pricing, GPU cloud economics, AI agent ROI, and FinOps strategies with real-time data.">
     <link rel="canonical" href="https://perffeco.com/">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Perffeco — Intelligence Economics Platform">
-    <meta property="og:description" content="Compare LLM API pricing, GPU cloud economics, AI agent ROI, and FinOps strategies. Real-time data across 60+ models and 15+ providers.">
+    <meta property="og:description" content="Compare LLM API pricing, GPU cloud economics, AI agent ROI, and FinOps strategies. Real-time data across multiple models and providers.">
     <meta property="og:url" content="https://perffeco.com/">
     <meta property="og:image" content="https://perffeco.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -21,8 +21,62 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        :root{
+            --bg-primary:#000000;--bg-card:#0a0e12;--bg-hover:#111820;--bg-input:#111822;
+            --border:#1a2030;--border-hover:#1e2a38;
+            --text-primary:#E8E8E8;--text-secondary:#B0B8C4;--text-muted:#7A8899;--text-dim:#556677;--text-faint:#3A4A5C;
+            --accent:#FF8200;--accent-glow:rgba(255,130,0,0.15);--accent-subtle:rgba(255,130,0,0.08);
+            --success:#33CC66;--danger:#FF3333;--info:#3399FF;
+            --font-sans:'Inter',sans-serif;--font-mono:'IBM Plex Mono',monospace;
+            --radius-sm:3px;--radius-md:6px;--radius-lg:12px;
+            --transition:0.2s ease;
+        }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',sans-serif;background:#000000;color:#B0B8C4;min-height:100vh;overflow-x:hidden}
+        body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-secondary);min-height:100vh;overflow-x:hidden}
+
+        /* ========== HERO / LANDING ========== */
+        .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:80px 24px 60px}
+        .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(255,130,0,0.08),transparent 70%);pointer-events:none}
+        .hero::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%231a2030' stroke-width='0.5'/%3E%3C/svg%3E");opacity:.4;pointer-events:none}
+        .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:32px;position:relative;z-index:1;backdrop-filter:blur(8px);background:rgba(10,14,18,0.6)}
+        .hero-badge .dot{width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 2s infinite}
+        .hero h1{font-size:clamp(36px,6vw,64px);font-weight:800;line-height:1.08;max-width:820px;color:var(--text-primary);position:relative;z-index:1;letter-spacing:-1px}
+        .hero h1 span{color:var(--accent);position:relative}
+        .hero h1 span::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:var(--accent);border-radius:2px;opacity:.3}
+        .hero-sub{color:var(--text-muted);font-size:clamp(15px,2vw,18px);max-width:560px;margin:24px auto 40px;line-height:1.7;position:relative;z-index:1}
+        .hero-cta{display:flex;gap:16px;justify-content:center;position:relative;z-index:1;flex-wrap:wrap}
+        .hero-cta .btn-primary{background:var(--accent);color:#000;padding:14px 36px;border-radius:var(--radius-sm);font-weight:700;font-size:15px;border:none;cursor:pointer;transition:all var(--transition);letter-spacing:0.3px}
+        .hero-cta .btn-primary:hover{box-shadow:0 0 30px rgba(255,130,0,0.4);transform:translateY(-2px)}
+        .hero-cta .btn-secondary{background:transparent;color:var(--accent);padding:14px 36px;border-radius:var(--radius-sm);font-weight:600;font-size:15px;border:1px solid rgba(255,130,0,0.3);cursor:pointer;transition:all var(--transition)}
+        .hero-cta .btn-secondary:hover{border-color:var(--accent);background:var(--accent-subtle)}
+        .hero-stats{display:flex;gap:48px;margin-top:64px;position:relative;z-index:1;flex-wrap:wrap;justify-content:center}
+        .hero-stat{text-align:center}
+        .hero-stat .num{font-size:32px;font-weight:800;color:var(--accent);font-family:var(--font-mono);display:block}
+        .hero-stat .lbl{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+        .hero-preview{margin-top:64px;position:relative;z-index:1;max-width:960px;width:100%;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--bg-card);box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(255,130,0,0.05)}
+        .hero-preview-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--bg-hover);border-bottom:1px solid var(--border)}
+        .hero-preview-bar .dot{width:8px;height:8px;border-radius:50%}
+        .hero-preview-inner{padding:20px;min-height:200px;background:linear-gradient(180deg,var(--bg-card) 0%,rgba(255,130,0,0.03) 100%);display:flex;align-items:center;justify-content:center;position:relative}
+        .hero-preview-inner::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--bg-card) 100%);pointer-events:none}
+        .hero-preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;opacity:0.6}
+        .hero-preview-card{background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px}
+        .hero-preview-card .label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+        .hero-preview-card .val{font-size:20px;font-weight:700;color:var(--accent);margin-top:4px;font-family:var(--font-mono)}
+        .hero-explore{position:absolute;z-index:2;padding:12px 28px;background:var(--accent);color:#000;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:14px;cursor:pointer;transition:all var(--transition)}
+        .hero-explore:hover{transform:scale(1.05);box-shadow:0 0 24px rgba(255,130,0,0.4)}
+        .hero-trusted{margin-top:56px;position:relative;z-index:1;text-align:center}
+        .hero-trusted .label{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
+        .hero-trusted-logos{display:flex;gap:40px;align-items:center;justify-content:center;flex-wrap:wrap}
+        .hero-trusted-logos span{font-size:13px;font-weight:600;color:var(--text-dim);opacity:.5;font-family:var(--font-mono);letter-spacing:1px}
+
+        /* ========== TICKER ========== */
+        .ticker-strip{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;background:var(--bg-card)}
+        .ticker-track{display:flex;gap:40px;animation:tickerScroll 30s linear infinite;width:max-content}
+        .ticker-item{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);white-space:nowrap;display:flex;align-items:center;gap:6px;cursor:pointer;transition:color .2s}
+        .ticker-item:hover{color:var(--text-secondary)}
+        .ticker-item .accent{color:var(--accent);font-weight:600}
+        .ticker-item .green{color:var(--success);font-weight:600}
+        @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
         /* ========== NAV ========== */
         nav{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:#000000;border-bottom:1px solid #1a2030;position:sticky;top:0;z-index:1000}
@@ -44,8 +98,13 @@
 
         /* ========== MAIN SECTIONS ========== */
         .main-section{display:none}
-        .main-section.active{display:block;animation:fadeIn .4s ease}
+        .main-section.active{display:block;animation:slideUp .5s ease}
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        .main-section.active .sec-header{animation:slideUp .5s ease forwards}
+        .main-section.active .stats-row{animation:slideUp .5s ease .1s forwards;opacity:0}
+        .main-section.active .sub-tabs{animation:slideUp .5s ease .15s forwards;opacity:0}
+        .main-section.active .container{animation:slideUp .5s ease .1s forwards;opacity:0}
 
         /* Back to top */
         .back-to-top{position:fixed;bottom:28px;right:28px;width:40px;height:40px;background:#FF8200;color:#000000;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:none;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:opacity .3s}
@@ -406,7 +465,30 @@
         .export-btn:hover{border-color:#FF8200;color:#FF8200}
         .export-btn:disabled{opacity:.4;cursor:default}
 
-        footer{text-align:center;padding:36px;color:#3A4A5C;font-size:11px;border-top:1px solid #1a2030;margin-top:50px}
+        .card:hover,.prov-card:hover,.tier-card:hover{box-shadow:0 0 24px var(--accent-glow)}
+        .feature-card{transition:all .25s ease;position:relative}
+        .feature-card:hover{border-color:var(--accent);transform:translateY(-6px);box-shadow:0 12px 40px rgba(255,130,0,0.12)}
+        .feature-card:hover h3{color:var(--accent)!important}
+        .card-arrow{display:block;margin-top:14px;font-size:12px;font-weight:600;color:var(--text-dim);transition:all .25s ease}
+        .feature-card:hover .card-arrow{color:var(--accent);transform:translateX(4px)}
+        .hero-preview-card{transition:all .2s ease}
+        .hero-preview-card:hover{border-color:var(--accent);background:rgba(255,130,0,0.05);opacity:1!important}
+
+        /* ========== PREMIUM FOOTER ========== */
+        .site-footer{border-top:1px solid var(--border);margin-top:80px;background:var(--bg-card)}
+        .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1200px;margin:0 auto;padding:60px 28px 40px}
+        .footer-brand .logo-text{color:var(--accent);font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+        .footer-brand p{color:var(--text-dim);font-size:12px;line-height:1.7;max-width:280px}
+        .footer-socials{display:flex;gap:12px;margin-top:16px}
+        .footer-socials a{width:32px;height:32px;border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--text-dim);text-decoration:none;font-size:14px;transition:all var(--transition)}
+        .footer-socials a:hover{border-color:var(--accent);color:var(--accent)}
+        .footer-col h4{color:var(--text-primary);font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;font-weight:600}
+        .footer-col a{display:block;color:var(--text-dim);font-size:12px;text-decoration:none;padding:4px 0;transition:color var(--transition);cursor:pointer}
+        .footer-col a:hover{color:var(--accent)}
+        .footer-bottom{border-top:1px solid var(--border);max-width:1200px;margin:0 auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+        .footer-bottom p{color:var(--text-faint);font-size:10px}
+        .footer-bottom .sources{color:var(--text-faint);font-size:10px}
+        @media(max-width:700px){.footer-grid{grid-template-columns:1fr 1fr;gap:24px}.footer-bottom{flex-direction:column;text-align:center}}
 
         .data-status{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-left:8px;vertical-align:middle}
         .data-status.live{color:#33CC66;border:1px solid #33CC66}
@@ -415,7 +497,7 @@
 
         @media(max-width:900px){
             .hamburger{display:block}
-            .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#000000;border-bottom:1px solid #1a2030;flex-direction:column;padding:16px 28px;gap:14px}
+            .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-primary);border-bottom:1px solid var(--border);flex-direction:column;padding:16px 28px;gap:14px}
             .nav-links.open{display:flex}
             .dash-layout{grid-template-columns:1fr}
             .dash-sidebar{padding-left:0;margin-top:16px}
@@ -425,16 +507,23 @@
             .provider-grid{grid-template-columns:repeat(2,1fr)}
             .metrics-grid{grid-template-columns:1fr}
             .stats-row{gap:24px}
-            .sub-tabs{gap:4px}
-            .sub-tab{font-size:11px;padding:6px 10px}
+            .sub-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;gap:4px;padding:16px 20px}
+            .sub-tab{flex-shrink:0;font-size:11px;padding:6px 10px}
+            .hero h1{font-size:32px;letter-spacing:-0.5px}
+            .hero-stats{gap:24px}
+            .hero-stat .num{font-size:24px}
+            .hero-preview-grid{grid-template-columns:1fr}
+            .hero-trusted-logos{gap:20px}
+            .chart-area{min-height:320px}
+            .chart-area div[style*="height:420px"]{height:280px!important}
         }
     </style>
 </head>
 <body>
 
 <!-- ==================== NAV ==================== -->
-<nav>
-    <a class="logo" onclick="showMain('home')">
+<nav role="navigation" aria-label="Main navigation">
+    <a class="logo" onclick="showMain('landing')">
         <svg class="logo-icon" viewBox="0 0 32 32" width="24" height="24" fill="none">
             <path d="M16 2L30 16L16 30L2 16Z" fill="#FF8200" opacity="0.15" stroke="#FF8200" stroke-width="1.5"/>
             <polyline points="8,20 13,16 18,12 24,8" stroke="#FF8200" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -520,9 +609,156 @@
 </div>
 
 <!-- =====================================================
+     SECTION: LANDING — HERO PAGE
+     ===================================================== -->
+<div id="sec-landing" class="main-section active">
+    <div class="hero">
+        <div class="hero-badge"><span class="dot"></span> Live pricing data updated daily</div>
+        <h1>The Bloomberg Terminal<br>for <span>AI Costs</span></h1>
+        <p class="hero-sub">Compare LLM API pricing, GPU cloud economics, and AI agent ROI across multiple models and providers. Real-time data, benchmarks, and FinOps strategies in one platform.</p>
+        <div class="hero-cta">
+            <button class="btn-primary" onclick="showMain('home')">Explore Dashboard</button>
+            <button class="btn-secondary" onclick="showMain('pricing')">View Plans</button>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat"><span class="num">11+</span><span class="lbl">AI Models Tracked</span></div>
+            <div class="hero-stat"><span class="num">10+</span><span class="lbl">GPU Providers</span></div>
+            <div class="hero-stat"><span class="num">6</span><span class="lbl">Benchmarks</span></div>
+            <div class="hero-stat"><span class="num">24h</span><span class="lbl">Update Cycle</span></div>
+        </div>
+
+        <!-- Dashboard Preview -->
+        <div class="hero-preview">
+            <div class="hero-preview-bar">
+                <div class="dot" style="background:#FF3B30"></div>
+                <div class="dot" style="background:#FFCC00"></div>
+                <div class="dot" style="background:#33CC66"></div>
+                <span style="margin-left:8px;font-size:10px;color:var(--text-dim);font-family:var(--font-mono)">perffeco.com / dashboard</span>
+            </div>
+            <div class="hero-preview-inner">
+                <div class="hero-preview-grid">
+                    <div class="hero-preview-card" style="cursor:pointer" onclick="showMain('llm')">
+                        <div class="label">Best Value Model</div>
+                        <div class="val">DeepSeek V3</div>
+                        <div style="font-size:10px;color:var(--text-dim);margin-top:4px">$0.14 / 1M tokens</div>
+                    </div>
+                    <div class="hero-preview-card" style="cursor:pointer" onclick="showMain('gpu')">
+                        <div class="label">Cheapest H100</div>
+                        <div class="val">$1.49/hr</div>
+                        <div style="font-size:10px;color:var(--text-dim);margin-top:4px">Vast.ai spot pricing</div>
+                    </div>
+                    <div class="hero-preview-card" style="cursor:pointer" onclick="showMain('benchmarks')">
+                        <div class="label">Top Benchmark</div>
+                        <div class="val">Opus 4.6</div>
+                        <div style="font-size:10px;color:var(--text-dim);margin-top:4px">CIS: 91.3 GPQA</div>
+                    </div>
+                </div>
+                <button class="hero-explore" onclick="showMain('home')">Explore Live Data</button>
+            </div>
+        </div>
+
+        <!-- Trust signals -->
+        <div class="hero-trusted">
+            <div class="label">Built for teams making AI infrastructure decisions</div>
+            <div class="hero-trusted-logos">
+                <span onclick="showMain('agents')" style="cursor:pointer">AI STARTUPS</span>
+                <span onclick="showMain('finops')" style="cursor:pointer">ENTERPRISE FINOPS</span>
+                <span onclick="showMain('gpu')" style="cursor:pointer">ML ENGINEERS</span>
+                <span onclick="showMain('benchmarks')" style="cursor:pointer">VCs & ANALYSTS</span>
+                <span onclick="showMain('home')" style="cursor:pointer">CTOs & VPs ENG</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticker strip -->
+    <div class="ticker-strip">
+        <div class="ticker-track">
+            <span class="ticker-item" onclick="showMain('llm')">GPT-4o Mini <span class="accent">$0.15</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('llm')">Claude Sonnet 4.6 <span class="accent">$3.00</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('gpu')">H100 SXM from <span class="green">$1.49</span>/hr</span>
+            <span class="ticker-item" onclick="showMain('llm')">DeepSeek V3.2 <span class="accent">$0.14</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('llm')">Gemini 2.5 Pro <span class="accent">$1.25</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('gpu')">B200 from <span class="green">$2.99</span>/hr</span>
+            <span class="ticker-item" onclick="showMain('llm')">Claude Opus 4.6 <span class="accent">$5.00</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('llm')">o3 Pro <span class="accent">$20.00</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('gpu')">H200 SXM from <span class="green">$1.85</span>/hr</span>
+            <span class="ticker-item" onclick="showMain('gpu')">A100 80GB from <span class="green">$1.19</span>/hr</span>
+            <!-- Duplicate for seamless scroll -->
+            <span class="ticker-item" onclick="showMain('llm')">GPT-4o Mini <span class="accent">$0.15</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('llm')">Claude Sonnet 4.6 <span class="accent">$3.00</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('gpu')">H100 SXM from <span class="green">$1.49</span>/hr</span>
+            <span class="ticker-item" onclick="showMain('llm')">DeepSeek V3.2 <span class="accent">$0.14</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('llm')">Gemini 2.5 Pro <span class="accent">$1.25</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('gpu')">B200 from <span class="green">$2.99</span>/hr</span>
+            <span class="ticker-item" onclick="showMain('llm')">Claude Opus 4.6 <span class="accent">$5.00</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('llm')">o3 Pro <span class="accent">$20.00</span>/1M in</span>
+            <span class="ticker-item" onclick="showMain('gpu')">H200 SXM from <span class="green">$1.85</span>/hr</span>
+            <span class="ticker-item" onclick="showMain('gpu')">A100 80GB from <span class="green">$1.19</span>/hr</span>
+        </div>
+    </div>
+
+    <!-- Value Props -->
+    <div style="max-width:1200px;margin:0 auto;padding:80px 28px">
+        <div style="text-align:center;margin-bottom:48px">
+            <h2 style="font-size:32px;font-weight:800;color:var(--text-primary)">Everything you need to <span style="color:var(--accent)">optimise AI spend</span></h2>
+            <p style="color:var(--text-dim);font-size:15px;margin-top:12px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.6">One platform to track, compare, and reduce your AI infrastructure costs. From API tokens to GPU clusters.</p>
+        </div>
+        <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+            <div class="card feature-card" style="padding:28px;cursor:pointer" onclick="showMain('llm')">
+                <div style="font-size:28px;margin-bottom:12px">&#9683;</div>
+                <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:8px">LLM API Pricing</h3>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.7">Compare input/output token costs across OpenAI, Anthropic, Google, Mistral, xAI and DeepSeek. Cost-per-task estimates and price deflation trends.</p>
+                <span class="card-arrow">Explore &rarr;</span>
+            </div>
+            <div class="card feature-card" style="padding:28px;cursor:pointer" onclick="showMain('gpu')">
+                <div style="font-size:28px;margin-bottom:12px">&#9881;</div>
+                <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:8px">GPU Cloud Economics</h3>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.7">H100/H200/B200/A100/L40S pricing across 10+ providers. Spot vs on-demand rates, hidden cost breakdowns and GPU cost calculator.</p>
+                <span class="card-arrow">Explore &rarr;</span>
+            </div>
+            <div class="card feature-card" style="padding:28px;cursor:pointer" onclick="showMain('benchmarks')">
+                <div style="font-size:28px;margin-bottom:12px">&#9733;</div>
+                <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:8px">Benchmark Leaderboard</h3>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.7">Rankings across Arena Elo, MMLU-Pro, GPQA, HumanEval, SWE-bench and MATH-500. Performance-per-dollar analysis.</p>
+                <span class="card-arrow">Explore &rarr;</span>
+            </div>
+            <div class="card feature-card" style="padding:28px;cursor:pointer" onclick="showMain('agents')">
+                <div style="font-size:28px;margin-bottom:12px">&#9878;</div>
+                <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:8px">AI Agent ROI</h3>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.7">Development cost tiers, inference tables, pricing models, ROI benchmarks and Agent TCO calculator for chatbots to multi-agent systems.</p>
+                <span class="card-arrow">Explore &rarr;</span>
+            </div>
+            <div class="card feature-card" style="padding:28px;cursor:pointer" onclick="showMain('finops')">
+                <div style="font-size:28px;margin-bottom:12px">&#9879;</div>
+                <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:8px">FinOps for AI</h3>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.7">Six-step optimisation framework, tool directory, quick-win strategies. Target 30-70% cost reduction with proven governance patterns.</p>
+                <span class="card-arrow">Explore &rarr;</span>
+            </div>
+            <div class="card feature-card" style="padding:28px;cursor:pointer" onclick="toggleChat()">
+                <div style="font-size:28px;margin-bottom:12px">&#9672;</div>
+                <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:8px">AI-Powered Agent</h3>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.7">Chat with the Perffeco AI Agent to compare models, get cost estimates, set price alerts and find optimisation opportunities instantly.</p>
+                <span class="card-arrow">Try it &rarr;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Banner -->
+    <div style="text-align:center;padding:60px 28px 80px;position:relative">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 100%,rgba(255,130,0,0.06),transparent 70%);pointer-events:none"></div>
+        <h2 style="font-size:28px;font-weight:800;color:var(--text-primary);position:relative;z-index:1">Ready to optimise your AI costs?</h2>
+        <p style="color:var(--text-dim);font-size:14px;margin:12px auto 28px;max-width:480px;position:relative;z-index:1;line-height:1.6">Join engineering and FinOps teams using Perffeco to make data-driven infrastructure decisions.</p>
+        <div class="hero-cta" style="position:relative;z-index:1">
+            <button class="btn-primary" onclick="openAuthModal()">Get Started Free</button>
+            <button class="btn-secondary" onclick="showMain('home')">View Dashboard</button>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
      SECTION: HOME — FRONTIER MODEL ECONOMICS DASHBOARD
      ===================================================== -->
-<div id="sec-home" class="main-section active">
+<div id="sec-home" class="main-section">
 
     <!-- Header -->
     <div class="dash-header">
@@ -717,7 +953,7 @@
     <div class="gated-overlay" id="gate-gpu" style="display:none">
         <div class="gated-lock">&#128274;</div>
         <div class="gated-title">GPU Economics is a Pro feature</div>
-        <div class="gated-desc">Unlock full GPU pricing across 15+ providers, price trends, hidden cost analysis, and the GPU calculator.</div>
+        <div class="gated-desc">Unlock full GPU pricing across multiple providers, price trends, hidden cost analysis, and the GPU calculator.</div>
         <button class="gated-cta" onclick="handleGatedUpgrade()">Upgrade to Pro</button>
     </div>
     <div class="sec-header"><h2><span>GPU Economics</span> Dashboard</h2><p>GPU cloud pricing across top providers.</p></div>
@@ -814,7 +1050,8 @@
                 </ul>
                 <button class="calc-btn" style="margin-top:16px" onclick="showMain('home')">Get Started</button>
             </div>
-            <div class="tier-card" style="border-color:#FF8200">
+            <div class="tier-card" style="border-color:#FF8200;position:relative;box-shadow:0 0 30px rgba(255,130,0,0.1)">
+                <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:10px;font-weight:700;padding:3px 14px;border-radius:10px;text-transform:uppercase;letter-spacing:1px">Most Popular</div>
                 <div class="tier-name" style="color:#FF8200">Pro</div>
                 <div class="tier-price" data-monthly="$29" data-annual="$23">$29</div>
                 <div class="tier-range" data-monthly="/month" data-annual="/mo (billed annually)">/month</div>
@@ -871,6 +1108,12 @@
                 </ul>
                 <a class="calc-btn" style="margin-top:16px;display:block;text-align:center;text-decoration:none;color:#000000" href="mailto:hello@perffeco.com">Contact Sales</a>
             </div>
+        </div>
+        <!-- Trust badges -->
+        <div style="display:flex;gap:32px;justify-content:center;margin-top:40px;flex-wrap:wrap;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:12px"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Secure payments via Stripe</div>
+            <div style="display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:12px"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Cancel anytime, no lock-in</div>
+            <div style="display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:12px"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 14-day money-back guarantee</div>
         </div>
     </div>
 </div>
@@ -991,6 +1234,54 @@
 </div>
 
 <!-- =====================================================
+     SECTION: TERMS OF SERVICE
+     ===================================================== -->
+<div id="sec-terms" class="main-section">
+    <div class="sec-header"><h2>Terms of <span>Service</span></h2><p>Last updated: March 2026</p></div>
+    <div class="container" style="max-width:760px">
+        <div class="card" style="padding:32px">
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">1. Acceptance of Terms</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">By accessing or using Perffeco ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not access or use the Service.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">2. Description of Service</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">Perffeco is an intelligence economics platform providing AI model pricing comparisons, GPU cloud cost analysis, benchmark data, and FinOps tools. Data is aggregated from public sources and provider APIs.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">3. User Accounts</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">You are responsible for maintaining the confidentiality of your account credentials. You agree to notify us immediately of any unauthorised access to your account. You must be at least 18 years old to create an account.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">4. Subscription & Billing</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">Paid plans are billed monthly or annually via Stripe. You may cancel at any time; access continues until the end of your billing period. Refunds are handled on a case-by-case basis within 14 days of purchase.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">5. Data Accuracy</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">While we strive for accuracy, pricing and benchmark data is provided "as is" without warranties. Perffeco is not responsible for decisions made based on the data provided. Always verify critical pricing directly with providers.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">6. API Usage</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">API access is subject to rate limits based on your plan. Automated scraping, redistribution of data, or use of the API to build competing products is prohibited without prior written consent.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">7. Contact</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8">For questions about these terms, contact us at <a href="mailto:hello@perffeco.com" style="color:var(--accent)">hello@perffeco.com</a>.</p>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     SECTION: PRIVACY POLICY
+     ===================================================== -->
+<div id="sec-privacy" class="main-section">
+    <div class="sec-header"><h2>Privacy <span>Policy</span></h2><p>Last updated: March 2026</p></div>
+    <div class="container" style="max-width:760px">
+        <div class="card" style="padding:32px">
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">1. Information We Collect</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">We collect your email address and password hash when you create an account. We also collect usage analytics (pages viewed, features used) to improve the Service. Payment information is processed directly by Stripe and never stored on our servers.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">2. How We Use Your Information</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">Your information is used to provide and improve the Service, manage your subscription, send service notifications, and respond to support requests. We do not sell or share your personal data with third parties for marketing purposes.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">3. Data Storage</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">Your data is stored securely on Supabase infrastructure (hosted on AWS). We implement industry-standard security measures including encryption in transit and at rest, and row-level security policies.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">4. Cookies</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">We use essential cookies for authentication and session management. No third-party tracking cookies are used. You can disable cookies in your browser settings, but this may affect Service functionality.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">5. Your Rights (GDPR)</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8;margin-bottom:20px">You have the right to access, correct, delete, or export your personal data at any time. You can delete your account from the Account page or by emailing us. We will respond to data requests within 30 days.</p>
+            <h3 style="color:var(--text-primary);font-size:16px;margin-bottom:16px">6. Contact</h3>
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.8">For privacy inquiries, contact us at <a href="mailto:hello@perffeco.com" style="color:var(--accent)">hello@perffeco.com</a>.</p>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
      SECTION: FAQ
      ===================================================== -->
 <div id="sec-faq" class="main-section">
@@ -998,7 +1289,7 @@
     <div class="faq-list">
         <div class="faq-item" onclick="this.classList.toggle('open')">
             <div class="faq-q">Where does Perffeco source its data?</div>
-            <div class="faq-a"><p>We aggregate data from official provider APIs, published technical reports, Epoch AI research, LM Arena leaderboards, and direct price-page scraping across 15+ GPU providers and 8+ LLM API providers. All disclosed costs are lab-verified; estimated costs use the Epoch AI cost model.</p></div>
+            <div class="faq-a"><p>We aggregate data from official provider APIs, published technical reports, Epoch AI research, LM Arena leaderboards, and direct price-page scraping across multiple GPU and LLM API providers. All disclosed costs are lab-verified; estimated costs use the Epoch AI cost model.</p></div>
         </div>
         <div class="faq-item" onclick="this.classList.toggle('open')">
             <div class="faq-q">How often is data updated?</div>
@@ -1014,7 +1305,7 @@
         </div>
         <div class="faq-item" onclick="this.classList.toggle('open')">
             <div class="faq-q">What do the subscription plans include?</div>
-            <div class="faq-a"><p>Free includes the Frontier Model Economics dashboard (interactive bubble chart, 6 axes), CIS methodology and all intelligence rankings (per-dollar, per-token, energy efficiency), LLM API pricing (10+ models, 6 providers), cost/task estimates, price deflation trends, the full benchmark leaderboard (10 models, 6 benchmarks), Arena Elo, SWE-bench Coding, MATH Reasoning views, benchmark guide, basic GPU pricing, and weekly updates. Pro ($29/mo) adds full GPU economics (1,300+ prices, 15+ providers, H100 compare across 8 providers, trends, hidden costs), complete AI Agent economics (dev cost tiers, inference tables, pricing models, ROI benchmarks), the full FinOps suite (6-step framework, tools directory, optimization strategies, Quick Win Stack, cost-by-org benchmarks), all four calculators (LLM token, GPU cost, Agent TCO, FinOps savings), LLM price/performance rankings, live data via OpenRouter API, daily updates, and CSV export. Team ($79/user/mo) adds up to 10 seats, shared dashboards, team cost analytics, priority support, API access (10K calls/mo), and custom alerts. Enterprise gets unlimited seats, real-time API (unlimited), custom dashboards and reports, SSO/SAML, a dedicated account manager, SLA guarantee, and white-label options.</p></div>
+            <div class="faq-a"><p>Free includes the Frontier Model Economics dashboard (interactive bubble chart, 6 axes), CIS methodology and all intelligence rankings (per-dollar, per-token, energy efficiency), LLM API pricing (10+ models, 6 providers), cost/task estimates, price deflation trends, the full benchmark leaderboard (10 models, 6 benchmarks), Arena Elo, SWE-bench Coding, MATH Reasoning views, benchmark guide, basic GPU pricing, and weekly updates. Pro ($29/mo) adds full GPU economics (multiple providers, H100 compare, price trends, hidden costs), complete AI Agent economics (dev cost tiers, inference tables, pricing models, ROI benchmarks), the full FinOps suite (6-step framework, tools directory, optimization strategies, Quick Win Stack, cost-by-org benchmarks), all four calculators (LLM token, GPU cost, Agent TCO, FinOps savings), LLM price/performance rankings, live data via OpenRouter API, daily updates, and CSV export. Team ($79/user/mo) adds up to 10 seats, shared dashboards, team cost analytics, priority support, API access (10K calls/mo), and custom alerts. Enterprise gets unlimited seats, real-time API (unlimited), custom dashboards and reports, SSO/SAML, a dedicated account manager, SLA guarantee, and white-label options.</p></div>
         </div>
         <div class="faq-item" onclick="this.classList.toggle('open')">
             <div class="faq-q">How do I cancel my subscription?</div>
@@ -1024,12 +1315,52 @@
 </div>
 
 <!-- ==================== FOOTER ==================== -->
-<footer>
-    <p style="color:#FF8200;font-weight:700;margin-bottom:6px">Perffeco — The Central Hub for Intelligence Economics</p>
-    <p>LLM Pricing · GPU Economics · AI Agents · FinOps · Benchmarks</p>
-    <p style="margin-top:10px"><a onclick="showMain('faq')" style="color:#556677;cursor:pointer;text-decoration:none;margin:0 8px">FAQ</a> · <a onclick="showMain('pricing')" style="color:#556677;cursor:pointer;text-decoration:none;margin:0 8px">Pricing</a> · <a href="mailto:hello@perffeco.com" style="color:#556677;text-decoration:none;margin:0 8px">Contact</a></p>
-    <p style="margin-top:8px;font-size:10px;color:#3A4A5C">Sources: Epoch AI · LM Arena · GetDeploying · Cast AI · FinOps Foundation · PricePerToken · Provider APIs</p>
-    <p style="margin-top:4px;font-size:10px;color:#3A4A5C">&copy; 2026 Perffeco. All rights reserved.</p>
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="logo-text">
+                <svg viewBox="0 0 32 32" width="22" height="22" fill="none">
+                    <path d="M16 2L30 16L16 30L2 16Z" fill="#FF8200" opacity="0.15" stroke="#FF8200" stroke-width="1.5"/>
+                    <polyline points="8,20 13,16 18,12 24,8" stroke="#FF8200" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="8" cy="20" r="1.5" fill="#FF8200"/><circle cx="13" cy="16" r="1.5" fill="#FF8200"/>
+                    <circle cx="18" cy="12" r="1.5" fill="#FF8200"/><circle cx="24" cy="8" r="1.5" fill="#FF8200"/>
+                </svg>
+                Perffeco
+            </div>
+            <p>The central hub for Intelligence Economics. Compare, analyse, and optimise AI infrastructure costs with real-time data.</p>
+            <div class="footer-socials">
+                <a href="https://x.com/perffeco" target="_blank" title="X / Twitter">X</a>
+                <a href="https://linkedin.com/company/perffeco" target="_blank" title="LinkedIn">in</a>
+                <a href="mailto:hello@perffeco.com" title="Email">@</a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Product</h4>
+            <a onclick="showMain('home')">Dashboard</a>
+            <a onclick="showMain('llm')">LLM Economics</a>
+            <a onclick="showMain('gpu')">GPU Economics</a>
+            <a onclick="showMain('agents')">AI Agents</a>
+            <a onclick="showMain('benchmarks')">Benchmarks</a>
+            <a onclick="showMain('finops')">FinOps</a>
+            <a onclick="showMain('pricing')">Pricing</a>
+        </div>
+        <div class="footer-col">
+            <h4>Resources</h4>
+            <a onclick="showMain('faq')">FAQ</a>
+            <a href="mailto:hello@perffeco.com">Contact</a>
+            <a href="https://t.me/PerffecoAgent" target="_blank">Telegram Bot</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a onclick="showMain('terms')">Terms of Service</a>
+            <a onclick="showMain('privacy')">Privacy Policy</a>
+            <a onclick="showMain('privacy')">Cookie Policy</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Perffeco. All rights reserved.</p>
+        <p class="sources">Sources: Epoch AI &middot; LM Arena &middot; GetDeploying &middot; Cast AI &middot; FinOps Foundation &middot; Provider APIs</p>
+    </div>
 </footer>
 
 <!-- Back to Top -->
@@ -1321,7 +1652,10 @@ function showMain(sec){
     if(el)el.classList.add('active');
     var sectionMap={home:'DASHBOARD',agents:'AGENTS',benchmarks:'BENCHMARKS',pricing:'PRICING',finops:'FINOPS',gpu:'GPU ECONOMICS',llm:'LLM ECONOMICS',faq:'FAQ',account:'ACCOUNT'};
     var links=document.querySelectorAll('.nav-links a');
-    for(var i=0;i<links.length;i++){if(links[i].textContent.trim()===sectionMap[sec])links[i].classList.add('active');}
+    for(var i=0;i<links.length;i++){
+        var linkText=links[i].textContent.replace(/\s*\u{1F512}/u,'').trim();
+        if(linkText===sectionMap[sec])links[i].classList.add('active');
+    }
     // Close mobile menu
     var navLinks=document.querySelector('.nav-links');
     var hamburger=document.querySelector('.hamburger');
