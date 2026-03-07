@@ -11,36 +11,32 @@ module.exports = {
 
     let html = fs.readFileSync(htmlPath, 'utf8');
 
-    // Inject affiliate ref codes
-    const runpodRef = process.env.RUNPOD_REF || 'perffeco';
-    const vastRef = process.env.VAST_REF || 'perffeco';
+    // Affiliate ref codes from env vars
+    const doRef = process.env.DO_REF || 'perffeco';
+    const vultrRef = process.env.VULTR_REF || 'perffeco';
     const gtmId = process.env.GTM_ID || '';
 
+    // Replace DigitalOcean ref in JS config and hardcoded links
     html = html.replace(
-      /ref:\s*'perffeco',\s*base:\s*'https:\/\/runpod\.io\?ref='/,
-      `ref: '${runpodRef}', base: 'https://runpod.io?ref='`
+      /digitalocean:\s*\{\s*ref:\s*'perffeco'/,
+      `digitalocean: { ref: '${doRef}'`
     );
-    html = html.replace(
-      /ref:\s*'perffeco',\s*refId:\s*'perffeco',\s*base:\s*'https:\/\/cloud\.vast\.ai\/\?ref='/,
-      `ref: '${vastRef}', refId: '${vastRef}', base: 'https://cloud.vast.ai/?ref='`
-    );
+    html = html.replace(/refcode=perffeco/g, `refcode=${doRef}`);
 
-    // Inject GTM container ID (skip if not set)
+    // Replace Vultr ref in JS config and hardcoded links
+    html = html.replace(
+      /vultr:\s*\{\s*ref:\s*'perffeco'/,
+      `vultr: { ref: '${vultrRef}'`
+    );
+    html = html.replace(/vultr\.com\/products\/cloud-gpu\/\?ref=perffeco/g,
+      `vultr.com/products/cloud-gpu/?ref=${vultrRef}`);
+
+    // Inject GTM container ID (skip if placeholder)
     if (gtmId && gtmId !== 'GTM-XXXXXXX') {
       html = html.replace(/GTM-XXXXXXX/g, gtmId);
     }
 
-    // Update hardcoded affiliate links in provider compare cards
-    html = html.replace(
-      /ref=perffeco&ref_id=perffeco/g,
-      `ref=${vastRef}&ref_id=${vastRef}`
-    );
-    html = html.replace(
-      /runpod\.io\?ref=perffeco/g,
-      `runpod.io?ref=${runpodRef}`
-    );
-
     fs.writeFileSync(htmlPath, html);
-    console.log(`Injected: RUNPOD_REF=${runpodRef}, VAST_REF=${vastRef}, GTM=${gtmId || 'not set'}`);
+    console.log(`Injected: DO_REF=${doRef}, VULTR_REF=${vultrRef}, GTM=${gtmId || 'not set'}`);
   },
 };
