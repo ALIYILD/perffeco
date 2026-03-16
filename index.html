@@ -18,8 +18,20 @@
     <meta name="twitter:image" content="https://perffeco.com/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23FF8200'/><path d='M8 24V10h6c3.3 0 5 1.7 5 4.2s-1.7 4.2-5 4.2H12' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='none'/><polyline points='16,22 20,16 24,19 28,10' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='28' cy='10' r='1.8' fill='%23000'/></svg>">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Perffeco","url":"https://perffeco.com","description":"AI cost intelligence platform. Track LLM pricing, GPU cloud costs, and model benchmarks across 23 models and 12 providers.","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"AggregateOffer","lowPrice":"0","highPrice":"149","priceCurrency":"USD"},"author":{"@type":"Organization","name":"Perffeco","url":"https://perffeco.com"}}</script>
-    <!-- Google Tag Manager — replace GTM-XXXXXXX with your container ID -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+    <!-- GA4 Analytics — REPLACE G-XXXXXXXXXX with your GA4 Measurement ID -->
+    <!-- To get your ID: https://analytics.google.com → Admin → Data Streams → Web → Measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+    window.dataLayer=window.dataLayer||[];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());
+    gtag('config','G-XXXXXXXXXX',{send_page_view:true});
+
+    /* ========== CONVERSION EVENTS ========== */
+    window.perffecoTrack=function(eventName,params){
+        gtag('event',eventName,params||{});
+    };
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
@@ -780,8 +792,7 @@
     </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- GA4 noscript fallback not needed for gtag.js -->
 
 <!-- ==================== NAV ==================== -->
 <nav role="navigation" aria-label="Main navigation">
@@ -3938,8 +3949,7 @@ async function loadProfile() {
 function exportCSV(type) {
     var plan = (currentProfile && currentProfile.plan) ? currentProfile.plan : 'free';
     if (plan === 'free') {
-        if (!currentUser) { openAuthModal(); return; }
-        alert('CSV export is a Pro feature. Upgrade your plan to export data.');
+        showToast('CSV export requires Pro. Start your free 14-day trial!');
         showMain('pricing');
         return;
     }
@@ -3980,6 +3990,14 @@ function handleSubscribe(btn) {
     var isAnnual = document.getElementById('billing-switch').classList.contains('annual');
     var url = isAnnual ? btn.getAttribute('data-annual-href') : btn.getAttribute('data-monthly-href');
     if (!url) return;
+
+    // Track checkout initiation
+    var planName = btn.closest('.tier-card').querySelector('.tier-name').textContent;
+    var priceEl = btn.closest('.tier-card').querySelector('.tier-price');
+    var price = priceEl ? priceEl.textContent.replace('$','') : '0';
+    if(window.perffecoTrack){
+        window.perffecoTrack('begin_checkout',{currency:'USD',value:parseFloat(price)||0,items:[{item_name:planName+(isAnnual?' Annual':' Monthly'),price:parseFloat(price)||0}]});
+    }
 
     if (!currentUser) {
         _pendingCheckoutUrl = url;
@@ -5119,57 +5137,84 @@ function handleExitSignup(e){
     e.preventDefault();
     var email=document.getElementById('exit-email').value;
     if(!email)return;
-    if(typeof _supabase!=='undefined'&&_supabase){
-        _supabase.from('newsletter_subscribers').insert({email:email,source:'exit_intent'}).then(function(){
-            showToast('Subscribed! Check your inbox.');
-            closeExitPopup();
-        }).catch(function(){
-            showToast('Subscribed! Welcome aboard.');
-            closeExitPopup();
-        });
-    } else {
-        if(window.dataLayer){window.dataLayer.push({event:'newsletter_signup',email:email,source:'exit_intent'});}
-        showToast('Subscribed! Welcome aboard.');
-        closeExitPopup();
-    }
+    subscribeNewsletter(email,'exit_intent');
+    showToast('Subscribed! Check your inbox for your first briefing.');
+    closeExitPopup();
 }
 document.getElementById('exitOverlay').addEventListener('click',function(e){
     if(e.target===this)closeExitPopup();
 });
 
-/* ========== CONVERSION TRACKING ========== */
+/* ========== CONVERSION TRACKING (GA4) ========== */
 (function(){
-    /* Track affiliate clicks */
+    var T=window.perffecoTrack||function(){};
+
+    /* Track affiliate clicks — revenue event */
     document.querySelectorAll('.aff-btn').forEach(function(btn){
         btn.addEventListener('click',function(){
-            if(window.dataLayer){
-                window.dataLayer.push({
-                    event:'affiliate_click',
-                    provider:this.textContent.trim(),
-                    href:this.href
-                });
-            }
+            T('affiliate_click',{provider:this.textContent.trim(),link_url:this.href,currency:'USD'});
         });
     });
-    /* Track pricing CTA clicks */
+
+    /* Track pricing CTA clicks — key conversion */
     document.querySelectorAll('.calc-btn').forEach(function(btn){
         btn.addEventListener('click',function(){
             var text=this.textContent.trim();
             if(text.indexOf('Trial')>-1||text.indexOf('Subscribe')>-1||text.indexOf('Demo')>-1){
-                if(window.dataLayer){
-                    window.dataLayer.push({event:'pricing_cta_click',label:text});
-                }
+                T('begin_checkout',{items:[{item_name:text}]});
             }
         });
     });
-    /* Track nav section views */
+
+    /* Track nav section views as virtual pageviews */
     var origShowMain=window.showMain;
     if(origShowMain){
         window.showMain=function(sec){
-            if(window.dataLayer){window.dataLayer.push({event:'section_view',section:sec});}
+            T('page_view',{page_title:'Perffeco — '+sec,page_location:window.location.origin+'/#'+sec});
             origShowMain(sec);
         };
     }
+
+    /* Track signup/login */
+    var origOpen=window.openAuthModal;
+    if(origOpen){window.openAuthModal=function(){T('login_start');origOpen();};}
+
+    /* Track chat interactions */
+    var origToggle=window.toggleChat;
+    if(origToggle){window.toggleChat=function(){T('chat_open');origToggle();};}
+    var origSend=window.sendChatMessage;
+    if(origSend){window.sendChatMessage=function(){T('chat_message_sent');return origSend();};}
+
+    /* Track calculator usage */
+    var origCalc=window.calcOverpay;
+    if(origCalc){window.calcOverpay=function(){T('calculator_used',{calculator:'overpay'});origCalc();};}
+
+    /* Track scroll depth */
+    var scrollMarks={25:false,50:false,75:false,100:false};
+    window.addEventListener('scroll',function(){
+        var pct=Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+        [25,50,75,100].forEach(function(mark){
+            if(pct>=mark&&!scrollMarks[mark]){scrollMarks[mark]=true;T('scroll',{percent_scrolled:mark});}
+        });
+    },{passive:true});
+
+    /* Track time on site */
+    setTimeout(function(){T('engaged_user',{engagement_time:30});},30000);
+    setTimeout(function(){T('highly_engaged',{engagement_time:120});},120000);
+
+    /* Track report purchases */
+    var origReport=window.showReportForm;
+    if(origReport){window.showReportForm=function(type){T('view_item',{items:[{item_name:type+' report'}]});origReport(type);};}
+
+    /* Track newsletter signups */
+    document.querySelectorAll('form').forEach(function(form){
+        form.addEventListener('submit',function(){
+            var emailInput=form.querySelector('input[type="email"]');
+            if(emailInput&&emailInput.value){
+                T('generate_lead',{currency:'USD',value:1,lead_source:emailInput.id||'form'});
+            }
+        });
+    });
 })();
 </script>
 
@@ -5229,24 +5274,26 @@ function getQuizRecommendation(a){
 function handleQuizEmail(form){
     var email=form.querySelector('input').value;
     if(!email)return;
-    if(typeof _supabase!=='undefined'&&_supabase){
-        _supabase.from('newsletter_subscribers').insert({email:email,source:'quiz',metadata:JSON.stringify(quizAnswers)}).catch(function(){});
-    }
-    if(window.dataLayer){window.dataLayer.push({event:'quiz_email',email:email});}
+    subscribeNewsletter(email,'quiz');
     showToast('Check your inbox! Summary on its way.');
     form.querySelector('input').value='';
 }
 
-/* ===== NEWSLETTER SIGNUP ===== */
+/* ===== NEWSLETTER SIGNUP (sends welcome email via API) ===== */
+function subscribeNewsletter(email,source){
+    fetch('/api/newsletter',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email:email,source:source||'website'})
+    }).catch(function(){});
+    if(window.perffecoTrack){window.perffecoTrack('generate_lead',{currency:'USD',value:1,lead_source:source});}
+}
 function handleNewsletterSignup(e){
     e.preventDefault();
     var email=document.getElementById('newsletter-email').value;
     if(!email)return;
-    if(typeof _supabase!=='undefined'&&_supabase){
-        _supabase.from('newsletter_subscribers').insert({email:email,source:'homepage_newsletter'}).catch(function(){});
-    }
-    if(window.dataLayer){window.dataLayer.push({event:'newsletter_signup',email:email,source:'homepage'});}
-    showToast('Welcome! First issue arrives Monday.');
+    subscribeNewsletter(email,'homepage_newsletter');
+    showToast('Welcome! Check your inbox for your first AI Cost Index briefing.');
     document.getElementById('newsletter-email').value='';
 }
 
@@ -5257,11 +5304,8 @@ function handleOverpayEmail(e){
     if(!email)return;
     var model=document.getElementById('overpay-model');
     var spend=document.getElementById('overpay-spend');
-    var metadata={model:model?model.options[model.selectedIndex].text:'',spend:spend?spend.value:''};
-    if(typeof _supabase!=='undefined'&&_supabase){
-        _supabase.from('newsletter_subscribers').insert({email:email,source:'overpay_calculator',metadata:JSON.stringify(metadata)}).catch(function(){});
-    }
-    if(window.dataLayer){window.dataLayer.push({event:'overpay_email',email:email,metadata:metadata});}
+    var metadata=JSON.stringify({model:model?model.options[model.selectedIndex].text:'',spend:spend?spend.value:''});
+    subscribeNewsletter(email,'overpay_calculator');
     showToast('Savings tips on the way! Check your inbox.');
     document.getElementById('overpay-email').value='';
 }

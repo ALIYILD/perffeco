@@ -15,4 +15,5 @@
 /api/dashboards /.netlify/functions/dashboards 200!
 /api/team/analytics /.netlify/functions/team-analytics 200!
 /api/live-data /.netlify/functions/live-data 200!
+/api/newsletter /.netlify/functions/newsletter 200!
 /* /index.html 200
