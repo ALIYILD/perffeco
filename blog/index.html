@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perffeco Blog — AI Cost Intelligence & FinOps Insights</title>
+    <meta name="description" content="Data-driven analysis of AI infrastructure costs. LLM pricing comparisons, GPU cloud economics, and FinOps strategies from the Perffeco team.">
+    <link rel="canonical" href="https://perffeco.com/blog/">
+    <meta property="og:title" content="Perffeco Blog — AI Cost Intelligence">
+    <meta property="og:description" content="Data-driven AI infrastructure cost analysis, LLM pricing, and GPU economics.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23FF8200'/><path d='M8 24V10h6c3.3 0 5 1.7 5 4.2s-1.7 4.2-5 4.2H12' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='none'/><polyline points='16,22 20,16 24,19 28,10' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='28' cy='10' r='1.8' fill='%23000'/></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#000;--bg-card:#0a0e12;--border:#1a2030;--text:#E8E8E8;--text2:#B0B8C4;--text3:#7A8899;--dim:#556677;--accent:#FF8200;--mono:'IBM Plex Mono',monospace;--sans:'Inter',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--sans);background:var(--bg);color:var(--text2);min-height:100vh}
+        a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+
+        .blog-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);max-width:900px;margin:0 auto}
+        .blog-nav a{font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
+        .blog-nav .back{font-size:13px;color:var(--dim);font-weight:500}.blog-nav .back:hover{color:var(--accent)}
+
+        .blog-index{max-width:720px;margin:0 auto;padding:60px 28px 80px}
+        h1{font-size:36px;font-weight:800;color:var(--text);margin-bottom:8px}
+        h1 span{color:var(--accent)}
+        .blog-index-sub{color:var(--dim);font-size:15px;margin-bottom:48px;line-height:1.6}
+
+        .post-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:28px;margin-bottom:16px;transition:border-color .2s}
+        .post-card:hover{border-color:var(--accent);text-decoration:none}
+        .post-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:3px;background:rgba(255,130,0,.1);color:var(--accent);display:inline-block;margin-bottom:12px}
+        .post-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
+        .post-excerpt{color:var(--text3);font-size:14px;line-height:1.7;margin-bottom:12px}
+        .post-meta{color:var(--dim);font-size:11px;font-family:var(--mono)}
+        .post-card:hover .post-title{color:var(--accent)}
+
+        .blog-footer{max-width:720px;margin:0 auto;padding:0 28px 60px;border-top:1px solid var(--border);padding-top:32px;text-align:center}
+        .blog-footer p{color:var(--dim);font-size:12px}
+    </style>
+</head>
+<body>
+    <div class="blog-nav">
+        <a href="https://perffeco.com" style="color:var(--accent)">
+            <svg viewBox="0 0 32 32" width="20" height="20" fill="none"><rect width="32" height="32" rx="6" fill="#FF8200"/><path d="M8 24V10h6c3.3 0 5 1.7 5 4.2s-1.7 4.2-5 4.2H12" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="16,22 20,16 24,19 28,10" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="28" cy="10" r="1.8" fill="#000"/></svg>
+            Perffeco
+        </a>
+        <a class="back" href="https://perffeco.com">&larr; Back to Dashboard</a>
+    </div>
+
+    <div class="blog-index">
+        <h1>Perffeco <span>Blog</span></h1>
+        <p class="blog-index-sub">Data-driven analysis of AI infrastructure costs. LLM pricing, GPU economics, and FinOps strategies.</p>
+
+        <a class="post-card" href="gpt4o-vs-claude-pricing.html" style="display:block">
+            <span class="post-tag">VS Compare</span>
+            <div class="post-title">GPT-4o vs Claude Sonnet 4.6: Which Costs Less in 2026?</div>
+            <p class="post-excerpt">The two most popular LLMs go head-to-head on pricing, quality benchmarks, and real-world cost per task. Data-driven verdict on which to choose.</p>
+            <div class="post-meta">March 14, 2026 &middot; 7 min read</div>
+        </a>
+
+        <a class="post-card" href="runpod-vs-vastai.html" style="display:block">
+            <span class="post-tag">VS Compare</span>
+            <div class="post-title">RunPod vs Vast.ai: GPU Cloud Showdown 2026</div>
+            <p class="post-excerpt">The two biggest GPU marketplace platforms compared on pricing, features, reliability, and which is best for your ML workload.</p>
+            <div class="post-meta">March 14, 2026 &middot; 8 min read</div>
+        </a>
+
+        <a class="post-card" href="llm-cost-comparison-2026.html" style="display:block">
+            <span class="post-tag">Comparison</span>
+            <div class="post-title">LLM Cost Comparison 2026: GPT-4o vs Claude vs Gemini vs DeepSeek</div>
+            <p class="post-excerpt">With 22+ production-ready LLMs available, choosing the right model is a cost decision as much as a quality decision. We compare every major model on price, performance, and value.</p>
+            <div class="post-meta">March 14, 2026 &middot; 12 min read</div>
+        </a>
+
+        <a class="post-card" href="h100-gpu-pricing-guide-2026.html" style="display:block">
+            <span class="post-tag">GPU Guide</span>
+            <div class="post-title">H100 GPU Pricing Guide 2026: Every Provider Compared</div>
+            <p class="post-excerpt">The NVIDIA H100 remains the workhorse of AI training and inference. Prices have dropped 70%+ from 2023 peaks. Here's every provider compared, with hidden costs exposed.</p>
+            <div class="post-meta">March 14, 2026 &middot; 10 min read</div>
+        </a>
+
+        <a class="post-card" href="real-cost-running-gpt4o-2026.html" style="display:block">
+            <span class="post-tag">Analysis</span>
+            <div class="post-title">The Real Cost of Running GPT-4o in 2026</div>
+            <p class="post-excerpt">GPT-4o is one of the most popular LLMs in production. But how much does it actually cost to run at scale? We break down the numbers and show you where the savings are.</p>
+            <div class="post-meta">March 14, 2026 &middot; 8 min read</div>
+        </a>
+    </div>
+
+    <div class="blog-footer">
+        <p>&copy; 2026 Perffeco. All rights reserved. | <a href="https://perffeco.com">Home</a> | <a href="https://x.com/perffeco">X / Twitter</a> | <a href="https://linkedin.com/company/perffeco">LinkedIn</a></p>
+    </div>
+
+<!-- Perffeco CTA -->
+<div style="max-width:700px;margin:40px auto;padding:32px;background:#0a0e12;border:1px solid rgba(255,130,0,.2);border-radius:12px;text-align:center">
+    <h3 style="color:#E8E8E8;font-size:20px;font-weight:800;margin:0 0 8px">Stop overpaying for AI infrastructure</h3>
+    <p style="color:#7A8899;font-size:13px;margin:0 0 20px;line-height:1.6">Compare 23 LLM models and 12 GPU providers in real-time. Free dashboard, no signup needed.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://perffeco.com" style="display:inline-block;background:#FF8200;color:#000;padding:12px 28px;border-radius:4px;font-weight:700;font-size:14px;text-decoration:none">Open Free Dashboard</a>
+        <a href="https://perffeco.com" onclick="localStorage.setItem('perffeco_nav','pricing')" style="display:inline-block;background:transparent;color:#FF8200;padding:12px 28px;border-radius:4px;font-weight:700;font-size:14px;text-decoration:none;border:1px solid rgba(255,130,0,.3)">Start Pro Trial &mdash; Free 14 Days</a>
+    </div>
+</div>
+<div style="max-width:700px;margin:24px auto;padding:28px;background:rgba(255,130,0,.04);border:1px solid rgba(255,130,0,.15);border-radius:8px;text-align:center">
+    <h4 style="color:#E8E8E8;font-size:16px;margin:0 0 6px">Get the AI Cost Index &mdash; free weekly</h4>
+    <p style="color:#7A8899;font-size:12px;margin:0 0 16px">Every Monday: price drops, GPU deals, and one FinOps tip. 500+ engineers subscribed.</p>
+    <form onsubmit="event.preventDefault();var e=this.querySelector('input').value;if(e){fetch('https://perffeco.com/api/newsletter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,source:'blog'})}).catch(function(){});this.innerHTML='<p style=&quot;color:#33CC66;font-size:13px&quot;>Subscribed! First issue arrives Monday.</p>';}" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+        <input type="email" placeholder="your@email.com" required style="flex:1;padding:10px 14px;background:#111822;border:1px solid #1a2030;border-radius:4px;color:#E8E8E8;font-size:13px;font-family:inherit">
+        <button type="submit" style="background:#FF8200;color:#000;padding:10px 20px;border:none;border-radius:4px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">Subscribe Free</button>
+    </form>
+</div>
+
+</body>
+</html>

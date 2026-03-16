@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H100 GPU Pricing Guide 2026: Every Provider Compared — Perffeco Blog</title>
+    <meta name="description" content="Complete H100 GPU pricing comparison across 12 cloud providers in 2026. On-demand, spot, and reserved pricing from $1.49/hr to $6.98/hr with hidden costs analysis.">
+    <link rel="canonical" href="https://perffeco.com/blog/h100-gpu-pricing-guide-2026.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="H100 GPU Pricing Guide 2026: Every Provider Compared">
+    <meta property="og:description" content="Complete H100 pricing across 12 cloud providers. From $1.49/hr to $6.98/hr — find the cheapest option.">
+    <meta property="og:url" content="https://perffeco.com/blog/h100-gpu-pricing-guide-2026.html">
+    <meta property="og:image" content="https://perffeco.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="H100 GPU Pricing Guide 2026">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23FF8200'/><path d='M8 24V10h6c3.3 0 5 1.7 5 4.2s-1.7 4.2-5 4.2H12' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='none'/><polyline points='16,22 20,16 24,19 28,10' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='28' cy='10' r='1.8' fill='%23000'/></svg>">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"H100 GPU Pricing Guide 2026: Every Provider Compared","description":"Complete H100 GPU pricing comparison across 12 cloud providers.","author":{"@type":"Organization","name":"Perffeco"},"publisher":{"@type":"Organization","name":"Perffeco","url":"https://perffeco.com"},"datePublished":"2026-03-14","dateModified":"2026-03-14"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#000;--bg-card:#0a0e12;--border:#1a2030;--text:#E8E8E8;--text2:#B0B8C4;--text3:#7A8899;--dim:#556677;--accent:#FF8200;--green:#33CC66;--red:#FF3333;--mono:'IBM Plex Mono',monospace;--sans:'Inter',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--sans);background:var(--bg);color:var(--text2);min-height:100vh}
+        a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+        .blog-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);max-width:900px;margin:0 auto}
+        .blog-nav a{font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
+        .blog-nav .back{font-size:13px;color:var(--dim);font-weight:500}.blog-nav .back:hover{color:var(--accent)}
+        article{max-width:720px;margin:0 auto;padding:60px 28px 80px}
+        .blog-meta{color:var(--dim);font-size:12px;font-family:var(--mono);margin-bottom:32px;display:flex;gap:16px;align-items:center}
+        .blog-meta .tag{background:rgba(255,130,0,.1);color:var(--accent);padding:3px 10px;border-radius:3px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+        h1{font-size:clamp(28px,5vw,42px);font-weight:800;color:var(--text);line-height:1.15;margin-bottom:16px;letter-spacing:-0.5px}
+        h1 span{color:var(--accent)}
+        .blog-subtitle{font-size:17px;color:var(--text3);line-height:1.7;margin-bottom:48px}
+        h2{font-size:22px;font-weight:700;color:var(--text);margin:48px 0 16px}
+        h3{font-size:17px;font-weight:700;color:var(--text);margin:32px 0 12px}
+        p{font-size:15px;line-height:1.8;margin-bottom:20px}
+        ul,ol{margin:0 0 20px 24px}li{font-size:15px;line-height:1.8;margin-bottom:8px}
+        .data-table{width:100%;border-collapse:collapse;margin:24px 0;font-size:13px;background:var(--bg-card);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+        .data-table th{background:#111820;padding:10px 14px;text-align:left;font-weight:600;color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+        .data-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
+        .data-table tr:hover{background:#111820}
+        .price-green{color:#33CC66;font-weight:700}.price-orange{color:#FF8200;font-weight:700}.price-red{color:#FF3333;font-weight:700}
+        .callout{background:rgba(255,130,0,.05);border:1px solid rgba(255,130,0,.2);border-radius:6px;padding:20px 24px;margin:28px 0}
+        .callout h4{color:var(--accent);font-size:14px;margin-bottom:8px}.callout p{color:var(--text3);font-size:13px;margin-bottom:0}
+        .aff-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+        .aff-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px;text-align:center;transition:border-color .2s}
+        .aff-card:hover{border-color:var(--accent)}
+        .aff-card .name{font-size:16px;font-weight:700;color:var(--text)}
+        .aff-card .price{font-size:24px;font-weight:800;color:var(--accent);margin:8px 0 4px;font-family:var(--mono)}
+        .aff-card .unit{font-size:11px;color:var(--dim)}
+        .aff-card .btn{display:block;margin-top:12px;background:rgba(255,130,0,.1);color:var(--accent);padding:10px;border-radius:3px;font-weight:700;font-size:12px;transition:all .2s}
+        .aff-card .btn:hover{background:var(--accent);color:#000;text-decoration:none}
+        .aff-note{font-size:10px;color:#445566;text-align:center;margin-top:8px;font-style:italic}
+        .cta-box{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:32px;text-align:center;margin:48px 0}
+        .cta-box h3{color:var(--text);font-size:20px;margin:0 0 8px}.cta-box p{color:var(--dim);font-size:13px;margin-bottom:20px}
+        .cta-btn{display:inline-block;background:var(--accent);color:#000;padding:12px 32px;border-radius:3px;font-weight:700;font-size:14px;transition:all .2s}
+        .cta-btn:hover{text-decoration:none;box-shadow:0 0 24px rgba(255,130,0,.3)}
+        .share-row{display:flex;gap:8px;margin:32px 0;justify-content:center}.share-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:3px;font-size:12px;font-weight:600;border:1px solid var(--border);color:var(--text3);transition:all .2s;text-decoration:none}.share-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+        .blog-footer{max-width:720px;margin:0 auto;padding:0 28px 60px;border-top:1px solid var(--border);padding-top:32px;text-align:center}
+        .blog-footer p{color:var(--dim);font-size:12px}
+    </style>
+</head>
+<body>
+    <div class="blog-nav">
+        <a href="https://perffeco.com" style="color:var(--accent)">
+            <svg viewBox="0 0 32 32" width="20" height="20" fill="none"><rect width="32" height="32" rx="6" fill="#FF8200"/><path d="M8 24V10h6c3.3 0 5 1.7 5 4.2s-1.7 4.2-5 4.2H12" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="16,22 20,16 24,19 28,10" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="28" cy="10" r="1.8" fill="#000"/></svg>
+            Perffeco
+        </a>
+        <a class="back" href="https://perffeco.com">&larr; Back to Dashboard</a>
+    </div>
+
+    <article>
+        <div class="blog-meta">
+            <span class="tag">GPU Guide</span>
+            <span>March 14, 2026</span>
+            <span>10 min read</span>
+        </div>
+
+        <h1><span>H100 GPU</span> Pricing Guide 2026: Every Provider Compared</h1>
+        <p class="blog-subtitle">The NVIDIA H100 remains the workhorse of AI training and inference. But prices have dropped 70%+ from 2023 peaks. Here's every provider compared, with hidden costs exposed.</p>
+
+        <h2>H100 SXM 80GB — Full Price Comparison</h2>
+        <p>Prices as of March 2026, sorted from cheapest to most expensive on-demand pricing:</p>
+
+        <table class="data-table">
+            <thead>
+                <tr><th>Provider</th><th>Type</th><th>On-Demand</th><th>Spot/Preemptible</th><th>Monthly (24/7)</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Vast.ai</td><td>Marketplace</td><td class="price-green">$1.49/hr</td><td class="price-green">$1.19/hr</td><td class="price-green">$1,073</td></tr>
+                <tr><td>Lambda</td><td>Specialized</td><td class="price-green">$1.85/hr</td><td>N/A</td><td>$1,332</td></tr>
+                <tr><td>FluidStack</td><td>Marketplace</td><td class="price-green">$2.15/hr</td><td class="price-green">$1.72/hr</td><td>$1,548</td></tr>
+                <tr><td>CoreWeave</td><td>Specialized</td><td>$2.23/hr</td><td>N/A</td><td>$1,606</td></tr>
+                <tr><td>DigitalOcean</td><td>Cloud</td><td>$2.50/hr</td><td>N/A</td><td>$1,800</td></tr>
+                <tr><td>TensorDock</td><td>Marketplace</td><td>$2.59/hr</td><td class="price-green">$1.81/hr</td><td>$1,865</td></tr>
+                <tr><td>RunPod</td><td>Marketplace</td><td>$2.69/hr</td><td class="price-green">$1.89/hr</td><td>$1,937</td></tr>
+                <tr><td>Vultr</td><td>Cloud</td><td>$2.85/hr</td><td>N/A</td><td>$2,052</td></tr>
+                <tr><td>RunPod Secure</td><td>Managed</td><td>$3.29/hr</td><td>N/A</td><td>$2,369</td></tr>
+                <tr><td>GCP</td><td>Hyperscaler</td><td class="price-orange">$3.67/hr</td><td class="price-green">$1.47/hr</td><td>$2,642</td></tr>
+                <tr><td>AWS (p5)</td><td>Hyperscaler</td><td class="price-orange">$3.93/hr</td><td class="price-green">$1.57/hr</td><td>$2,830</td></tr>
+                <tr><td>CoreWeave</td><td>Specialized</td><td class="price-orange">$4.76/hr</td><td>N/A</td><td>$3,427</td></tr>
+                <tr><td>Azure</td><td>Hyperscaler</td><td class="price-red">$6.98/hr</td><td class="price-orange">$2.79/hr</td><td class="price-red">$5,026</td></tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <h4>Price Drop Context</h4>
+            <p>In mid-2023, H100s were $7.50-$11.00/hr on-demand. Today's cheapest at $1.49/hr represents a 80% drop. AWS's 44% price cut in June 2025 triggered an industry-wide correction that's still playing out.</p>
+        </div>
+
+        <h2>Best Deals Right Now</h2>
+        <p>Based on current pricing and reliability, here are our top picks:</p>
+
+        <div class="aff-grid">
+            <div class="aff-card">
+                <div class="name">Vast.ai</div>
+                <div class="price">$1.49</div>
+                <div class="unit">/hr on-demand</div>
+                <a class="btn" href="https://cloud.vast.ai/?ref_id=436589&utm_source=perffeco&utm_medium=affiliate&utm_content=h100-blog" target="_blank" rel="noopener noreferrer">View H100s ↗</a>
+            </div>
+            <div class="aff-card">
+                <div class="name">Lambda</div>
+                <div class="price">$1.85</div>
+                <div class="unit">/hr on-demand</div>
+                <a class="btn" href="https://lambdalabs.com/service/gpu-cloud?utm_source=perffeco&utm_medium=affiliate&utm_content=h100-blog" target="_blank" rel="noopener noreferrer">View H100s ↗</a>
+            </div>
+            <div class="aff-card">
+                <div class="name">RunPod</div>
+                <div class="price">$2.69</div>
+                <div class="unit">/hr secure</div>
+                <a class="btn" href="https://runpod.io?ref=yapqii8p&utm_source=perffeco&utm_medium=affiliate&utm_content=h100-blog" target="_blank" rel="noopener noreferrer">View H100s ↗</a>
+            </div>
+        </div>
+        <p class="aff-note">Perffeco may earn a commission from provider links. This does not affect our pricing data.</p>
+
+        <h2>Hidden Costs to Watch Out For</h2>
+        <p>The hourly rate is just the beginning. Here's what catches most teams off guard:</p>
+
+        <table class="data-table">
+            <thead><tr><th>Cost Type</th><th>Typical Range</th><th>Impact</th></tr></thead>
+            <tbody>
+                <tr><td>Data Egress</td><td>$0.08-0.12/GB</td><td>Adds 5-15% for data-heavy workloads</td></tr>
+                <tr><td>Storage</td><td>$0.02-0.08/GB/mo</td><td>Model checkpoints add up fast (100GB+ per save)</td></tr>
+                <tr><td>InfiniBand Premium</td><td>15-30% extra</td><td>Required for multi-GPU training</td></tr>
+                <tr><td>Spot Interruptions</td><td>Save 60-90%</td><td>But you lose progress on preemption</td></tr>
+                <tr><td>Enterprise Support</td><td>$5-15K/mo</td><td>Required for production SLAs</td></tr>
+                <tr><td>Reserved Commitment</td><td>1-3 year terms</td><td>30-60% savings but lock-in risk</td></tr>
+            </tbody>
+        </table>
+
+        <h2>When to Use Spot vs On-Demand</h2>
+        <ul>
+            <li><strong>Spot/preemptible:</strong> Fine-tuning with checkpointing, batch inference, experimentation. Save 40-60%.</li>
+            <li><strong>On-demand:</strong> Production inference, time-sensitive training, demos. Pay the premium for reliability.</li>
+            <li><strong>Reserved:</strong> Only if you need 24/7 GPUs for 6+ months. The savings are real but the commitment is too.</li>
+        </ul>
+
+        <h2>H100 vs Alternatives: Should You Even Use H100s?</h2>
+        <p>Depending on your workload, cheaper GPUs might be a better fit:</p>
+
+        <table class="data-table">
+            <thead><tr><th>GPU</th><th>Best For</th><th>From</th><th>vs H100</th></tr></thead>
+            <tbody>
+                <tr><td>A100 80GB</td><td>Inference, fine-tuning</td><td class="price-green">$1.10/hr</td><td>26% cheaper, 60% perf</td></tr>
+                <tr><td>L40S 48GB</td><td>Inference, small models</td><td class="price-green">$0.79/hr</td><td>47% cheaper, 40% perf</td></tr>
+                <tr><td>RTX 4090</td><td>Dev/testing, small inference</td><td class="price-green">$0.34/hr</td><td>77% cheaper, 25% perf</td></tr>
+                <tr><td>H200 141GB</td><td>Large models, 1.4x VRAM</td><td class="price-orange">$3.49/hr</td><td>More VRAM, 20% faster</td></tr>
+                <tr><td>B200 192GB</td><td>Next-gen, 2.4x VRAM</td><td class="price-orange">$2.99/hr</td><td>Newer arch, 2x faster</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Bottom Line</h2>
+        <p>The H100 market is a buyer's market in 2026. Prices have cratered 70%+ from peaks, and competition between marketplace providers (Vast.ai, RunPod) and hyperscalers is driving further reductions.</p>
+        <p>For most teams, Vast.ai or Lambda offer the best value for on-demand H100s. Use spot instances on GCP/AWS for interruptible workloads, and consider A100s or L40S for inference-only deployments where you don't need full H100 power.</p>
+
+        <div class="share-row"><a class="share-btn" href="https://twitter.com/intent/tweet?text=H100%20GPU%20Pricing%20Guide%202026&url=https://perffeco.com/blog/h100-gpu-pricing-guide-2026.html" target="_blank" rel="noopener">Share on X</a><a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=https://perffeco.com/blog/h100-gpu-pricing-guide-2026.html" target="_blank" rel="noopener">Share on LinkedIn</a></div>
+        <div class="cta-box">
+            <h3>Compare All GPU Prices in Real Time</h3>
+            <p>Track live pricing across 12 providers, 32 GPU configurations, with hidden cost analysis and a GPU calculator.</p>
+            <a class="cta-btn" href="https://perffeco.com">Open GPU Economics Dashboard</a>
+        </div>
+    </article>
+
+    <div class="blog-footer">
+        <p>&copy; 2026 Perffeco. All rights reserved. | <a href="https://perffeco.com">Home</a> | <a href="/blog/real-cost-running-gpt4o-2026.html">GPT-4o Cost Analysis</a> | <a href="/blog/llm-cost-comparison-2026.html">LLM Cost Comparison</a></p>
+    </div>
+
+<!-- Perffeco CTA -->
+<div style="max-width:700px;margin:40px auto;padding:32px;background:#0a0e12;border:1px solid rgba(255,130,0,.2);border-radius:12px;text-align:center">
+    <h3 style="color:#E8E8E8;font-size:20px;font-weight:800;margin:0 0 8px">Stop overpaying for AI infrastructure</h3>
+    <p style="color:#7A8899;font-size:13px;margin:0 0 20px;line-height:1.6">Compare 23 LLM models and 12 GPU providers in real-time. Free dashboard, no signup needed.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://perffeco.com" style="display:inline-block;background:#FF8200;color:#000;padding:12px 28px;border-radius:4px;font-weight:700;font-size:14px;text-decoration:none">Open Free Dashboard</a>
+        <a href="https://perffeco.com" onclick="localStorage.setItem('perffeco_nav','pricing')" style="display:inline-block;background:transparent;color:#FF8200;padding:12px 28px;border-radius:4px;font-weight:700;font-size:14px;text-decoration:none;border:1px solid rgba(255,130,0,.3)">Start Pro Trial &mdash; Free 14 Days</a>
+    </div>
+</div>
+<div style="max-width:700px;margin:24px auto;padding:28px;background:rgba(255,130,0,.04);border:1px solid rgba(255,130,0,.15);border-radius:8px;text-align:center">
+    <h4 style="color:#E8E8E8;font-size:16px;margin:0 0 6px">Get the AI Cost Index &mdash; free weekly</h4>
+    <p style="color:#7A8899;font-size:12px;margin:0 0 16px">Every Monday: price drops, GPU deals, and one FinOps tip. 500+ engineers subscribed.</p>
+    <form onsubmit="event.preventDefault();var e=this.querySelector('input').value;if(e){fetch('https://perffeco.com/api/newsletter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,source:'blog'})}).catch(function(){});this.innerHTML='<p style=&quot;color:#33CC66;font-size:13px&quot;>Subscribed! First issue arrives Monday.</p>';}" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+        <input type="email" placeholder="your@email.com" required style="flex:1;padding:10px 14px;background:#111822;border:1px solid #1a2030;border-radius:4px;color:#E8E8E8;font-size:13px;font-family:inherit">
+        <button type="submit" style="background:#FF8200;color:#000;padding:10px 20px;border:none;border-radius:4px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">Subscribe Free</button>
+    </form>
+</div>
+
+</body>
+</html>

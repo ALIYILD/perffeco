@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import Stripe from "stripe";
+import { Resend } from "resend";
 import { getDb } from "./lib/supabase.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -19,6 +20,31 @@ const PRICE_TO_PLAN: Record<string, string> = {
   // Team annual ($756/yr)
   "price_1T7cD3Ic3HQtwR9gIpGjb9NJ": "team",
 };
+
+async function sendEmail(to: string, subject: string, html: string) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return;
+  const resend = new Resend(key);
+  try {
+    await resend.emails.send({ from: "Perffeco <hello@perffeco.com>", to, subject, html });
+  } catch {
+    try {
+      await resend.emails.send({ from: "Perffeco <onboarding@resend.dev>", to, subject, html });
+    } catch (e) {
+      console.error("Email send failed:", e);
+    }
+  }
+}
+
+async function getUserEmail(db: ReturnType<typeof getDb>, customerId: string): Promise<{ userId: string; email: string } | null> {
+  const { data } = await db
+    .from("profiles")
+    .select("id, email")
+    .eq("stripe_customer_id", customerId)
+    .limit(1);
+  if (!data?.length) return null;
+  return { userId: data[0].id, email: data[0].email };
+}
 
 export const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod !== "POST") {
@@ -137,7 +163,76 @@ export const handler: Handler = async (event: HandlerEvent) => {
           console.log(`Team ${cancelledTeam.id} downgraded to free`);
         }
 
+        // Send cancellation email
+        const cancelUser = await getUserEmail(db, customerId);
+        if (cancelUser?.email) {
+          await sendEmail(cancelUser.email, "Your Perffeco subscription has been cancelled",
+            `<div style="max-width:600px;margin:0 auto;background:#000;color:#E8E8E8;font-family:Arial,sans-serif;padding:32px">
+              <div style="font-size:24px;font-weight:800;color:#FF8200;margin-bottom:24px">Perffeco</div>
+              <h2 style="margin:0 0 16px">We're sorry to see you go</h2>
+              <p style="color:#B0B8C4;line-height:1.7">Your Perffeco subscription has been cancelled. You've been moved to the Free plan.</p>
+              <p style="color:#B0B8C4;line-height:1.7">You still have access to the free dashboard, benchmarks, and basic pricing data.</p>
+              <p style="color:#B0B8C4;line-height:1.7">Changed your mind? You can resubscribe anytime:</p>
+              <div style="text-align:center;margin:24px 0">
+                <a href="https://perffeco.com/#pricing" style="display:inline-block;background:#FF8200;color:#000;padding:14px 32px;border-radius:6px;font-weight:800;font-size:15px;text-decoration:none">Resubscribe to Pro</a>
+              </div>
+              <p style="color:#556677;font-size:12px;margin-top:32px">If you have feedback on how we can improve, reply to this email — we read every message.</p>
+            </div>`);
+        }
+
         console.log(`Customer ${customerId} downgraded to free`);
+        break;
+      }
+
+      case "invoice.payment_failed": {
+        const invoice = stripeEvent.data.object as Stripe.Invoice;
+        const failedCustomerId =
+          typeof invoice.customer === "string"
+            ? invoice.customer
+            : invoice.customer?.id;
+
+        if (!failedCustomerId) break;
+
+        const failedUser = await getUserEmail(db, failedCustomerId);
+        if (failedUser?.email) {
+          await sendEmail(failedUser.email, "Action required: your Perffeco payment failed",
+            `<div style="max-width:600px;margin:0 auto;background:#000;color:#E8E8E8;font-family:Arial,sans-serif;padding:32px">
+              <div style="font-size:24px;font-weight:800;color:#FF8200;margin-bottom:24px">Perffeco</div>
+              <h2 style="margin:0 0 16px">Your payment didn't go through</h2>
+              <p style="color:#B0B8C4;line-height:1.7">We tried to charge your card for your Perffeco subscription, but the payment failed. Your access will remain active while we retry.</p>
+              <p style="color:#B0B8C4;line-height:1.7">Please update your payment method to avoid losing access to Pro features:</p>
+              <div style="text-align:center;margin:24px 0">
+                <a href="https://billing.stripe.com/p/login/9AQbMz5dA2oDbQI4gg" style="display:inline-block;background:#FF8200;color:#000;padding:14px 32px;border-radius:6px;font-weight:800;font-size:15px;text-decoration:none">Update Payment Method</a>
+              </div>
+              <p style="color:#556677;font-size:12px;margin-top:32px">We'll retry the payment in a few days. If you need help, reply to this email.</p>
+            </div>`);
+        }
+
+        console.log(`Payment failed for customer ${failedCustomerId}`);
+        break;
+      }
+
+      case "customer.subscription.updated": {
+        const updatedSub = stripeEvent.data.object as Stripe.Subscription;
+        const updatedCustomerId =
+          typeof updatedSub.customer === "string"
+            ? updatedSub.customer
+            : updatedSub.customer.id;
+
+        const priceId = updatedSub.items.data[0]?.price?.id;
+        if (!priceId) break;
+
+        const newPlan = PRICE_TO_PLAN[priceId];
+        if (!newPlan) break;
+
+        const updatedUser = await getUserEmail(db, updatedCustomerId);
+        if (updatedUser) {
+          await db
+            .from("profiles")
+            .update({ plan: newPlan })
+            .eq("id", updatedUser.userId);
+          console.log(`Subscription updated: customer ${updatedCustomerId} → ${newPlan}`);
+        }
         break;
       }
 
