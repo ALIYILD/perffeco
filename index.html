@@ -110,7 +110,7 @@
         .main-section.active .container{animation:slideUp .5s ease .1s forwards;opacity:0}
 
         /* Back to top */
-        .back-to-top{position:fixed;bottom:28px;right:28px;width:40px;height:40px;background:#FF8200;color:#000000;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:none;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:opacity .3s}
+        .back-to-top{position:fixed;bottom:96px;right:28px;width:40px;height:40px;background:#FF8200;color:#000000;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:none;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:opacity .3s}
         .back-to-top.visible{display:flex;align-items:center;justify-content:center}
 
         /* Billing toggle */
@@ -3578,7 +3578,7 @@ function toggleChat() {
     chatOpen = !chatOpen;
     document.getElementById('chatWindow').classList.toggle('open', chatOpen);
     if (chatOpen && !document.getElementById('chatMessages').hasChildNodes()) {
-        addChatMsg('assistant', "Hi! I'm the Perffeco AI Agent. Ask me about LLM pricing, GPU costs, or model comparisons.\n\nTry: \"Compare GPT-4o vs Claude Sonnet\"");
+        addChatMsg('assistant', "Hi! I'm the Perffeco AI Agent. I can help you find the cheapest LLM, compare GPU providers, or optimise your AI spend.\n\nTry asking:\n• \"What's the cheapest model for coding?\"\n• \"Compare H100 vs A100 pricing\"\n• \"GPT-4o vs Claude Sonnet cost\"");
     }
 }
 
@@ -3623,25 +3623,41 @@ async function sendChatMessage() {
     addChatMsg('user', msg);
     showTyping();
 
-    try {
-        var res = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: msg, session_id: chatSessionId, user_id: currentUser ? currentUser.id : undefined })
-        });
-        var data = await res.json();
-        hideTyping();
+    var retries = 2;
+    async function attemptSend() {
+        try {
+            var res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg, session_id: chatSessionId, user_id: currentUser ? currentUser.id : undefined })
+            });
+            if (!res.ok) {
+                var errBody = await res.text();
+                try { errBody = JSON.parse(errBody).error || errBody; } catch(e) {}
+                throw new Error(errBody || 'Server error (' + res.status + ')');
+            }
+            var data = await res.json();
+            hideTyping();
 
-        if (data.error) {
-            addChatMsg('assistant', 'Error: ' + data.error);
-        } else {
-            chatSessionId = data.session_id;
-            addChatMsg('assistant', data.response);
+            if (data.error) {
+                addChatMsg('assistant', 'Error: ' + data.error);
+            } else {
+                chatSessionId = data.session_id;
+                addChatMsg('assistant', data.response);
+            }
+        } catch (err) {
+            if (retries > 0) {
+                retries--;
+                console.warn('Chat retry, attempts left:', retries, err);
+                await new Promise(function(r){ setTimeout(r, 1000); });
+                return attemptSend();
+            }
+            hideTyping();
+            console.error('Chat error:', err);
+            addChatMsg('assistant', 'Connection issue — please try again in a moment. If this persists, the AI agent may be temporarily overloaded.');
         }
-    } catch (err) {
-        hideTyping();
-        addChatMsg('assistant', 'Network error. Please try again.');
     }
+    await attemptSend();
     btn.disabled = false;
     input.focus();
 }
